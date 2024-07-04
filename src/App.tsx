@@ -1,26 +1,23 @@
+// src/App.tsx
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Login from './pages/Login';
+import Main from './pages/Main';
+import Navbar from './components/Navbar';
+import Register from "./pages/Register";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    return (
+        <Router>
+            <Routes>
+                {/* 이동은 <LINK> 컴포넌트를 사용해서 전환 */}
+                {/* Link 컴포넌트는 리액트 라우터에서 제공하는 페이지 전환을 위한 컴포넌트 */}
+                <Route path="/" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/main" element={<><Navbar /><Main /></>} />
+            </Routes>
+        </Router>
+    );
 }
 
 export default App;
