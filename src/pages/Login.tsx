@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Grid, Typography, Link as MuiLink } from '@mui/material';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import CustomTextField from '../components/CustomTextField';
+import CustomLoginTextField from "../components/CustomLoginTextField";
 
 const Login: React.FC = () => {
     const navigate = useNavigate();
@@ -37,9 +37,9 @@ const Login: React.FC = () => {
                 {/*        sx={{ "& .MuiOutlinedInput-root": { height: '55px', width: '500px' }, "& .MuiInputLabel-root": { lineHeight: 1.5 } }}*/}
                 {/*    />*/}
                 {/*</Box>*/}
-                <CustomTextField label="User ID" />
-                <CustomTextField label="Password" type="password" />
-                <MuiLink component={RouterLink} to="/forgot-password" underline="hover" sx={{ mt: 1 }}>
+                <CustomLoginTextField label="User ID" />
+                <CustomLoginTextField label="Password" type="password" />
+                <MuiLink component={RouterLink} to="/PasswordReset" underline="hover" sx={{ mt: 1 }}>
                     Forgot your password?
                 </MuiLink>
                 <Button variant="contained" color="primary" fullWidth onClick={handleLogin} sx={{ marginTop: 2, width : '500px',height: '50px' }}>
@@ -50,7 +50,7 @@ const Login: React.FC = () => {
                 </MuiLink>
             </Grid>
             {/* 오른쪽 배경 이미지 부분 */}
-            <Grid item xs={12} sm={6} sx={{ background: 'url(background.png) no-repeat center center', backgroundSize: 'cover', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: 3 }}>
+            <Grid item xs={12} sm={6} sx={{ background: 'url(login-background.png) no-repeat center center', backgroundSize: 'cover', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: 3 }}>
                 {/* 내용 없음 */}
             </Grid>
         </Grid>

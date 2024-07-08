@@ -4,11 +4,11 @@ import CustomTextField from '../components/CustomTextField';
 import { isEmpty, isValidEmail, isPasswordMatch, validatePassword } from '../utils/validation';
 import { useNavigate } from "react-router-dom";
 
-const Register: React.FC = () => {
+const ForgotPassword: React.FC = () => {
     const navigate = useNavigate();
     const [step, setStep] = useState(1);
     const [userDetails, setUserDetails] = useState({
-        userId: '',
+        userId: 'wild-mantle', // 초기 더미 데이터 설정
         email: '',
         code: '',
         password: '',
@@ -45,8 +45,7 @@ const Register: React.FC = () => {
         setErrors(prev => ({ ...prev, code: false }));
     };
 
-    const handleRegister = () => {
-        // 비밀 번호 유효성 검사
+    const handleSetPassword = () => {
         const { userId, password, confirmPassword } = userDetails;
         const validationResults = validatePassword(password, confirmPassword);
         if (isEmpty(userId) || isEmpty(password) || isEmpty(confirmPassword) ||
@@ -57,10 +56,10 @@ const Register: React.FC = () => {
                 password: isEmpty(password),
                 confirmPassword: !isPasswordMatch(password, confirmPassword)
             }));
-            setPasswordErrors(validationResults); // 비밀번호 조건 실패를 상태에 반영
+            setPasswordErrors(validationResults);
             return;
         }
-        navigate('/'); // 모든 검증 성공 후 메인 페이지로
+        navigate('/');
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,7 +67,6 @@ const Register: React.FC = () => {
         setUserDetails(prev => {
             const updatedDetails = { ...prev, [name]: value };
             if (name === 'password' || name === 'confirmPassword') {
-                // 업데이트된 userDetails 를 기반으로 비밀번호 검증을 실행
                 const validationResults = validatePassword(updatedDetails.password, updatedDetails.confirmPassword);
                 setPasswordErrors(validationResults);
             }
@@ -84,24 +82,22 @@ const Register: React.FC = () => {
                 display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', color: 'white', padding: 3
             }}>
                 <Typography variant="h4" component="h1" gutterBottom>
-                    Join the DeepTech!
+                    Forgot ID/password?
                 </Typography>
-                <CustomTextField label="User ID" onChange={handleChange} name="userId" value={userDetails.userId} error={errors.userId} disabled={step > 1} />
-                <CustomTextField label="Email" onChange={handleChange} name="email" value={userDetails.email} error={errors.email} disabled={step > 1} />
-                <Button variant="contained" color="primary" fullWidth onClick={handleSendEmail} sx={{ marginTop: 2, width: '500px', height: '50px' }}>
-                    SEND EMAIL
-                </Button>
-                {step >= 2 && (
+                {step < 3 && (
                     <>
-                        <CustomTextField label="Code" onChange={handleChange} name="code" value={userDetails.code} error={errors.code} disabled={step > 2} />
-                        <Button variant="contained" color="primary" fullWidth onClick={handleVerifyCode} sx={{ marginTop: 2, width: '500px', height: '50px' }}>
-                            VERIFY CODE
-                        </Button>
+                        <CustomTextField label="Email" onChange={handleChange} name="email" value={userDetails.email} error={errors.email} disabled={step > 1} />
+                        {step >= 2 && (
+                            <>
+                                <CustomTextField label="Code" onChange={handleChange} name="code" value={userDetails.code} error={errors.code} />
+                            </>
+                        )}
                     </>
                 )}
                 {step === 3 && (
                     <>
-                        <CustomTextField label="Password" type="password" onChange={handleChange} name="password" value={userDetails.password} error={errors.password} />
+                        <CustomTextField label="User ID" onChange={handleChange} name="userId" value={userDetails.userId} error={errors.userId} disabled />
+                        <CustomTextField label="New Password" type="password" onChange={handleChange} name="password" value={userDetails.password} error={errors.password} />
                         <CustomTextField label="Confirm Password" type="password" onChange={handleChange} name="confirmPassword" value={userDetails.confirmPassword} error={errors.confirmPassword} />
                         {(!passwordErrors.length || !passwordErrors.hasNumberAndLetter || !passwordErrors.passwordsMatch) && (
                             <Box sx={{ mt: 2, background: '#e0e0e0', borderRadius: '5px', p: 2, color: '#333' }}>
@@ -111,17 +107,28 @@ const Register: React.FC = () => {
                                 <Typography>{passwordErrors.passwordsMatch ? '✔ Passwords match' : '✖ Passwords do not match'}</Typography>
                             </Box>
                         )}
-                        <Button variant="contained" color="primary" fullWidth onClick={handleRegister} sx={{ marginTop: 2, width: '500px', height: '50px' }}>
-                            REGISTER
-                        </Button>
                     </>
+                )}
+                {step === 1 && (
+                    <Button variant="contained" color="primary" fullWidth onClick={handleSendEmail} sx={{ marginTop: 2, width: '500px', height: '50px' }}>
+                        SEND EMAIL
+                    </Button>
+                )}
+                {step === 2 && (
+                    <Button variant="contained" color="primary" fullWidth onClick={handleVerifyCode} sx={{ marginTop: 2, width: '500px', height: '50px' }}>
+                        VERIFY CODE
+                    </Button>
+                )}
+                {step === 3 && (
+                    <Button variant="contained" color="primary" fullWidth onClick={handleSetPassword} sx={{ marginTop: 2, width: '500px', height: '50px' }}>
+                        SET PASSWORD
+                    </Button>
                 )}
             </Grid>
             <Grid item xs={12} sm={6} sx={{ background: 'url(login-background.png) no-repeat center center', backgroundSize: 'cover', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: 3 }}>
-                {/* 내용 없음 */}
             </Grid>
         </Grid>
     );
 };
 
-export default Register;
+export default ForgotPassword;

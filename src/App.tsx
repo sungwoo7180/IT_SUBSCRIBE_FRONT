@@ -5,6 +5,7 @@ import Login from './pages/Login';
 import Main from './pages/Main';
 import Navbar from './components/Navbar';
 import Register from "./pages/Register";
+import ForgotPassword from "./pages/ForgotPassword";
 
 function App() {
     return (
@@ -15,6 +16,7 @@ function App() {
                 <Route path="/" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/main" element={<><Navbar /><Main /></>} />
+                <Route path="/passwordReset" element={<><ForgotPassword /><Main /></>} />
             </Routes>
         </Router>
     );
