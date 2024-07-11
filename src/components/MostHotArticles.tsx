@@ -13,7 +13,7 @@ const hotArticles = [
 const MostHotArticles: React.FC = () => {
     return (
         <Paper sx={{ padding: 2, backgroundColor: '#1f2a3c' }}>
-            <Typography variant="h6" gutterBottom color="white">Most Hot Articles</Typography>
+            <Typography variant="h5" gutterBottom color="white" align="center">Most Hot Articles</Typography>
             {hotArticles.map((article) => (
                 <Card key={article.id} sx={{ marginBottom: 2, backgroundColor: '#152238', color: 'white' }}>
                     <CardContent>

@@ -6,6 +6,8 @@ import Main from './pages/Main';
 import Navbar from './components/Navbar';
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
+import ArticleDetail from "./pages/ArticleDetail";
+import ArticlesView from "./pages/ArticlesView";
 
 function App() {
     return (
@@ -17,6 +19,8 @@ function App() {
                 <Route path="/register" element={<Register />} />
                 <Route path="/main" element={<><Navbar /><Main /></>} />
                 <Route path="/passwordReset" element={<><ForgotPassword /><Main /></>} />
+                <Route path="/article/:articleId" element={<><Navbar /><ArticleDetail /></>} /> {/* 기사 상세 페이지 라우트 */}
+                <Route path="/all-articles/:category?" element={<><Navbar /><ArticlesView /></>} />
             </Routes>
         </Router>
     );

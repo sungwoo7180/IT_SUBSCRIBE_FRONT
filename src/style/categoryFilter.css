@@ -1,0 +1,9 @@
+.category-filter {
+    margin: 10px 0;
+    color : white;
+}
+
+.category-label {
+    margin-right: 20px; /* 라벨 간격 조정 */
+}
+
