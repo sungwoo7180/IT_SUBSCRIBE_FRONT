@@ -1,0 +1,182 @@
+[
+  {
+    "id": 1,
+    "title": "Artificial Intelligence and Its Impact",
+    "content": "Exploring the transformative potential of AI in various industries.",
+    "date": "2023-07-10",
+    "category": "AI / ML",
+    "tags": ["Innovation", "Technology"],
+    "originalUrl": "https://example.com/article1"
+  },
+  {
+    "id": 2,
+    "title": "The Future of Cloud Computing",
+    "content": "How cloud technology is evolving and what it means for businesses.",
+    "date": "2023-07-09",
+    "category": "Cloud",
+    "tags": ["Cloud", "Storage"],
+    "originalUrl": "https://example.com/article2"
+  },
+  {
+    "id": 3,
+    "title": "Advancements in Cybersecurity",
+    "content": "Recent breakthroughs in cybersecurity technologies and methods.",
+    "date": "2023-07-08",
+    "category": "Security",
+    "tags": ["Security", "Protection"],
+    "originalUrl": "https://example.com/article3"
+  },
+  {
+    "id": 4,
+    "title": "Exploring Virtual Reality",
+    "content": "An in-depth look at how VR is changing the entertainment industry.",
+    "date": "2023-07-07",
+    "category": "VR",
+    "tags": ["VR", "Gaming"],
+    "originalUrl": "https://example.com/article4"
+  },
+  {
+    "id": 5,
+    "title": "Big Data in Modern Analytics",
+    "content": "Utilizing big data for enhanced predictive analytics.",
+    "date": "2023-07-06",
+    "category": "Data Science",
+    "tags": ["Data", "Analytics"],
+    "originalUrl": "https://example.com/article5"
+  },
+  {
+    "id": 6,
+    "title": "Network Security Protocols",
+    "content": "A guide to the latest network security protocols and their importance.",
+    "date": "2023-07-05",
+    "category": "Network",
+    "tags": ["Network", "Security"],
+    "originalUrl": "https://example.com/article6"
+  },
+  {
+    "id": 7,
+    "title": "Digital Devices and Usability",
+    "content": "How digital devices are being designed for better user experience.",
+    "date": "2023-07-04",
+    "category": "Digital Device",
+    "tags": ["Devices", "UX"],
+    "originalUrl": "https://example.com/article7"
+  },
+  {
+    "id": 8,
+    "title": "The Role of Embedded Systems",
+    "content": "The critical role of embedded systems in modern electronics.",
+    "date": "2023-07-03",
+    "category": "Embed",
+    "tags": ["Systems", "Hardware"],
+    "originalUrl": "https://example.com/article8"
+  },
+  {
+    "id": 9,
+    "title": "Mobile Technology Trends",
+    "content": "What's new in the world of mobile technology and devices.",
+    "date": "2023-07-02",
+    "category": "Mobile",
+    "tags": ["Mobile", "Innovation"],
+    "originalUrl": "https://example.com/article9"
+  },
+  {
+    "id": 10,
+    "title": "Game Development Innovations",
+    "content": "Exploring cutting-edge trends in game development.",
+    "date": "2023-07-01",
+    "category": "Game",
+    "tags": ["Gaming", "Development"],
+    "originalUrl": "https://example.com/article10"
+  },
+  {
+    "id": 11,
+    "title": "Sustainable AI Strategies",
+    "content": "Sustainable practices in the AI industry for future growth.",
+    "date": "2023-06-30",
+    "category": "AI / ML",
+    "tags": ["Sustainability", "AI Ethics"],
+    "originalUrl": "https://example.com/article11"
+  },
+  {
+    "id": 12,
+    "title": "Cloud Data Management",
+    "content": "Effective strategies for managing data in cloud environments.",
+    "date": "2023-06-29",
+    "category": "Cloud",
+    "tags": ["Data Management", "Cloud Security"],
+    "originalUrl": "https://example.com/article12"
+  },
+  {
+    "id": 13,
+    "title": "New Security Protocols",
+    "content": "Introducing new protocols for enhancing global data security.",
+    "date": "2023-06-28",
+    "category": "Security",
+    "tags": ["Global", "Protocols"],
+    "originalUrl": "https://example.com/article13"
+  },
+  {
+    "id": 14,
+    "title": "VR in Education",
+    "content": "How VR is transforming educational experiences.",
+    "date": "2023-06-27",
+    "category": "VR",
+    "tags": ["Education", "VR Applications"],
+    "originalUrl": "https://example.com/article14"
+  },
+  {
+    "id": 15,
+    "title": "Data Science in Healthcare",
+    "content": "Leveraging data science to improve healthcare outcomes.",
+    "date": "2023-06-26",
+    "category": "Data Science",
+    "tags": ["Healthcare", "Data Analytics"],
+    "originalUrl": "https://example.com/article15"
+  },
+  {
+    "id": 16,
+    "title": "Advancements in Networking",
+    "content": "Recent developments in networking technologies.",
+    "date": "2023-06-25",
+    "category": "Network",
+    "tags": ["Technology", "Innovation"],
+    "originalUrl": "https://example.com/article16"
+  },
+  {
+    "id": 17,
+    "title": "UX in Digital Devices",
+    "content": "Improving user experience in digital device design.",
+    "date": "2023-06-24",
+    "category": "Digital Device",
+    "tags": ["User Experience", "Design"],
+    "originalUrl": "https://example.com/article17"
+  },
+  {
+    "id": 18,
+    "title": "Embedded System Design",
+    "content": "Challenges and solutions in embedded system design.",
+    "date": "2023-06-23",
+    "category": "Embed",
+    "tags": ["Systems Design", "Challenges"],
+    "originalUrl": "https://example.com/article18"
+  },
+  {
+    "id": 19,
+    "title": "Trends in Mobile Tech",
+    "content": "Current and upcoming trends in mobile technology.",
+    "date": "2023-06-22",
+    "category": "Mobile",
+    "tags": ["Trends", "Technology"],
+    "originalUrl": "https://example.com/article19"
+  },
+  {
+    "id": 20,
+    "title": "Game Tech Innovations",
+    "content": "New technologies shaping the future of gaming.",
+    "date": "2023-06-21",
+    "category": "Game",
+    "tags": ["Technology", "Innovation"],
+    "originalUrl": "https://example.com/article20"
+  }
+]

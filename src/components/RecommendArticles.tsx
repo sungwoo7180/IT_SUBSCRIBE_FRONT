@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Typography, Paper, Button, Card, CardMedia, CardContent, Chip, IconButton } from '@mui/material';
 import { ArrowBackIos, ArrowForwardIos } from '@mui/icons-material';
+import {useNavigate} from "react-router-dom";
 
 const articles = [
     { id: 1, title: 'Dummy Article 1', content: 'Content of dummy article 1.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', image: 'https://via.placeholder.com/150', category: 'Game', tags: ['Tag1', 'Tag2'] },
@@ -12,7 +13,7 @@ const articles = [
 
 const RecommendArticles: React.FC = () => {
     const [currentArticle, setCurrentArticle] = useState(0);
-
+    const navigate = useNavigate();
     const handlePrevClick = () => {
         setCurrentArticle((prevArticle) => (prevArticle === 0 ? articles.length - 1 : prevArticle - 1));
     };
@@ -23,7 +24,7 @@ const RecommendArticles: React.FC = () => {
 
     return (
         <Paper sx={{ padding: 2, backgroundColor: '#1f2a3c' }}>
-            <Typography variant="h6" gutterBottom color="white">Recommended Articles</Typography>
+            <Typography variant="h5" gutterBottom color="white" align="center" >Recommended Articles</Typography>
             <Card sx={{ backgroundColor: '#152238', color: 'white' }}>
                 <CardMedia
                     component="img"
@@ -32,7 +33,7 @@ const RecommendArticles: React.FC = () => {
                     alt={articles[currentArticle].title}
                 />
                 <CardContent>
-                    <Typography variant="h6">{articles[currentArticle].title}</Typography>
+                    <Typography variant="h6" >{articles[currentArticle].title}</Typography>
                     <Typography variant="body2">{articles[currentArticle].content}</Typography>
                     <Box sx={{ marginTop: 1 }}>
                         <Chip label={articles[currentArticle].category} color="primary" />
@@ -59,7 +60,9 @@ const RecommendArticles: React.FC = () => {
                     <ArrowForwardIos />
                 </IconButton>
             </Box>
-            <Button variant="contained" sx={{ backgroundColor: '#3b5998', marginTop: 2 }}>View favorite categories</Button>
+            <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
+                <Button variant="contained" sx={{ backgroundColor: '#3b5998' }} onClick={() => navigate('/custom-all-articles')}>View favorite categories</Button>
+            </Box>
         </Paper>
     );
 };

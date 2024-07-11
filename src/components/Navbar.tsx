@@ -1,5 +1,6 @@
 import React from 'react';
 import {AppBar, Toolbar, Typography, IconButton, InputBase, Box, Button} from '@mui/material';
+import { Link } from "react-router-dom";  // React Router 를 사용하기 위해 추가
 import SearchIcon from '@mui/icons-material/Search';
 import PersonIcon from '@mui/icons-material/Person';
 import MailIcon from '@mui/icons-material/Mail';
@@ -23,9 +24,11 @@ const Navbar: React.FC = () => {
                         }}
                     />
                 </Box>
-                <Typography variant="h4" component="div" style={{ textAlign: 'center', flexGrow: 1 , paddingRight: `275px`}}>
-                    ITScribe
-                </Typography>
+                <Link to="/main" style={{ textDecoration: 'none', color: 'inherit' }}>
+                    <Typography variant="h4" component="div" style={{ textAlign: 'center', flexGrow: 1, paddingRight: `275px` }}>
+                        ITScribe
+                    </Typography>
+                </Link>
                 <Box>
                     <IconButton color="inherit">
                         <PersonIcon />

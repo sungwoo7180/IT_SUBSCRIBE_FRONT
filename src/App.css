@@ -36,3 +36,8 @@
     transform: rotate(360deg);
   }
 }
+
+body {
+  background-color: #1a1a1a; /* 어두운 배경색 설정 */
+  color: white; /* 글자색 흰색 설정 */
+}
