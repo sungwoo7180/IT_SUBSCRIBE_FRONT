@@ -39,7 +39,7 @@ const Login: React.FC = () => {
                 {/*</Box>*/}
                 <CustomLoginTextField label="User ID" />
                 <CustomLoginTextField label="Password" type="password" />
-                <MuiLink component={RouterLink} to="/PasswordReset" underline="hover" sx={{ mt: 1 }}>
+                <MuiLink component={RouterLink} to="/password-reset" underline="hover" sx={{ mt: 1 }}>
                     Forgot your password?
                 </MuiLink>
                 <Button variant="contained" color="primary" fullWidth onClick={handleLogin} sx={{ marginTop: 2, width : '500px',height: '50px' }}>

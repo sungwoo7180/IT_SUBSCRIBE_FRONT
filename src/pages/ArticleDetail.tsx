@@ -38,7 +38,7 @@ const articles = [
 ];
 
 const ArticleDetail: React.FC = () => {
-    let { articleId } = useParams<{ articleId: string }>();
+    const { 'article-id': articleId } = useParams<{ 'article-id': string }>(); // 소문자로 맞춤
     const article = articles.find(article => article.id.toString() === articleId);
     if (!article) return <p>기사를 찾을 수 없습니다.</p>;
 

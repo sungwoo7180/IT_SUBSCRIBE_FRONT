@@ -30,9 +30,11 @@ const Navbar: React.FC = () => {
                     </Typography>
                 </Link>
                 <Box>
-                    <IconButton color="inherit">
-                        <PersonIcon />
-                    </IconButton>
+                    <Link to="/my-page" style={{ color: 'inherit' }}>
+                        <IconButton color="inherit">
+                            <PersonIcon />
+                        </IconButton>
+                    </Link>
                     <IconButton color="inherit">
                         <MailIcon />
                     </IconButton>
