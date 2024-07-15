@@ -1,3 +1,4 @@
+// CategoryFilter.tsx
 import React from 'react';
 import { Checkbox, FormControlLabel, FormGroup, Typography } from '@mui/material';
 
@@ -19,25 +20,12 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({ selectedCategories, onF
     };
 
     return (
-        <FormGroup row> {/* 'row' 속성을 추가하여 가로로 배열 */}
+        <FormGroup row>
             {categories.map(category => (
                 <FormControlLabel
                     key={category}
-                    control={
-                        <Checkbox
-                            checked={selectedCategories.includes(category)}
-                            onChange={handleCategoryChange}
-                            name={category}
-                            sx={{
-                                color: 'lightblue', // 체크되지 않은 상태에서도 보이는 색상
-                                '&.Mui-checked': {
-                                    color: 'cyan', // 체크된 상태에서의 색상
-                                }
-                            }}
-                        />
-                    }
+                    control={<Checkbox checked={selectedCategories.includes(category)} onChange={handleCategoryChange} name={category} />}
                     label={category}
-                    sx={{ color: 'white' }}
                 />
             ))}
         </FormGroup>

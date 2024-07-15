@@ -8,6 +8,7 @@ import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import ArticleDetail from "./pages/ArticleDetail";
 import ArticlesView from "./pages/ArticlesView";
+import MyPage from "./pages/MyPage";
 
 function App() {
     return (
@@ -18,9 +19,10 @@ function App() {
                 <Route path="/" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/main" element={<><Navbar /><Main /></>} />
-                <Route path="/passwordReset" element={<><ForgotPassword /><Main /></>} />
-                <Route path="/article/:articleId" element={<><Navbar /><ArticleDetail /></>} /> {/* 기사 상세 페이지 라우트 */}
+                <Route path="/password-reset" element={<><ForgotPassword /><Main /></>} />
+                <Route path="/article/:article-id" element={<><Navbar /><ArticleDetail /></>} /> {/* 기사 상세 페이지 라우트 */}
                 <Route path="/all-articles/:category?" element={<><Navbar /><ArticlesView /></>} />
+                <Route path="/my-page" element={<><Navbar /><MyPage /></>} />
             </Routes>
         </Router>
     );

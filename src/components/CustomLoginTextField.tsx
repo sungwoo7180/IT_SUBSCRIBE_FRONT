@@ -8,12 +8,9 @@ interface CustomLoginTextFieldProps {
     inputColor?: string;
 }
 
-const CustomLoginTextField: React.FC<CustomLoginTextFieldProps> = ({
-                                                             label,
-                                                             type = 'text',
-                                                             fontSize = '20px',
-                                                             inputColor = 'white'
-                                                         }) => {
+const CustomLoginTextField: React.FC<CustomLoginTextFieldProps> = (
+    {label,type = 'text', fontSize = '20px', inputColor = 'white'}
+) => {
     return (
         <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
             <TextField
@@ -25,8 +22,8 @@ const CustomLoginTextField: React.FC<CustomLoginTextFieldProps> = ({
                 inputProps={{ style: { color: inputColor, fontSize } }}
                 sx={{
                     "& .MuiOutlinedInput-root": {
-                        height: '55px',
-                        width: '500px',
+                        width: '100%',
+                        maxWidth: '500px',  // 최대 너비를 500px로 제한
                         '& fieldset': {
                             borderColor: 'white',  // 테두리 색상
                         },
