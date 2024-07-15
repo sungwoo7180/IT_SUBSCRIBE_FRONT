@@ -56,9 +56,9 @@ const Login: React.FC = () => {
                         '2px 2px 2px rgba(144, 144, 238, 0.8),' + /* Light Blue */
                         '4px 4px 10px rgba(144, 144, 238, 0.6)'
                 }}>
-                    ● Various sort of it news<br />
+                    ● Various sort of IT news<br />
                     ● Saving Articles<br />
-                    ● get email of your favorite domain
+                    ● Get Email of your favorite domain
                 </Typography>
             </Grid>
         </Grid>
