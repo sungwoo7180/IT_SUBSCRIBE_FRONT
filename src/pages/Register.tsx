@@ -94,13 +94,13 @@ const Register: React.FC = () => {
         }
 
         // (2) 인증 코드 확인 API 요청
-        axios.post('http://localhost:8080/api/members/verify-code', { email: email, code: code }, {
+        axios.post('http://localhost:8080/api/members/verify-code-signup', { email: email, code: code }, {
             headers: {
                 'Content-Type': 'application/json'
             }
         })
             .then(response => {
-                if (response.data.message === "인증이 완료되었습니다.") {
+                if (response.data === "인증이 완료되었습니다.") {
                     setStep(3);
                     setErrors(prev => ({ ...prev, code: false }));
                 } else {

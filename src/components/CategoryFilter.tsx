@@ -1,4 +1,3 @@
-// CategoryFilter.tsx
 import React from 'react';
 import { Checkbox, FormControlLabel, FormGroup, Typography } from '@mui/material';
 

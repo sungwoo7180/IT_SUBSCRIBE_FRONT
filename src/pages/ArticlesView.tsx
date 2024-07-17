@@ -28,15 +28,20 @@ const ArticlesView: React.FC = () => {
     const [filteredArticles, setFilteredArticles] = useState<Article[]>([]);
 
     useEffect(() => {
-        if (!categoriesQueryParam) {
-            navigate(`/all-articles?categories=${encodeURIComponent(categories.join(','))}`, { replace: true });
+        const articles = dummyArticles.filter(article =>
+            selectedCategories.some(category => article.category.includes(category))
+        );
+        setFilteredArticles(articles);
+    }, [selectedCategories]);
+
+    useEffect(() => {
+        const categoriesParam = searchParams.get('categories');
+        if (categoriesParam) {
+            setSelectedCategories(categoriesParam.split(','));
         } else {
-            const articles = dummyArticles.filter(article =>
-                selectedCategories.some(category => article.category.includes(category))
-            );
-            setFilteredArticles(articles);
+            setSelectedCategories(categories);
         }
-    }, [selectedCategories, navigate, searchParams, categoriesQueryParam]);
+    }, [searchParams]);
 
     const handleCategoryChange = (newCategories: string[]) => {
         setSelectedCategories(newCategories);
@@ -58,7 +63,6 @@ const ArticlesView: React.FC = () => {
         navigate(`/article/${articleId}`);
     };
 
-    // 페이지에 맞게 기사를 분할합니다.
     const articlesPerPage = 12;
     const displayedArticles = filteredArticles.slice((currentPage - 1) * articlesPerPage, currentPage * articlesPerPage);
 
@@ -92,7 +96,7 @@ const ArticlesView: React.FC = () => {
                         page={currentPage}
                         onChange={handlePageChange}
                         color="primary"
-                        sx={{ mt: 2, display: 'flex', justifyContent: 'center', '& .MuiPaginationItem-root': { color: 'white' } }} // 페이지네이션 스타일에 흰색 추가 및 가운데 정렬
+                        sx={{ mt: 2, display: 'flex', justifyContent: 'center', '& .MuiPaginationItem-root': { color: 'white' } }}
                     />
                 </Grid>
                 <Grid item xs={12} md={4}>

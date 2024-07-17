@@ -230,8 +230,7 @@ const ForgotPassword: React.FC = () => {
             setPasswordErrors(validationResults);
             return;
         }
-
-        axios.post('http://localhost:8080/api/members/register', { username: email, nickname: 'defaultNickname', email: email, password: password, password2: confirmPassword }, {
+        axios.post('http://localhost:8080/api/members/change-password?${queryString}`', {  password: password, password2: confirmPassword }, {
             headers: {
                 'Content-Type': 'application/json'
             }

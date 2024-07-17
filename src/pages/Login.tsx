@@ -1,13 +1,31 @@
-import React from 'react';
+import React, {ChangeEvent, useState} from 'react';
 import { Button, Grid, Typography, Link as MuiLink } from '@mui/material';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import CustomLoginTextField from "../components/CustomLoginTextField";
+import axios from "axios";
 
 const Login: React.FC = () => {
+    const [username, setUsername] = useState<string>('sungwoo7180');
+    const [password, setPassword] = useState<string>('as159357');
     const navigate = useNavigate();
 
-    const handleLogin = () => {
-        navigate('/main');  // 로그인 성공 후 메인 페이지로 리다이렉트
+    const handleLogin = async () => {
+        try {
+            const response = await axios.post('/api/members/login', { id: username, password : password }, { withCredentials: true });
+            if (response.status === 200) {
+                navigate('/main');  // 로그인 성공 후 메인 페이지로 리다이렉트
+            }
+        } catch (error) {
+            console.error('로그인 오류', error);
+        }
+    };
+
+    const handleUsernameChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setUsername(e.target.value);
+    };
+
+    const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setPassword(e.target.value);
     };
 
     return (

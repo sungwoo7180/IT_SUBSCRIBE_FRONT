@@ -1,11 +1,17 @@
 import React from 'react';
-import {AppBar, Toolbar, Typography, IconButton, InputBase, Box, Button} from '@mui/material';
-import { Link } from "react-router-dom";  // React Router 를 사용하기 위해 추가
+import { AppBar, Toolbar, Typography, IconButton, InputBase, Box, Button } from '@mui/material';
+import { Link, useNavigate } from "react-router-dom";
 import SearchIcon from '@mui/icons-material/Search';
 import PersonIcon from '@mui/icons-material/Person';
 import MailIcon from '@mui/icons-material/Mail';
 
 const Navbar: React.FC = () => {
+    const navigate = useNavigate();
+
+    const handleCategoryClick = (category: string) => {
+        navigate(`/all-articles?categories=${encodeURIComponent(category)}`);
+    };
+
     return (
         <AppBar position="static" style={{ backgroundColor: '#152238' }}>
             <Toolbar style={{ justifyContent: 'space-between' }}>
@@ -42,7 +48,12 @@ const Navbar: React.FC = () => {
             </Toolbar>
             <Toolbar variant="dense" style={{ backgroundColor: '#1f2a3c', justifyContent: 'center' }}>
                 {['Framework', 'Engineering', 'AI / ML', 'Cloud', 'Security', 'VR', 'Data Science', 'Network', 'Digital Device', 'Embed', 'Mobile', 'Game'].map((category) => (
-                    <Button key={category} variant="text" style={{ color: 'white', padding: '0 15px' }}>
+                    <Button
+                        key={category}
+                        variant="text"
+                        style={{ color: 'white', padding: '0 15px' }}
+                        onClick={() => handleCategoryClick(category)}
+                    >
                         {category}
                     </Button>
                 ))}
@@ -52,8 +63,3 @@ const Navbar: React.FC = () => {
 };
 
 export default Navbar;
-
-
-
-
-
