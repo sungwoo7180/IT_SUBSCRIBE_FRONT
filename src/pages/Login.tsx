@@ -5,13 +5,15 @@ import CustomLoginTextField from "../components/CustomLoginTextField";
 import axios from "axios";
 
 const Login: React.FC = () => {
-    const [username, setUsername] = useState<string>('sungwoo7180');
-    const [password, setPassword] = useState<string>('as159357');
+    const [username, setUsername] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
     const navigate = useNavigate();
 
     const handleLogin = async () => {
         try {
-            const response = await axios.post('/api/members/login', { id: username, password : password }, { withCredentials: true });
+            const response = await axios.post('api/members/login', { id: username, password : password }, { withCredentials: true });
+            // const response = await axios.post('http://localhost:8080/api/members/login', { id: username, password : password }, { withCredentials: true });
+
             if (response.status === 200) {
                 navigate('/main');  // 로그인 성공 후 메인 페이지로 리다이렉트
             }
@@ -34,29 +36,8 @@ const Login: React.FC = () => {
                 <Typography variant="h4" component="h1" gutterBottom>
                     Log in to <span style={{ color: '#0026ED' }}>DeepTech</span>
                 </Typography>
-                {/*<Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}> /!* 추가된 Box 컨테이너 *!/*/}
-                {/*    <TextField*/}
-                {/*        label="User ID"*/}
-                {/*        variant="outlined"*/}
-                {/*        margin="normal"*/}
-                {/*        InputLabelProps={{ style: { color: 'white', fontSize: '25px' } }}*/}
-                {/*        inputProps={{ style: { color: 'white', fontSize: '20px' } }}*/}
-                {/*        sx={{ "& .MuiOutlinedInput-root": { height: '55px', width: '500px' }, "& .MuiInputLabel-root": { lineHeight: 1.5 } }}*/}
-                {/*    />*/}
-                {/*</Box>*/}
-                {/*<Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>*/}
-                {/*    <TextField*/}
-                {/*        label="Password"*/}
-                {/*        type="password"*/}
-                {/*        variant="outlined"*/}
-                {/*        margin="normal"*/}
-                {/*        InputLabelProps={{ style: { color: 'white', fontSize: '25px' } }}*/}
-                {/*        inputProps={{ style: { color: 'black', fontSize: '20px' } }}*/}
-                {/*        sx={{ "& .MuiOutlinedInput-root": { height: '55px', width: '500px' }, "& .MuiInputLabel-root": { lineHeight: 1.5 } }}*/}
-                {/*    />*/}
-                {/*</Box>*/}
-                <CustomLoginTextField label="User ID" />
-                <CustomLoginTextField label="Password" type="password" />
+                <CustomLoginTextField label="User ID" value={username} onChange={handleUsernameChange} />
+                <CustomLoginTextField label="Password" type="password" value={password} onChange={handlePasswordChange} />
                 <MuiLink component={RouterLink} to="/password-reset" underline="hover" sx={{ mt: 1 }}>
                     Forgot your password?
                 </MuiLink>

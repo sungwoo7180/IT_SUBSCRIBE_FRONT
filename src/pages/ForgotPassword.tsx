@@ -155,12 +155,14 @@ const ForgotPassword: React.FC = () => {
     const navigate = useNavigate();
     const [step, setStep] = useState(1);
     const [userDetails, setUserDetails] = useState({
+        id : '',
         email: '',  // 이메일로 초기화
         code: '',
         password: '',
         confirmPassword: ''
     });
     const [errors, setErrors] = useState({
+        id : false,
         email: false,
         code: false,
         password: false,
@@ -198,7 +200,7 @@ const ForgotPassword: React.FC = () => {
             return;
         }
 
-        axios.post('http://localhost:8080/api/members/verify-code', { email: userDetails.email, code: userDetails.code }, {
+        axios.post('http://localhost:8080/api/members/verify-code-change-pw', { email: userDetails.email, code: userDetails.code }, {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -206,7 +208,7 @@ const ForgotPassword: React.FC = () => {
             .then(response => {
                 if (response.data.message === "인증이 완료되었습니다.") {
                     setStep(3);
-                    setUserDetails(prev => ({ ...prev, email: response.data.email }));  // 이메일을 업데이트하여 고정
+                    setUserDetails(prev => ({ ...prev, id: response.data.id }));  // 이메일을 업데이트하여 고정
                     setErrors(prev => ({ ...prev, code: false }));
                 } else {
                     setErrors(prev => ({ ...prev, code: true }));
@@ -218,7 +220,7 @@ const ForgotPassword: React.FC = () => {
     };
 
     const handleSetPassword = () => {
-        const { email, password, confirmPassword } = userDetails;
+        const { id, password, confirmPassword } = userDetails;
         const validationResults = validatePassword(password, confirmPassword);
         if (isEmpty(password) || isEmpty(confirmPassword) ||
             !validationResults.length || !validationResults.hasNumberAndLetter || !validationResults.passwordsMatch) {
@@ -230,7 +232,10 @@ const ForgotPassword: React.FC = () => {
             setPasswordErrors(validationResults);
             return;
         }
-        axios.post('http://localhost:8080/api/members/change-password?${queryString}`', {  password: password, password2: confirmPassword }, {
+        axios.post(`http://localhost:8080/api/members/change-password?action=change_password&id=${id}`, {
+            newPw: password,
+            newPwConfirm: confirmPassword
+        }, {
             headers: {
                 'Content-Type': 'application/json'
             }

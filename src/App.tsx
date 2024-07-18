@@ -19,7 +19,7 @@ function App() {
                 <Route path="/" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/main" element={<><Navbar /><Main /></>} />
-                <Route path="/password-reset" element={<><ForgotPassword /><Main /></>} />
+                <Route path="/password-reset" element={<><ForgotPassword /></>} />
                 <Route path="/article/:article-id" element={<><Navbar /><ArticleDetail /></>} /> {/* 기사 상세 페이지 라우트 */}
                 <Route path="/all-articles/:category?" element={<><Navbar /><ArticlesView /></>} />
                 <Route path="/my-page" element={<><Navbar /><MyPage /></>} />

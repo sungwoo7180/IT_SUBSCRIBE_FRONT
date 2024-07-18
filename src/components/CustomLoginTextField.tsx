@@ -6,13 +6,17 @@ interface CustomLoginTextFieldProps {
     type?: string;
     fontSize?: string;
     inputColor?: string;
+    value: string;
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const CustomLoginTextField: React.FC<CustomLoginTextFieldProps> = ({
                                                              label,
                                                              type = 'text',
                                                              fontSize = '20px',
-                                                             inputColor = 'white'
+                                                             inputColor = 'white',
+                                                                       value,
+                                                                       onChange
                                                          }) => {
     return (
         <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
@@ -23,6 +27,8 @@ const CustomLoginTextField: React.FC<CustomLoginTextFieldProps> = ({
                 margin="normal"
                 InputLabelProps={{ style: { color: 'white', fontSize: '25px' } }}
                 inputProps={{ style: { color: inputColor, fontSize } }}
+                value={value}
+                onChange={onChange}
                 sx={{
                     "& .MuiOutlinedInput-root": {
                         height: '55px',

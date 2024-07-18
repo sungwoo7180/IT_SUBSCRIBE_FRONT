@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, FormGroup, FormControlLabel, Checkbox, Typography } from '@mui/material';
+import { Box, FormGroup, FormControlLabel, Radio, RadioGroup, Typography } from '@mui/material';
 import SectionHeader from "./SectionHeader";
 
 interface AlarmSettingsProps {
@@ -14,7 +14,7 @@ const AlarmSettings: React.FC<AlarmSettingsProps> = ({ preferences, setPreferenc
     const handlePreferenceChange = (event: React.ChangeEvent<HTMLInputElement>, key: keyof AlarmSettingsProps['preferences']) => {
         setPreferences({
             ...preferences,
-            [key]: event.target.checked
+            [key]: event.target.value === 'true'
         });
     };
 
@@ -25,27 +25,39 @@ const AlarmSettings: React.FC<AlarmSettingsProps> = ({ preferences, setPreferenc
             </Box>
             <FormGroup>
                 <Typography variant="body1">Do you want to get alarm when selected category has new article?</Typography>
-                <Box sx={{ display: 'flex', flexDirection: 'row', gap: 4 }}>
+                <RadioGroup
+                    row
+                    value={preferences.alarm !== undefined ? preferences.alarm.toString() : 'false'}
+                    onChange={e => handlePreferenceChange(e, 'alarm')}
+                >
                     <FormControlLabel
-                        control={<Checkbox checked={preferences.alarm} onChange={e => handlePreferenceChange(e, 'alarm')} />}
+                        value="true"
+                        control={<Radio />}
                         label="Heck Yeah!"
                     />
                     <FormControlLabel
-                        control={<Checkbox checked={!preferences.alarm} onChange={e => handlePreferenceChange(e, 'alarm')} />}
+                        value="false"
+                        control={<Radio />}
                         label="No Thanks"
                     />
-                </Box>
+                </RadioGroup>
                 <Typography variant="body1" sx={{ mt: 2 }}>We can also send you emails by subscribing our site (and it’s FREE!)</Typography>
-                <Box sx={{ display: 'flex', flexDirection: 'row', gap: 5.5 }}>
+                <RadioGroup
+                    row
+                    value={preferences.emailUpdates !== undefined ? preferences.emailUpdates.toString() : 'false'}
+                    onChange={e => handlePreferenceChange(e, 'emailUpdates')}
+                >
                     <FormControlLabel
-                        control={<Checkbox checked={preferences.emailUpdates} onChange={e => handlePreferenceChange(e, 'emailUpdates')} />}
+                        value="true"
+                        control={<Radio />}
                         label="Subscribe"
                     />
                     <FormControlLabel
-                        control={<Checkbox checked={!preferences.emailUpdates} onChange={e => handlePreferenceChange(e, 'emailUpdates')} />}
+                        value="false"
+                        control={<Radio />}
                         label="No Thanks"
                     />
-                </Box>
+                </RadioGroup>
             </FormGroup>
         </>
     );
