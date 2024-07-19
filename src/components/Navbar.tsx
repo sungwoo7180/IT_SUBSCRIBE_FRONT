@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import SearchIcon from '@mui/icons-material/Search';
 import PersonIcon from '@mui/icons-material/Person';
 import MailIcon from '@mui/icons-material/Mail';
+import categories from '../data/Categories';
 
 const Navbar: React.FC = () => {
     const navigate = useNavigate();
@@ -47,14 +48,14 @@ const Navbar: React.FC = () => {
                 </Box>
             </Toolbar>
             <Toolbar variant="dense" style={{ backgroundColor: '#1f2a3c', justifyContent: 'center' }}>
-                {['Framework', 'Engineering', 'AI / ML', 'Cloud', 'Security', 'VR', 'Data Science', 'Network', 'Digital Device', 'Embed', 'Mobile', 'Game'].map((category) => (
+                {categories.map((category) => (
                     <Button
-                        key={category}
+                        key={category.id} // 유일한 key 값으로 category.id를 사용합니다.
                         variant="text"
                         style={{ color: 'white', padding: '0 15px' }}
-                        onClick={() => handleCategoryClick(category)}
+                        onClick={() => handleCategoryClick(category.name)} // 카테고리 이름을 인코딩하여 사용합니다.
                     >
-                        {category}
+                        {category.name}
                     </Button>
                 ))}
             </Toolbar>
