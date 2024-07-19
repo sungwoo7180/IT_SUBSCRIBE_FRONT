@@ -1,3 +1,4 @@
+// src/pages/ArticlesView.tsx
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Grid, Card, CardMedia, CardContent, Chip, Pagination } from '@mui/material';
 import { useSearchParams, useNavigate } from 'react-router-dom';
@@ -19,6 +20,7 @@ interface Article {
         id: number;
         name: string;
     }[];
+    imgUrls: string[];
 }
 
 const ArticlesView: React.FC = () => {
@@ -73,8 +75,8 @@ const ArticlesView: React.FC = () => {
         setSearchParams({ categories: selectedCategories.join(','), page: page.toString() }, { replace: true });
     };
 
-    const handleOpenArticle = (articleId: number) => {
-        navigate(`/article/${articleId}`);
+    const handleOpenArticle = (article: Article) => {
+        navigate(`/article/${article.id}`, { state: { article } });
     };
 
     const articlesPerPage = 12;
@@ -84,15 +86,14 @@ const ArticlesView: React.FC = () => {
         <Box sx={{ flexGrow: 1, padding: 3, backgroundImage: 'url(Background.png)', backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '100vh' }}>
             <Grid container spacing={2}>
                 <Grid item xs={12} md={8}>
-                    {/*<CategoryFilter selectedCategories={selectedCategories} onFilterChange={handleCategoryChange} />*/}
                     <Grid container spacing={2}>
                         {displayedArticles.map((article) => (
-                            <Grid item xs={12} sm={6} md={4} key={article.id} onClick={() => handleOpenArticle(article.id)}>
+                            <Grid item xs={12} sm={6} md={4} key={article.id} onClick={() => handleOpenArticle(article)}>
                                 <Card sx={{ display: 'flex', flexDirection: 'column', backgroundColor: '#152238', color: 'white' }}>
                                     <CardMedia
                                         component="img"
                                         height="140"
-                                        image={'https://via.placeholder.com/150'}
+                                        image={article.imgUrls[0] || 'https://via.placeholder.com/150'}
                                         alt={article.title}
                                     />
                                     <CardContent>
