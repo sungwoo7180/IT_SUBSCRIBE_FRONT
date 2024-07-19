@@ -1,5 +1,5 @@
 import React, { useEffect, useState, ChangeEvent } from 'react';
-import { Box, Typography, Button } from '@mui/material';
+import {Box, Typography, Button, Modal} from '@mui/material';
 import CategoryFilter from '../components/CategoryFilter';
 import AlarmSettings from '../components/AlarmSettings';
 import UserInfo from '../components/UserInfo';
@@ -7,6 +7,8 @@ import ResetPassword from '../components/ResetPassword';
 import { Link, Element } from 'react-scroll';
 import '../style/MyPage.css';
 import SectionHeader from "../components/SectionHeader";
+import axios from "axios";
+import ProfilePictureUploadModal from "../components/ProfilePictureUploadModal";
 
 // 사용자 정보 타입 정의
 interface UserDetails {
@@ -40,11 +42,13 @@ const categoryMapping: { [key: string]: number } = {
 
 const MyPage: React.FC = () => {
     const [userDetails, setUserDetails] = useState<UserDetails>({
-        email: 'wildmantle@gmail.com',
-        nickname: 'Lazy Seong bin',
+        email: 'sungwoo7180',
+        nickname: 'Pray',
         joinedDate: '2024-06-29',
         avatarUrl: '.jpg'
     });
+
+    const [modalOpen, setModalOpen] = useState<boolean>(false);
 
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);  // 항상 배열로 초기화
     const [preferences, setPreferences] = useState<Preferences>({
@@ -55,9 +59,27 @@ const MyPage: React.FC = () => {
     const baseURL = 'http://localhost:8080';
 
     // 사용자 정보 불러오기
+    // const fetchUserInfo = async () => {
+    //     try {
+    //         const response = await fetch(
+    //             `${baseURL}/api/members/mypage`
+    //         );
+    //         const data = await response.json();
+    //         setUserDetails(data);
+    //     } catch (error) {
+    //         console.error('Error fetching user info:' +  error);
+    //     }
+    // };
+    // 사용자 정보 불러오기
     const fetchUserInfo = async () => {
         try {
-            const response = await fetch(`${baseURL}/api/members/mypage`);
+            const response = await fetch(
+                `${baseURL}/api/members/mypage`,
+                {
+                    method: 'GET',
+                    credentials: 'include'  // 세션 쿠키를 포함합니다.
+                }
+            );
             const data = await response.json();
             setUserDetails(data);
         } catch (error) {
@@ -68,9 +90,15 @@ const MyPage: React.FC = () => {
     // 선호 카테고리 불러오기
     const fetchCategories = async () => {
         try {
-            const response = await fetch(`${baseURL}/api/members/mypage/get-favorite-category`);
+            const response = await fetch(
+                `${baseURL}/api/members/mypage/get-favorite-category`,
+                {
+                    method: 'GET',
+                    credentials: 'include'  // 세션 쿠키를 포함합니다.
+                }
+            );
             const data = await response.json();
-            setSelectedCategories(Array.isArray(data) ? data : []); // 데이터를 배열로 변환
+            setSelectedCategories(Array.isArray(response) ? response : []); // 데이터를 배열로 변환
         } catch (error) {
             console.error('Error fetching categories:', error);
             setSelectedCategories([]); // 오류 발생 시 빈 배열로 설정
@@ -80,11 +108,49 @@ const MyPage: React.FC = () => {
     // 알람 설정 불러오기
     const fetchPreferences = async () => {
         try {
-            const response = await fetch(`${baseURL}/api/members/mypage/get-preferences`);
+            const response = await fetch(
+                `${baseURL}/api/members/mypage/get-preferences`,
+                {
+                    method: 'GET',
+                    credentials: 'include'  // 세션 쿠키를 포함합니다.
+                }
+            );
             const data = await response.json();
             setPreferences(data);
         } catch (error) {
             console.error('Error fetching preferences:', error);
+        }
+    };
+
+    const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태
+
+    // 모달 열기
+    const openModal = () => setIsModalOpen(true);
+
+    // 모달 닫기
+    const closeModal = () => setIsModalOpen(false);
+
+    // 프로필 이미지 업로드 후 모달 닫기 및 상태 업데이트
+    const handleProfileImageUpload = async (file: File) => {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+            const response = await axios.post(
+                `${baseURL}/api/members/mypage/update-profile-image`,
+                formData,
+                {
+                    headers: { 'Content-Type': 'multipart/form-data' }
+                }
+            );
+            if (response.status === 200) {
+                setUserDetails(prev => (
+                    { ...prev, avatarUrl: response.data.avatarUrl }
+                ));
+                closeModal(); // 모달 닫기
+            }
+        } catch (error) {
+            console.error('Failed to upload image:', error);
         }
     };
 
@@ -97,13 +163,15 @@ const MyPage: React.FC = () => {
     // 사용자 정보 저장하기
     const saveUserInfo = async () => {
         try {
-            const response = await fetch(`${baseURL}/api/members/mypage/update-user-info`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(userDetails)
-            });
+            const response = await fetch(
+                `${baseURL}/api/members/mypage/update-user-info`,
+                {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(userDetails),
+                    credentials: 'include'  // 세션 쿠키를 포함합니다.
+                }
+            );
             if (response.ok) {
                 console.log('User info saved successfully');
                 fetchUserInfo();
@@ -131,35 +199,34 @@ const MyPage: React.FC = () => {
         }
 
         try {
-            const response = await fetch(`${baseURL}/api/members/mypage/edit-favorite-category`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(selectedCategoryIds)
-            });
+            const response = await axios.post(`http://localhost:8080/api/members/mypage/edit-favorite-category`, {
+                categoryIds: selectedCategoryIds }
+            );
+            console.log(response)
 
-            if (response.ok) {
+            if (response.status === 200) {
                 console.log('Categories saved successfully');
-                fetchCategories();
+                //fetchCategories();
             } else {
                 console.error('Error saving categories');
             }
         } catch (error) {
-            console.error('Error saving categories:', error);
+            console.error('Error saving categories:', selectedCategoryIds);
         }
     };
 
     // 알람 설정 저장하기
     const savePreferences = async () => {
         try {
-            const response = await fetch(`${baseURL}/api/members/mypage/update-preferences`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(preferences)
-            });
+            const response = await fetch(
+                `${baseURL}/api/members/mypage/update-preferences`,
+                {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(preferences),
+                    credentials: 'include'  // 세션 쿠키를 포함합니다.
+                }
+            );
             if (response.ok) {
                 console.log('Preferences saved successfully');
                 fetchPreferences();
@@ -198,10 +265,11 @@ const MyPage: React.FC = () => {
                 <Box sx={{ flex: 1, p: 3 }}>
                     <Box sx={{ my: 3 }}>
                         <Element name="userInfo">
-                            <UserInfo userDetails={userDetails} handleInputChange={handleInputChange} handleSubmit={saveUserInfo} />
+                            <UserInfo userDetails={userDetails} handleInputChange={handleInputChange} handleSubmit={saveUserInfo} handleProfileImageUpload={handleProfileImageUpload} openModal={openModal} />
                         </Element>
                         <Button variant="contained" onClick={saveUserInfo}>Save User Info</Button>
                     </Box>
+                    <ProfilePictureUploadModal open={isModalOpen} onClose={closeModal} onSave={handleProfileImageUpload} />
                     <Box sx={{ my: 3 }}>
                         <Element name="categoryPreferences">
                             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>

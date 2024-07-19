@@ -4,12 +4,32 @@ import { Link, useNavigate } from "react-router-dom";
 import SearchIcon from '@mui/icons-material/Search';
 import PersonIcon from '@mui/icons-material/Person';
 import MailIcon from '@mui/icons-material/Mail';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 
 const Navbar: React.FC = () => {
     const navigate = useNavigate();
 
     const handleCategoryClick = (category: string) => {
         navigate(`/all-articles?categories=${encodeURIComponent(category)}`);
+    };
+
+    const handleLogout = () => {
+        // API 호출을 통한 로그아웃 처리
+        fetch('http://localhost:8080/api/members/logout',
+            {
+                method: 'POST',
+                credentials: 'include',  // 중요: 쿠키를 포함시키기 위해 필요
+                headers: {'Content-Type': 'application/json'}
+            }
+        )
+            .then(response => {
+                // 로그아웃 후 처리, 예를 들어 로그인 페이지로 리다이렉션
+                if (response.ok) {
+                    console.log("로그아웃에 성공했습니다.");
+                    navigate('/');
+                }
+            })
+            .catch(error => console.error('로그아웃 에러:', error));
     };
 
     return (
@@ -44,6 +64,9 @@ const Navbar: React.FC = () => {
                     <IconButton color="inherit">
                         <MailIcon />
                     </IconButton>
+                    <Button color="inherit" onClick={handleLogout}>
+                        <ExitToAppIcon /> Logout
+                    </Button>
                 </Box>
             </Toolbar>
             <Toolbar variant="dense" style={{ backgroundColor: '#1f2a3c', justifyContent: 'center' }}>
