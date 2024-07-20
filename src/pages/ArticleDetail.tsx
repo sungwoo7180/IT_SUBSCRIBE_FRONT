@@ -17,7 +17,6 @@ interface CommentType {
     timestamp: string;
 }
 
-
 interface ArticleType {
     id: number;
     title: string;
