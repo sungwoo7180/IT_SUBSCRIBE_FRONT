@@ -8,6 +8,7 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 
 const Navbar: React.FC = () => {
     const navigate = useNavigate();
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
 
     const handleCategoryClick = (category: string) => {
         navigate(`/all-articles?categories=${encodeURIComponent(category)}`);
@@ -26,6 +27,7 @@ const Navbar: React.FC = () => {
                 // 로그아웃 후 처리, 예를 들어 로그인 페이지로 리다이렉션
                 if (response.ok) {
                     console.log("로그아웃에 성공했습니다.");
+                    localStorage.removeItem('user');
                     navigate('/');
                 }
             })
@@ -51,22 +53,34 @@ const Navbar: React.FC = () => {
                     />
                 </Box>
                 <Link to="/main" style={{ textDecoration: 'none', color: 'inherit' }}>
-                    <Typography variant="h4" component="div" style={{ textAlign: 'center', flexGrow: 1, paddingRight: `275px` }}>
+                    <Typography variant="h4" component="div" style={{ textAlign: 'center', flexGrow: 1, paddingRight: `180px` }}>
                         ITScribe
                     </Typography>
                 </Link>
                 <Box>
-                    <Link to="/my-page" style={{ color: 'inherit' }}>
-                        <IconButton color="inherit">
-                            <PersonIcon />
+                    {user && user.avatarUrl ? (
+                        <IconButton color="inherit" onClick={() => navigate('/my-page')}>
+                            <img src={user.avatarUrl} alt="Profile" style={{ width: 30, height: 30, borderRadius: '50%' }} />
                         </IconButton>
-                    </Link>
+                    ) : (
+                        <Link to="/" style={{ color: 'inherit' }}>
+                            <IconButton color="inherit">
+                                <PersonIcon />
+                            </IconButton>
+                        </Link>
+                    )}
                     <IconButton color="inherit">
                         <MailIcon />
                     </IconButton>
-                    <Button color="inherit" onClick={handleLogout}>
-                        <ExitToAppIcon /> Logout
-                    </Button>
+                    {Object.keys(user).length > 0 ? (
+                        <Button color="inherit" onClick={handleLogout}>
+                            <ExitToAppIcon /> Logout
+                        </Button>
+                    ) : (
+                        <Link to="/" style={{ color: 'inherit' }}>
+                            <Button color="inherit">Login</Button>
+                        </Link>
+                    )}
                 </Box>
             </Toolbar>
             <Toolbar variant="dense" style={{ backgroundColor: '#1f2a3c', justifyContent: 'center' }}>

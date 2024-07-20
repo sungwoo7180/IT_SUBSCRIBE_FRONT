@@ -40,12 +40,19 @@ const categoryMapping: { [key: string]: number } = {
     'Game': 12,
 };
 
+// 카테고리 ID를 이름으로 매핑하는 객체 생성
+const categoryReverseMapping: { [key: number]: string } = Object.keys(categoryMapping).reduce<{ [key: number]: string }>((acc, key) => {
+    const id = categoryMapping[key];
+    acc[id] = key;
+    return acc;
+}, {});
+
 const MyPage: React.FC = () => {
     const [userDetails, setUserDetails] = useState<UserDetails>({
-        email: 'sungwoo7180',
-        nickname: 'Pray',
-        joinedDate: '2024-06-29',
-        avatarUrl: '.jpg'
+        email: '',
+        nickname: '',
+        joinedDate: '',
+        avatarUrl: ''
     });
 
     const [modalOpen, setModalOpen] = useState<boolean>(false);
@@ -81,7 +88,12 @@ const MyPage: React.FC = () => {
                 }
             );
             const data = await response.json();
-            setUserDetails(data);
+            setUserDetails({
+                email: data.email,
+                nickname: data.nickname,
+                joinedDate: data.createdAt.split('T')[0], // 날짜만 필요하므로 'T'를 기준으로 분리
+                avatarUrl: data.profileImageUrl
+            });
         } catch (error) {
             console.error('Error fetching user info:', error);
         }
@@ -94,11 +106,19 @@ const MyPage: React.FC = () => {
                 `${baseURL}/api/members/mypage/get-favorite-category`,
                 {
                     method: 'GET',
-                    credentials: 'include'  // 세션 쿠키를 포함합니다.
+                    credentials: 'include',  // 세션 쿠키를 포함합니다.
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
                 }
             );
-            const data = await response.json();
-            setSelectedCategories(Array.isArray(response) ? response : []); // 데이터를 배열로 변환
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const categoryIds = await response.json();
+            // 서버에서 응답받은 카테고리 ID 배열을 이름 배열로 변환
+            const categoryNames = categoryIds.map((id: number) => categoryReverseMapping[id]);
+            setSelectedCategories(categoryNames); // 변환된 이름 배열로 상태 업데이트
         } catch (error) {
             console.error('Error fetching categories:', error);
             setSelectedCategories([]); // 오류 발생 시 빈 배열로 설정

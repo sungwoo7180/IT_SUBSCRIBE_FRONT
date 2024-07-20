@@ -19,6 +19,7 @@ const Login: React.FC = () => {
             // const response = await axios.post('http://localhost:8080/api/members/login', { id: username, password : password }, { withCredentials: true });
 
             if (response.status === 200) {
+                localStorage.setItem('user', JSON.stringify(response.data));  // 로컬 스토리지에 사용자 정보 저장
                 navigate('/main');  // 로그인 성공 후 메인 페이지로 리다이렉트
 
             }
