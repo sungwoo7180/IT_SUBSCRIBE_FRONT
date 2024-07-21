@@ -25,6 +25,7 @@ const RecommendArticles: React.FC = () => {
     return (
         <Paper sx={{ padding: 2, backgroundColor: '#1f2a3c' }}>
             <Typography variant="h5" gutterBottom color="white" align="center" >Recommended Articles</Typography>
+            <Box sx={{ marginBottom: 3 }} /> {/* Typography와 카드 사이에 간격 추가 */}
             <Card sx={{ backgroundColor: '#152238', color: 'white' }}>
                 <CardMedia
                     component="img"
