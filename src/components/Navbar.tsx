@@ -4,8 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import SearchIcon from '@mui/icons-material/Search';
 import PersonIcon from '@mui/icons-material/Person';
 import MailIcon from '@mui/icons-material/Mail';
-import categories from '../data/Categories';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import categories from '../data/Categories';
 
 const Navbar: React.FC = () => {
     const navigate = useNavigate();
@@ -20,12 +20,16 @@ const Navbar: React.FC = () => {
     };
 
     const handleLogout = () => {
-        fetch('http://localhost:8080/api/members/logout', {
-            method: 'POST',
-            credentials: 'include',
-            headers: {'Content-Type': 'application/json'}
-        })
+        // API 호출을 통한 로그아웃 처리
+        fetch('http://localhost:8080/api/members/logout',
+            {
+                method: 'POST',
+                credentials: 'include',  // 중요: 쿠키를 포함시키기 위해 필요
+                headers: {'Content-Type': 'application/json'}
+            }
+        )
             .then(response => {
+                // 로그아웃 후 처리, 예를 들어 로그인 페이지로 리다이렉션
                 if (response.ok) {
                     console.log("로그아웃에 성공했습니다.");
                     localStorage.removeItem('user');
@@ -109,4 +113,3 @@ const Navbar: React.FC = () => {
 };
 
 export default Navbar;
-//변경전
