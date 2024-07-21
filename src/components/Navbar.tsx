@@ -5,12 +5,34 @@ import SearchIcon from '@mui/icons-material/Search';
 import PersonIcon from '@mui/icons-material/Person';
 import MailIcon from '@mui/icons-material/Mail';
 import categories from '../data/Categories';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 
 const Navbar: React.FC = () => {
     const navigate = useNavigate();
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
 
     const handleCategoryClick = (category: string) => {
-        navigate(`/all-articles?categories=${encodeURIComponent(category)}`);
+        if (category === 'ALL') {
+            navigate('/all-articles');
+        } else {
+            window.location.href = `/articles/?categories=${encodeURIComponent(category)}`;
+        }
+    };
+
+    const handleLogout = () => {
+        fetch('http://localhost:8080/api/members/logout', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {'Content-Type': 'application/json'}
+        })
+            .then(response => {
+                if (response.ok) {
+                    console.log("로그아웃에 성공했습니다.");
+                    localStorage.removeItem('user');
+                    navigate('/');
+                }
+            })
+            .catch(error => console.error('로그아웃 에러:', error));
     };
 
     return (
@@ -32,28 +54,51 @@ const Navbar: React.FC = () => {
                     />
                 </Box>
                 <Link to="/main" style={{ textDecoration: 'none', color: 'inherit' }}>
-                    <Typography variant="h4" component="div" style={{ textAlign: 'center', flexGrow: 1, paddingRight: `275px` }}>
+                    <Typography variant="h4" component="div" style={{ textAlign: 'center', flexGrow: 1, paddingRight: `180px` }}>
                         ITScribe
                     </Typography>
                 </Link>
                 <Box>
-                    <Link to="/my-page" style={{ color: 'inherit' }}>
-                        <IconButton color="inherit">
-                            <PersonIcon />
+                    {user && user.avatarUrl ? (
+                        <IconButton color="inherit" onClick={() => navigate('/my-page')}>
+                            <img src={user.avatarUrl} alt="Profile" style={{ width: 30, height: 30, borderRadius: '50%' }} />
                         </IconButton>
-                    </Link>
+                    ) : (
+                        <Link to="/" style={{ color: 'inherit' }}>
+                            <IconButton color="inherit">
+                                <PersonIcon />
+                            </IconButton>
+                        </Link>
+                    )}
                     <IconButton color="inherit">
                         <MailIcon />
                     </IconButton>
+                    {Object.keys(user).length > 0 ? (
+                        <Button color="inherit" onClick={handleLogout}>
+                            <ExitToAppIcon /> Logout
+                        </Button>
+                    ) : (
+                        <Link to="/" style={{ color: 'inherit' }}>
+                            <Button color="inherit">Login</Button>
+                        </Link>
+                    )}
                 </Box>
             </Toolbar>
             <Toolbar variant="dense" style={{ backgroundColor: '#1f2a3c', justifyContent: 'center' }}>
+                <Button
+                    key="all"
+                    variant="text"
+                    style={{ color: 'white', padding: '0 15px' }}
+                    onClick={() => handleCategoryClick('ALL')}
+                >
+                    ALL
+                </Button>
                 {categories.map((category) => (
                     <Button
-                        key={category.id} // 유일한 key 값으로 category.id를 사용합니다.
+                        key={category.id}
                         variant="text"
                         style={{ color: 'white', padding: '0 15px' }}
-                        onClick={() => handleCategoryClick(category.name)} // 카테고리 이름을 인코딩하여 사용합니다.
+                        onClick={() => handleCategoryClick(category.name)}
                     >
                         {category.name}
                     </Button>
@@ -64,3 +109,4 @@ const Navbar: React.FC = () => {
 };
 
 export default Navbar;
+//변경전

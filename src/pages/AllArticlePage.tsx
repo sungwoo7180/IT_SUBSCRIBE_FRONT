@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Grid, Card, CardMedia, CardContent, Chip, Pagination, CircularProgress } from '@mui/material';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { Box, Typography, Grid, Card, CardMedia, CardContent, Pagination, Chip, CircularProgress } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import Navbar from '../components/Navbar';
+import MostHotArticles from '../components/MostHotArticles';
 import axiosInstance from '../config/AxiosConfig';
-import MostHotArticles from "../components/MostHotArticles";
-import categories from '../data/Categories';
-import CategoryChip from '../components/Button/CategoryButton';
 
 interface Category {
     id: number;
@@ -27,27 +26,18 @@ interface Article {
     imgUrls: string[];
 }
 
-const ArticlesView: React.FC = () => {
-    const [searchParams, setSearchParams] = useSearchParams();
-    const navigate = useNavigate();
-    const categoriesQueryParam = searchParams.get('categories');
-    const initialCategories = categoriesQueryParam ? decodeURIComponent(categoriesQueryParam).split(',') : [];
-
-    const [currentPage, setCurrentPage] = useState<number>(parseInt(searchParams.get('page') || '1'));
-    const [selectedCategories, setSelectedCategories] = useState<string[]>(initialCategories);
-    const [filteredArticles, setFilteredArticles] = useState<Article[]>([]);
+const AllArticlesPage: React.FC = () => {
+    const [articles, setArticles] = useState<Article[]>([]);
+    const [currentPage, setCurrentPage] = useState<number>(1);
     const [totalPages, setTotalPages] = useState<number>(1);
     const [loading, setLoading] = useState<boolean>(true);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchArticles = async () => {
             setLoading(true);
             try {
-                const categoryIds = categories
-                    .filter(category => selectedCategories.includes(category.name))
-                    .map(category => category.id);
-
-                const response = await axiosInstance.get(`/article/category/${categoryIds.join(',')}`, {
+                const response = await axiosInstance.get('/article/all', {
                     params: {
                         page: currentPage - 1,
                         size: 12
@@ -55,7 +45,7 @@ const ArticlesView: React.FC = () => {
                 });
 
                 const { content, totalPages } = response.data;
-                setFilteredArticles(content);
+                setArticles(content);
                 setTotalPages(totalPages);
             } catch (error) {
                 console.error('Failed to fetch articles', error);
@@ -65,18 +55,10 @@ const ArticlesView: React.FC = () => {
         };
 
         fetchArticles();
-    }, [selectedCategories, currentPage]);
-
-    const handleCategoryChange = (newCategories: string[]) => {
-        setSelectedCategories(newCategories);
-        setCurrentPage(1);
-        const queryParams = newCategories.length > 0 ? `categories=${encodeURIComponent(newCategories.join(','))}` : '';
-        setSearchParams({ categories: newCategories.join(','), page: '1' });
-    };
+    }, [currentPage]);
 
     const handlePageChange = (event: React.ChangeEvent<unknown>, page: number) => {
         setCurrentPage(page);
-        setSearchParams({ categories: selectedCategories.join(','), page: page.toString() });
     };
 
     const handleOpenArticle = (article: Article) => {
@@ -85,15 +67,16 @@ const ArticlesView: React.FC = () => {
 
     return (
         <Box sx={{ flexGrow: 1, padding: 3, backgroundImage: 'url(/Background.png)', backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '100vh' }}>
+            <Navbar />
             {loading ? (
                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
                     <CircularProgress color="inherit" />
                 </Box>
             ) : (
-                <Grid container spacing={2}>
+                <Grid container spacing={2} sx={{ mt: 3 }}>
                     <Grid item xs={12} md={8}>
                         <Grid container spacing={2}>
-                            {filteredArticles.map((article) => (
+                            {articles.map((article) => (
                                 <Grid item xs={12} sm={6} md={4} key={article.id} onClick={() => handleOpenArticle(article)}>
                                     <Card sx={{ display: 'flex', flexDirection: 'column', backgroundColor: '#152238', color: 'white' }}>
                                         <CardMedia
@@ -110,27 +93,13 @@ const ArticlesView: React.FC = () => {
                                             <Typography variant="caption" sx={{ color: 'white' }}>
                                                 {new Date(article.postDate).toLocaleDateString()}
                                             </Typography>
+                                            <Typography variant="caption" sx={{ color: 'white' }}>
+                                                {article.category.name}
+                                            </Typography>
                                             <Box sx={{ mt: 1 }}>
-                                                <Box sx={{
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    flexWrap: 'wrap',
-                                                    gap: "0.5rem"
-                                                }}>
-                                                    <CategoryChip category={article.category} />
-                                                    <Box sx={{
-                                                        display: 'flex',
-                                                        flexWrap: 'wrap',
-                                                        maxHeight: '4.5rem', // 두 줄의 높이를 제한
-                                                        overflow: 'hidden',
-                                                        alignItems: 'center',
-                                                        mt: 0.5 // 카테고리 칩과 태그 칩의 정렬을 위해 여백 추가
-                                                    }}>
-                                                        {article.tags.map(tag => (
-                                                            <Chip key={tag.id} label={tag.name} sx={{ mr: 1, mb: 1, color: 'white', backgroundColor: '#3f51b5', height: '32px' }} />
-                                                        ))}
-                                                    </Box>
-                                                </Box>
+                                                {article.tags.map(tag => (
+                                                    <Chip key={tag.id} label={tag.name} sx={{ mr: 1, mb: 1, color: 'white', backgroundColor: '#3f51b5' }} />
+                                                ))}
                                             </Box>
                                         </CardContent>
                                     </Card>
@@ -154,4 +123,5 @@ const ArticlesView: React.FC = () => {
     );
 };
 
-export default ArticlesView;
+export default AllArticlesPage;
+//변경전
