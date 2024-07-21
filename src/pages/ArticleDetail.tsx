@@ -1,70 +1,167 @@
-import React from 'react';
-import { useParams } from 'react-router-dom';
-import { Box, Typography, Paper, Grid, Button } from '@mui/material';
-import Navbar from '../components/Navbar';
+import React, { useState, useEffect } from 'react';
+import { useParams, useLocation } from 'react-router-dom';
+import { Box, Typography, Paper, Grid, Button, Chip } from '@mui/material';
+import axiosInstance from '../config/AxiosConfig';
 import MostHotArticles from '../components/MostHotArticles';
 import Comments from '../components/Comments';
 import BookmarkButton from '@mui/icons-material/Bookmark';
+import CategoryChip from '../components/Button/CategoryButton'; // CategoryChip 임포트
 
+interface CommentType {
+    id: number;
+    content: string;
+    articleId: number;
+    memberId: number;
+    memberNickname: string;
+    profileImageURL: string;
+    timestamp: string;
+}
 
-const articles = [
-    {
-        id: 1,
-        title: '하반기 계획 공개, 넷마블 신의 탑 1주년 방송한다',
-        content: '넷마블은 수집형 애니메이션 RPG \'신의 탑: 새로운 세계\' 출시 1주년을 기념해 오는 12일 오후 8시 공식 라이브 방송을 진행한다고 9일 밝혔다.\n' +
-            '이번 방송에는 넷마블엔투 정언산 개발PD, 전투 기획자가 출연해 특별 이벤트를 소개하고 하반기 로드맵을 공개할 예정이다. 이용자들과의 질의응답을 통해 그간의 궁금증도 해소할 계획이다.\n' +
-            '게임의 신규 캐릭터가 특별 게스트로 등장해 이용자들과 인사하며 지난 1년간의 게임 기록을 돌아보는 시간도 마련됐다. 방송 중 특별 쿠폰을 제공하는 기념 이벤트도 진행된다.\n' +
-            '\'신의 탑: 새로운 세계\'는 조회수 60억회를 돌파한 네이버웹툰 \'신의 탑\'을 기반으로 한 수집형 애니메이션 RPG다. 쉽고 간편한 게임성을 앞세워 지난해 7월 26일 출시했다.',
-        image: 'https://via.placeholder.com/150',
-        comments: [
-            {
-                id: 1,
-                username: 'User1',
-                userImg: 'https://via.placeholder.com/50',
-                text: 'Lorem Ipsum is simply dummy text...',
-                timestamp: '2024-06-29 19:23'
-            },
-            {
-                id: 2,
-                username: 'User2',
-                userImg: 'https://via.placeholder.com/50',
-                text: 'Lorem Ipsum has been the industry\'s standard...',
-                timestamp: '2024-06-29 21:17'
-            }
-        ],
-        category: 'Game',
-        tags: ['RPG', 'Action']
-    }
-];
+interface Category {
+    id: number;
+    name: string;
+}
+
+interface Tag {
+    id: number;
+    name: string;
+}
+
+interface ArticleType {
+    id: number;
+    title: string;
+    content: string;
+    postDate: string;
+    category: Category;
+    source: string;
+    tags: Tag[];
+    imgUrls: string[];
+}
 
 const ArticleDetail: React.FC = () => {
-    const { 'article-id': articleId } = useParams<{ 'article-id': string }>(); // 소문자로 맞춤
-    const article = articles.find(article => article.id.toString() === articleId);
+    const { articleId } = useParams<{ articleId: string }>();
+    const location = useLocation();
+    const initialArticle = location.state?.article as ArticleType;
+    const [article, setArticle] = useState<ArticleType | null>(initialArticle);
+    const [comments, setComments] = useState<CommentType[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const fetchArticle = async () => {
+            try {
+                const response = await axiosInstance.get(`/article/article/${articleId}`);
+                setArticle(response.data);
+            } catch (err) {
+                setError('Failed to fetch article');
+            }
+        };
+
+        const incrementCount = async () => {
+            try {
+                await axiosInstance.post(`/rank/increment-article-count/${articleId}`);
+            } catch (err) {
+                console.error('Failed to increment article count', err);
+            }
+        };
+
+        const fetchComments = async () => {
+            try {
+                const response = await axiosInstance.get(`/comment/article/${articleId}`);
+                setComments(response.data);
+                setLoading(false);
+            } catch (err) {
+                setError('Failed to fetch comments');
+                setLoading(false);
+            }
+        };
+
+        if (!initialArticle) {
+            fetchArticle();
+        }
+        incrementCount();
+        fetchComments();
+    }, [articleId, initialArticle]);
+
+    const handleAddComment = async (text: string) => {
+        try {
+            const response = await axiosInstance.post('/comment', {
+                content: text,
+                articleId: article?.id,
+                memberId: 1, // 예시로 회원 ID를 하드코딩합니다. 실제 구현에서는 현재 로그인한 사용자의 ID를 사용해야 합니다.
+                memberNickname: 'User', // 예시로 사용자 이름을 하드코딩합니다. 실제 구현에서는 현재 로그인한 사용자의 이름을 사용해야 합니다.
+                profileImageURL: 'https://via.placeholder.com/50', // 예시로 사용자 이미지 URL을 하드코딩합니다. 실제 구현에서는 현재 로그인한 사용자의 이미지 URL을 사용해야 합니다.
+                timestamp: new Date().toISOString(), // 예시로 현재 시간을 사용합니다.
+            });
+            setComments([...comments, response.data]);
+        } catch (err) {
+            setError('Failed to add comment');
+        }
+    };
+
     if (!article) return <p>기사를 찾을 수 없습니다.</p>;
+
+    const formatContent = (content: string) => {
+        const segments = content.split('.');
+        const lines = [];
+        for (let i = 0; i < segments.length; i += 5) {
+            lines.push(segments.slice(i, i + 5).join('.') + '.');
+        }
+        return lines.join('\n\n');
+    };
 
     return (
         <Box sx={{
             p: 3,
-            backgroundImage: 'url(/Background.png)',  // image 상대경로 쓰면 문제, 절대경로 사용 또는 import 해야 함
+            backgroundImage: 'url(/Background.png)',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             minHeight: '100vh'
         }}>
             <Grid container spacing={2}>
                 <Grid item xs={12} md={9}>
-                    <Paper elevation={3} sx={{ padding: '20px', color: 'white', bgcolor: '#1f2a3c' }}>
-                        <Typography variant="h4" gutterBottom>
-                            {article.title}
-                        </Typography>
-                        <img src={article.image} alt={article.title} style={{ width: '100%', height: 'auto', maxHeight: '300px' }} />
-                        <Typography variant="subtitle1" gutterBottom>   
-                            {`Category: ${article.category}`}
-                        </Typography>
-                        <Typography variant="subtitle1" gutterBottom>
-                            {`Tags: ${article.tags.join(', ')}`}
-                        </Typography>
-                        <Typography paragraph>
-                            {article.content}
+                    <Paper elevation={3} sx={{padding: '20px', color: 'white', bgcolor: '#1f2a3c'}}>
+                        <Box sx={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'flex-start',
+                            flexWrap: 'wrap'
+                        }}>
+                            <Box sx={{flexGrow: 1}}>
+                                <Typography variant="h4" gutterBottom sx={{marginBottom: '2rem'}}>
+                                    {article.title}
+                                </Typography>
+                                <Box sx={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    flexWrap: 'wrap',
+                                    gap: "0.5rem",
+                                    marginTop: "1rem"
+                                }}>
+                                    <CategoryChip category={article.category} />
+                                    {article.tags.map(tag => (
+                                        <Chip key={tag.id} label={tag.name}
+                                              sx={{marginRight: "0.5rem", marginBottom: "0.05rem"}}/>
+                                    ))}
+                                </Box>
+                            </Box>
+                            <Typography component="a" href={article.source} target="_blank" rel="noopener noreferrer"
+                                        sx={{
+                                            fontSize: '0.9rem',
+                                            color: 'white',
+                                            textDecoration: 'none',
+                                            marginLeft: 'auto'
+                                        }}>
+                                {article.source}
+                            </Typography>
+                        </Box>
+                        <hr/>
+                        <img src={article.imgUrls[0] || 'https://via.placeholder.com/150'} alt={article.title}
+                             style={{width: '100%', height: 'auto', maxHeight: '200rem' , marginBottom: `1rem`}}/>
+                        <Typography paragraph sx={{ whiteSpace: 'pre-line' }}>
+                            <div style={{ color: '#91bad3', fontSize: '1.2rem' }}>
+                                {formatContent(article.content)}
+                            </div>
                         </Typography>
                     </Paper>
                 </Grid>
@@ -74,9 +171,9 @@ const ArticleDetail: React.FC = () => {
                     </Button>
                 </Grid>
                 <Grid item xs={12} md={9}>
-                    <Comments comments={article.comments} />
+                    {loading ? <p>Loading comments...</p> : <Comments comments={comments} onAddComment={handleAddComment} />}
                 </Grid>
-                <Grid item xs={12} md={3}>
+                <Grid item xs={12} md={3} sx={{ position: 'relative', top: '-100px' }}>
                     <MostHotArticles />
                 </Grid>
             </Grid>

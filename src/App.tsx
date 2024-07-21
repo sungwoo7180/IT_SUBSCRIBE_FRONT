@@ -1,5 +1,4 @@
-// src/App.tsx
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from './pages/Login';
 import Main from './pages/Main';
@@ -9,6 +8,8 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ArticleDetail from "./pages/ArticleDetail";
 import ArticlesView from "./pages/ArticlesView";
 import MyPage from "./pages/MyPage";
+import RecentArticles from "./components/RecentArticles";
+import AllArticlesPage from "./pages/AllArticlePage"; // 새로운 페이지 임포트
 import axios from "axios";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -21,17 +22,17 @@ function App() {
     return (
         <Router>
             <Routes>
-                {/* 이동은 <LINK> 컴포넌트를 사용해서 전환 */}
-                {/* Link 컴포넌트는 리액트 라우터에서 제공하는 페이지 전환을 위한 컴포넌트 */}
                 <Route path="/" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/main" element={<><Navbar /><Main /></>} />
-                <Route path="/password-reset" element={<><ForgotPassword /></>} />
-                <Route path="/article/:article-id" element={<><Navbar /><ArticleDetail /></>} /> {/* 기사 상세 페이지 라우트 */}
-                <Route path="/all-articles/:category?" element={<><Navbar /><ArticlesView /></>} />
+                <Route path="/password-reset" element={<ForgotPassword />} />
+                <Route path="/article/:articleId" element={<><Navbar /><ArticleDetail /></>} /> {/* 기사 상세 페이지 라우트 */}
+                <Route path="/articles/:category?" element={<><Navbar /><ArticlesView /></>} />
                 <Route path="/my-page" element={
                     <ProtectedRoute element={<><Navbar /><MyPage /></>} />
                 } />
+                <Route path="/recent-articles" element={<><Navbar /><RecentArticles /></>} />
+                <Route path="/all-articles" element={<AllArticlesPage />} /> {/* 새로운 라우트 추가 */}
             </Routes>
         </Router>
     );
