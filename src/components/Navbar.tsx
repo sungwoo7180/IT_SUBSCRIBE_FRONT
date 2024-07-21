@@ -20,22 +20,6 @@ const Navbar: React.FC = () => {
     };
 
     const handleLogout = () => {
-        fetch('http://localhost:8080/api/members/logout', {
-            method: 'POST',
-            credentials: 'include',
-            headers: {'Content-Type': 'application/json'}
-        })
-            .then(response => {
-                if (response.ok) {
-                    console.log("로그아웃에 성공했습니다.");
-                    localStorage.removeItem('user');
-                    navigate('/');
-                }
-            })
-            .catch(error => console.error('로그아웃 에러:', error));
-    };
-
-    const handleLogout = () => {
         // API 호출을 통한 로그아웃 처리
         fetch('http://localhost:8080/api/members/logout',
             {
@@ -120,7 +104,7 @@ const Navbar: React.FC = () => {
                         style={{ color: 'white', padding: '0 15px' }}
                         onClick={() => handleCategoryClick(category.name)}
                     >
-                        {category}
+                        {category.name}
                     </Button>
                 ))}
             </Toolbar>

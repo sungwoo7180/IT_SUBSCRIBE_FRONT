@@ -66,7 +66,7 @@ const AllArticlesPage: React.FC = () => {
     };
 
     return (
-        <Box sx={{ flexGrow: 1, padding: 3, backgroundImage: 'url(/Background.png)', backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '100vh' }}>
+        <Box sx={{ flexGrow: 1, backgroundImage: 'url(/Background.png)', backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '100vh' }}>
             <Navbar />
             {loading ? (
                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
