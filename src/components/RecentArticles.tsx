@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Card, CardMedia, CardContent, Grid, Button } from '@mui/material';
+import { Box, Typography, Card, CardMedia, CardContent, Grid, Button, Chip } from '@mui/material';
 import { useNavigate } from "react-router-dom";
 import axiosInstance from '../config/AxiosConfig';
+import CategoryChip from '../components/Button/CategoryButton';
 
 // 기사 데이터 인터페이스 정의
 interface Category {
@@ -79,7 +80,7 @@ const RecentArticles: React.FC = () => {
             <Grid container spacing={2}>
                 {randomArticles.map(article => (
                     <Grid item xs={12} sm={6} md={4} key={article.id} onClick={() => handleOpen(article)}>
-                        <Card sx={{ height: 300, display: 'flex', flexDirection: 'column', backgroundColor: '#152238', color: 'white' }}>
+                        <Card sx={{ height: '25rem', display: 'flex', flexDirection: 'column', backgroundColor: '#152238', color: 'white' }}>
                             <CardMedia
                                 component="img"
                                 height="140"
@@ -88,10 +89,15 @@ const RecentArticles: React.FC = () => {
                                 sx={{ marginBottom: 2, paddingBottom: 0 }} // 사진과 글 사이에 여백
                             />
                             <CardContent sx={{ paddingTop: 0, marginBottom: 0 }}>
-                                <Typography variant="h6">{article.title}</Typography>
-                                <Typography variant="body2" sx={{ display: '-webkit-box', WebkitBoxOrient: 'vertical', overflow: 'hidden', textOverflow: 'ellipsis', WebkitLineClamp: 5 }}>
-                                    {article.content}
-                                </Typography>
+                                <Typography variant="h6" sx={{ fontSize: '1.2rem' }}>{article.title}</Typography>
+                                <Box sx={{ display: 'flex', flexDirection: 'column', marginTop: 1 }}>
+                                    <CategoryChip category={article.category}/>
+                                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 1 }}>
+                                        {article.tags.slice(0, 2).map(tag => (
+                                            <Chip key={tag.id} label={tag.name} sx={{ mr: 1, mb: 1, color: 'white', backgroundColor: '#3f51b5', fontSize: '0.875rem' }} />
+                                        ))}
+                                    </Box>
+                                </Box>
                             </CardContent>
                         </Card>
                     </Grid>
