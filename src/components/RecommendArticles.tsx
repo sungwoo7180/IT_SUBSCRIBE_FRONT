@@ -135,7 +135,7 @@ const RecommendArticles: React.FC = () => {
                             </IconButton>
                         </Box>
                         <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
-                            <Button variant="contained" sx={{ backgroundColor: '#3b5998' }} onClick={() => navigate('/custom-all-articles')}>View favorite categories</Button>
+                            {/*<Button variant="contained" sx={{ backgroundColor: '#3b5998' }} onClick={() => navigate('/custom-all-articles')}>View favorite categories</Button>*/}
                         </Box>
                     </>
                 ) : (
