@@ -150,6 +150,7 @@ import CustomTextField from '../components/CustomTextField';
 import { isEmpty, isValidEmail, isPasswordMatch, validatePassword } from '../utils/validation';
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
+const apiUrl = process.env.REACT_APP_API_URL;
 
 const ForgotPassword: React.FC = () => {
     const navigate = useNavigate();
@@ -180,7 +181,7 @@ const ForgotPassword: React.FC = () => {
             return;
         }
 
-        axios.post('http://localhost:8080/api/members/send-code', { email: userDetails.email }, {
+        axios.post(`${apiUrl}/api/members/send-code`, { email: userDetails.email }, {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -200,7 +201,7 @@ const ForgotPassword: React.FC = () => {
             return;
         }
 
-        axios.post('http://localhost:8080/api/members/verify-code-change-pw', { email: userDetails.email, code: userDetails.code }, {
+        axios.post('${apiUrl}/api/members/verify-code-change-pw', { email: userDetails.email, code: userDetails.code }, {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -232,7 +233,7 @@ const ForgotPassword: React.FC = () => {
             setPasswordErrors(validationResults);
             return;
         }
-        axios.post(`http://localhost:8080/api/members/change-password?action=change_password&id=${id}`, {
+        axios.post(`${apiUrl}/api/members/change-password?action=change_password&id=${id}`, {
             newPw: password,
             newPwConfirm: confirmPassword
         }, {

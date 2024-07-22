@@ -9,6 +9,7 @@ import '../style/MyPage.css';
 import SectionHeader from "../components/SectionHeader";
 import axios from "axios";
 import ProfilePictureUploadModal from "../components/ProfilePictureUploadModal";
+const apiUrl = process.env.REACT_APP_API_URL;
 
 // 사용자 정보 타입 정의
 interface UserDetails {
@@ -66,13 +67,13 @@ const MyPage: React.FC = () => {
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
 
-    const baseURL = 'http://localhost:8080';
+    // const baseURL = 'http://localhost:8080';
 
     // 사용자 정보 불러오기
     const fetchUserInfo = async () => {
         try {
             const response = await fetch(
-                `${baseURL}/api/members/mypage`,
+                `${apiUrl}/api/members/mypage`,
                 {
                     method: 'GET',
                     credentials: 'include'  // 세션 쿠키를 포함합니다.
@@ -94,7 +95,7 @@ const MyPage: React.FC = () => {
     const fetchCategories = async () => {
         try {
             const response = await fetch(
-                `${baseURL}/api/members/mypage/get-favorite-category`,
+                `${apiUrl}/api/members/mypage/get-favorite-category`,
                 {
                     method: 'GET',
                     credentials: 'include',  // 세션 쿠키를 포함합니다.
@@ -120,7 +121,7 @@ const MyPage: React.FC = () => {
     const fetchPreferences = async () => {
         try {
             const response = await fetch(
-                `${baseURL}/api/members/mypage/get-preferences`,
+                `${apiUrl}/api/members/mypage/get-preferences`,
                 {
                     method: 'GET',
                     credentials: 'include'  // 세션 쿠키를 포함합니다.
@@ -148,7 +149,7 @@ const MyPage: React.FC = () => {
 
         try {
             const response = await axios.post(
-                `${baseURL}/api/members/mypage/update-profile-image`,
+                `${apiUrl}/api/members/mypage/update-profile-image`,
                 formData,
                 {
                     headers: { 'Content-Type': 'multipart/form-data' }
@@ -175,7 +176,7 @@ const MyPage: React.FC = () => {
     const saveUserInfo = async () => {
         try {
             const response = await fetch(
-                `${baseURL}/api/members/mypage/update-user-info`,
+                `${apiUrl}/api/members/mypage/update-user-info`,
                 {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
@@ -210,7 +211,7 @@ const MyPage: React.FC = () => {
         }
 
         try {
-            const response = await axios.post(`http://localhost:8080/api/members/mypage/edit-favorite-category`, {
+            const response = await axios.post(`${apiUrl}/api/members/mypage/edit-favorite-category`, {
                 categoryIds: selectedCategoryIds }
             );
             console.log(response)
@@ -237,7 +238,7 @@ const MyPage: React.FC = () => {
     const savePreferences = async () => {
         try {
             const response = await fetch(
-                `${baseURL}/api/members/mypage/update-preferences`,
+                `${apiUrl}/api/members/mypage/update-preferences`,
                 {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},

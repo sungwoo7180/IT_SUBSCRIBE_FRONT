@@ -3,6 +3,7 @@ import { Button, Grid, Typography, Link as MuiLink } from '@mui/material';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import CustomLoginTextField from "../components/CustomLoginTextField";
 import axios from "axios";
+const apiUrl = process.env.REACT_APP_API_URL;
 
 const Login: React.FC = () => {
     const [username, setUsername] = useState<string>('');
@@ -12,7 +13,7 @@ const Login: React.FC = () => {
     const handleLogin = async () => {
         try {
             const response = await axios.post(
-                'http://localhost:8080/api/members/login',
+                `${apiUrl}/api/members/login`,
                 { id: username, password : password },
                 { withCredentials: true }
             );

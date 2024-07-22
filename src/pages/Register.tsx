@@ -4,6 +4,7 @@ import CustomTextField from '../components/CustomTextField';
 import { isEmpty, isValidEmail, isPasswordMatch, validatePassword } from '../utils/validation';
 import { useNavigate } from "react-router-dom";
 import axios from 'axios'; // API 요청에 사용될 axios
+const apiUrl = process.env.REACT_APP_API_URL;
 
 const Register: React.FC = () => {
     const navigate = useNavigate();
@@ -51,7 +52,7 @@ const Register: React.FC = () => {
         }
 
         // (1) 중복 확인 및 이메일 발송 API 요청
-        axios.post('http://localhost:8080/api/members/check-duplicate', { username: userId, email: email, nickname: nickname })
+        axios.post(`${apiUrl}/api/members/check-duplicate`, { username: userId, email: email, nickname: nickname })
             .then(response => {
                 const { username, email: emailResponse, nickname: nicknameResponse } = response.data;
                 if (username === "사용할 수 있는 아이디입니다." &&
@@ -60,7 +61,7 @@ const Register: React.FC = () => {
                     // 중복되지 않은 경우 코드 전송 후 단계 이동
                     setStep(2);
                     setErrors(prev => ({ ...prev, userId: false, email: false, emailFormat: false, nickname: false }));
-                    axios.post('http://localhost:8080/api/members/send-code', { email: userDetails.email }, {
+                    axios.post(`${apiUrl}/api/members/send-code`, { email: userDetails.email }, {
                         headers: {
                             'Content-Type': 'application/json'
                         }
@@ -94,7 +95,7 @@ const Register: React.FC = () => {
         }
 
         // (2) 인증 코드 확인 API 요청
-        axios.post('http://localhost:8080/api/members/verify-code-signup', { email: email, code: code }, {
+        axios.post('${apiUrl}/api/members/verify-code-signup', { email: email, code: code }, {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -129,7 +130,7 @@ const Register: React.FC = () => {
         }
 
         // (3) 회원 가입 API 요청
-        axios.post('http://localhost:8080/api/members/register', {
+        axios.post('${apiUrl}/api/members/register', {
             username: userId,
             nickname: nickname,
             email: email,

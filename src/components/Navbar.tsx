@@ -12,6 +12,7 @@ const Navbar: React.FC = () => {
     const location = useLocation();
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
+    const apiUrl = process.env.REACT_APP_API_URL;
 
     useEffect(() => {
         const params = new URLSearchParams(location.search);
@@ -41,7 +42,7 @@ const Navbar: React.FC = () => {
 
     const handleLogout = () => {
         // API 호출을 통한 로그아웃 처리
-        fetch('http://localhost:8080/api/members/logout',
+        fetch('${apiUrl}/api/members/logout',
             {
                 method: 'POST',
                 credentials: 'include',  // 중요: 쿠키를 포함시키기 위해 필요
