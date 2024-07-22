@@ -1,5 +1,5 @@
 import React, { useEffect, useState, ChangeEvent } from 'react';
-import {Box, Typography, Button, Modal} from '@mui/material';
+import {Box, Typography, Button, Modal, Snackbar, Alert} from '@mui/material';
 import CategoryFilter from '../components/CategoryFilter';
 import AlarmSettings from '../components/AlarmSettings';
 import UserInfo from '../components/UserInfo';
@@ -63,20 +63,11 @@ const MyPage: React.FC = () => {
         emailUpdates: false
     });
 
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+
     const baseURL = 'http://localhost:8080';
 
-    // 사용자 정보 불러오기
-    // const fetchUserInfo = async () => {
-    //     try {
-    //         const response = await fetch(
-    //             `${baseURL}/api/members/mypage`
-    //         );
-    //         const data = await response.json();
-    //         setUserDetails(data);
-    //     } catch (error) {
-    //         console.error('Error fetching user info:' +  error);
-    //     }
-    // };
     // 사용자 정보 불러오기
     const fetchUserInfo = async () => {
         try {
@@ -225,12 +216,19 @@ const MyPage: React.FC = () => {
             console.log(response)
 
             if (response.status === 200) {
+                setSnackbarMessage('Categories saved successfully');
+                setOpenSnackbar(true);
                 console.log('Categories saved successfully');
                 //fetchCategories();
             } else {
+                setSnackbarMessage('Error saving categories');
+                setOpenSnackbar(true);
                 console.error('Error saving categories');
             }
         } catch (error) {
+            console.error('Error saving categories:', selectedCategoryIds);
+            setSnackbarMessage('Error saving categories');
+            setOpenSnackbar(true);
             console.error('Error saving categories:', selectedCategoryIds);
         }
     };
@@ -268,6 +266,10 @@ const MyPage: React.FC = () => {
     const handlePasswordReset = (newPassword: string, confirmPassword: string) => {
         console.log("Password Reset", newPassword, confirmPassword);
         // 추가적인 비밀번호 재설정 로직 구현
+    };
+
+    const handleCloseSnackbar = () => {
+        setOpenSnackbar(false);
     };
 
     return (
@@ -322,6 +324,11 @@ const MyPage: React.FC = () => {
                     </Box>
                 </Box>
             </Box>
+            <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar}>
+                <Alert onClose={handleCloseSnackbar} severity={snackbarMessage.includes('successfully') ? "success" : "error"} sx={{ width: '100%' }}>
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
         </Box>
     );
 };

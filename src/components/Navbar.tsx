@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { AppBar, Toolbar, Typography, IconButton, InputBase, Box, Button } from '@mui/material';
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import SearchIcon from '@mui/icons-material/Search';
 import PersonIcon from '@mui/icons-material/Person';
 import MailIcon from '@mui/icons-material/Mail';
@@ -9,14 +9,34 @@ import categories from '../data/Categories';
 
 const Navbar: React.FC = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
+
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        const category = params.get('categories');
+        if (category) {
+            setSelectedCategory(category);
+        } else if (location.pathname === '/all-articles') {
+            setSelectedCategory('ALL');
+        } else {
+            setSelectedCategory('');
+        }
+    }, [location]);
 
     const handleCategoryClick = (category: string) => {
+        setSelectedCategory(category);
         if (category === 'ALL') {
-            navigate('/all-articles');
+            window.location.href = '/all-articles';
         } else {
-            window.location.href = `/articles/?categories=${encodeURIComponent(category)}`;
+            window.location.href = `/articles?categories=${encodeURIComponent(category)}`;
         }
+    };
+
+    const handleLogoClick = () => {
+        setSelectedCategory(''); // 로고를 클릭하면 선택된 카테고리를 초기화
+        navigate('/main');
     };
 
     const handleLogout = () => {
@@ -57,13 +77,16 @@ const Navbar: React.FC = () => {
                         }}
                     />
                 </Box>
-                <Link to="/main" style={{ textDecoration: 'none', color: 'inherit' }}>
-                    <Typography variant="h4" component="div" style={{ textAlign: 'center', flexGrow: 1, paddingRight: `180px` }}>
-                        ITScribe
-                    </Typography>
-                </Link>
+                <Typography
+                    variant="h4"
+                    component="div"
+                    style={{ textAlign: 'center', flexGrow: 1, paddingRight: `180px`, cursor: 'pointer' }}
+                    onClick={handleLogoClick}
+                >
+                    ITScribe
+                </Typography>
                 <Box>
-                    {user && user.avatarUrl ? (
+                    {Object.keys(user).length > 0 ? (
                         <IconButton color="inherit" onClick={() => navigate('/my-page')}>
                             <img src={user.avatarUrl} alt="Profile" style={{ width: 30, height: 30, borderRadius: '50%' }} />
                         </IconButton>
@@ -92,7 +115,7 @@ const Navbar: React.FC = () => {
                 <Button
                     key="all"
                     variant="text"
-                    style={{ color: 'white', padding: '0 15px' }}
+                    style={{ color: selectedCategory === 'ALL' ? '#2979ff' : 'white', padding: '0 15px', fontSize: '18px' }}
                     onClick={() => handleCategoryClick('ALL')}
                 >
                     ALL
@@ -101,7 +124,7 @@ const Navbar: React.FC = () => {
                     <Button
                         key={category.id}
                         variant="text"
-                        style={{ color: 'white', padding: '0 15px' }}
+                        style={{ color: selectedCategory === category.name ? '#2979ff' : 'white', padding: '0 15px', fontSize: '18px' }}
                         onClick={() => handleCategoryClick(category.name)}
                     >
                         {category.name}
