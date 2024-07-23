@@ -95,7 +95,7 @@ const Register: React.FC = () => {
         }
 
         // (2) 인증 코드 확인 API 요청
-        axios.post('${apiUrl}/api/members/verify-code-signup', { email: email, code: code }, {
+        axios.post(`${apiUrl}/api/members/verify-code-signup`, { email: email, code: code }, {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -130,7 +130,7 @@ const Register: React.FC = () => {
         }
 
         // (3) 회원 가입 API 요청
-        axios.post('${apiUrl}/api/members/register', {
+        axios.post(`${apiUrl}/api/members/register`, {
             username: userId,
             nickname: nickname,
             email: email,
