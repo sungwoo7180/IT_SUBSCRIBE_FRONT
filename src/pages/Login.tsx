@@ -39,6 +39,7 @@ const Login: React.FC = () => {
 
     return (
         <Grid container sx={{ height: '100vh' }}>
+            {/*여기 코드로 인해 스타일이 고정됨. 또한 여기도 DeepTech 라 의도한 상황?*/}
             <Grid item xs={12} sm={6} sx={{ backgroundColor: '#152238', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', color: 'white', padding: 3 }}>
                 <Typography variant="h4" component="h1" gutterBottom>
                     Log in to <span style={{ color: '#0026ED' }}>DeepTech</span>
