@@ -4,27 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import MostHotArticles from '../components/MostHotArticles';
 import axiosInstance from '../config/AxiosConfig';
-
-interface Category {
-    id: number;
-    name: string;
-}
-
-interface Tag {
-    id: number;
-    name: string;
-}
-
-interface Article {
-    id: number;
-    title: string;
-    content: string;
-    postDate: string;
-    category: Category;
-    source: string;
-    tags: Tag[];
-    imgUrls: string[];
-}
+import { Article } from '../types/Article';
 
 const AllArticlesPage: React.FC = () => {
     const [articles, setArticles] = useState<Article[]>([]);

@@ -6,37 +6,7 @@ import MostHotArticles from '../components/MostHotArticles';
 import Comments from '../components/Comments';
 import BookmarkButton from '@mui/icons-material/Bookmark';
 import CategoryChip from '../components/Button/CategoryButton'; // CategoryChip 임포트
-
-interface CommentType {
-    id: number;
-    content: string;
-    articleId: number;
-    memberId: number;
-    memberNickname: string;
-    profileImageURL: string;
-    timestamp: string;
-}
-
-interface Category {
-    id: number;
-    name: string;
-}
-
-interface Tag {
-    id: number;
-    name: string;
-}
-
-interface ArticleType {
-    id: number;
-    title: string;
-    content: string;
-    postDate: string;
-    category: Category;
-    source: string;
-    tags: Tag[];
-    imgUrls: string[];
-}
+import {Article as ArticleType, CommentType} from '../types/Article';
 
 const ArticleDetail: React.FC = () => {
     const { articleId } = useParams<{ articleId: string }>();
