@@ -165,6 +165,7 @@ const Register: React.FC = () => {
                 display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', color: 'white', padding: 3
             }}>
                 <Typography variant="h4" component="h1" gutterBottom>
+                    {/*우리 DeepTech 임? 의도한 상황인지 모르겠지만, 사이트가 DeepTech 인줄.*/}
                     Join the DeepTech!
                 </Typography>
                 <CustomTextField label="User ID" onChange={handleChange} name="userId" value={userDetails.userId} error={errors.userId} disabled={step > 1} />
