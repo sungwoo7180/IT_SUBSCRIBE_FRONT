@@ -1,9 +1,8 @@
 import React from 'react';
-import { Box, Grid, Typography } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 import RecommendArticles from '../components/RecommendArticles';
 import RecentArticles from '../components/RecentArticles';
 import MostHotArticles from '../components/MostHotArticles';
-import Navbar from '../components/Navbar';
 
 const Main: React.FC = () => {
     return (

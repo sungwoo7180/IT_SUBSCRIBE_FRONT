@@ -17,16 +17,16 @@ const Register: React.FC = () => {
         code: '',
         password: '',
         confirmPassword: '',
-        nickname: ''
+        nickname: '' // nickname 필드 추가
     });
     const [errors, setErrors] = useState({
         userId: false,
         email: false,
-        emailFormat: false,
+        emailFormat: false, // 이메일 형식 오류 필드 추가
         code: false,
         password: false,
         confirmPassword: false,
-        nickname: false
+        nickname: false // nickname 필드에 대한 오류 추가
     });
     const [passwordErrors, setPasswordErrors] = useState({
         length: true,
@@ -53,12 +53,14 @@ const Register: React.FC = () => {
             return;
         }
 
+        // (1) 중복 확인 및 이메일 발송 API 요청
         axios.post(`${apiUrl}/api/members/check-duplicate`, { username: userId, email: email, nickname: nickname })
             .then(response => {
                 const { username, email: emailResponse, nickname: nicknameResponse } = response.data;
                 if (username === "사용할 수 있는 아이디입니다." &&
                     emailResponse === "사용할 수 있는 이메일입니다." &&
                     nicknameResponse === "사용할 수 있는 닉네임입니다.") {
+                    // 중복되지 않은 경우 코드 전송 후 단계 이동
                     setStep(2);
                     setErrors(prev => ({ ...prev, userId: false, email: false, emailFormat: false, nickname: false }));
                     axios.post(`${apiUrl}/api/members/send-code`, { email: userDetails.email }, {
@@ -71,6 +73,7 @@ const Register: React.FC = () => {
                             console.error("There was an error sending the email!", error);
                         });
                 } else {
+                    // 중복된 필드가 있을 경우 처리
                     setErrors(prev => ({
                         ...prev,
                         userId: username !== "사용할 수 있는 아이디입니다.",
@@ -91,6 +94,7 @@ const Register: React.FC = () => {
             return;
         }
 
+        // (2) 인증 코드 확인 API 요청
         axios.post(`${apiUrl}/api/members/verify-code-signup`, { email, code }, {
             headers: { 'Content-Type': 'application/json' }
         })
@@ -123,6 +127,7 @@ const Register: React.FC = () => {
             return;
         }
 
+        // (3) 회원 가입 API 요청
         axios.post(`${apiUrl}/api/members/register`, {
             username: userId,
             nickname,

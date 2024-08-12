@@ -5,27 +5,7 @@ import axiosInstance from '../config/AxiosConfig';
 import MostHotArticles from "../components/MostHotArticles";
 import categories from '../data/Categories';
 import CategoryChip from '../components/Button/CategoryButton';
-
-interface Category {
-    id: number;
-    name: string;
-}
-
-interface Tag {
-    id: number;
-    name: string;
-}
-
-interface Article {
-    id: number;
-    title: string;
-    content: string;
-    postDate: string;
-    category: Category;
-    source: string;
-    tags: Tag[];
-    imgUrls: string[];
-}
+import { Article } from '../types/Article';
 
 const ArticlesView: React.FC = () => {
     const [searchParams, setSearchParams] = useSearchParams();

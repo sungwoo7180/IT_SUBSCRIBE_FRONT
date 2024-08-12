@@ -19,6 +19,7 @@ const Login: React.FC = () => {
                 { id: username, password },
                 { withCredentials: true }
             );
+            // const response = await axios.post('http://localhost:8080/api/members/login', { id: username, password : password }, { withCredentials: true });
 
             if (response.status === 200) {
                 localStorage.setItem('user', JSON.stringify(response.data)); // 로컬 스토리지에 사용자 정보 저장
