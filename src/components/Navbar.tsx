@@ -42,7 +42,7 @@ const Navbar: React.FC = () => {
 
     const handleLogout = () => {
         // API 호출을 통한 로그아웃 처리
-        fetch('${apiUrl}/api/members/logout',
+        fetch(`${apiUrl}/api/members/logout`,
             {
                 method: 'POST',
                 credentials: 'include',  // 중요: 쿠키를 포함시키기 위해 필요
@@ -50,7 +50,7 @@ const Navbar: React.FC = () => {
             }
         )
             .then(response => {
-                // 로그아웃 후 처리, 예를 들어 로그인 페이지로 리다이렉션
+                // 로그아웃 후 처리, 로그인 페이지로 리다이렉션
                 if (response.ok) {
                     console.log("로그아웃에 성공했습니다.");
                     localStorage.removeItem('user');

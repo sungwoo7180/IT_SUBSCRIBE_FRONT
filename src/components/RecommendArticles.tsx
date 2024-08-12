@@ -1,8 +1,11 @@
+// src/components/RecommendArticles.tsx
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Paper, Button, Card, CardMedia, CardContent, Chip, IconButton, CircularProgress } from '@mui/material';
+import {Box, Card, CardMedia, CardContent, Chip, IconButton, CircularProgress, Typography} from '@mui/material';
 import { ArrowBackIos, ArrowForwardIos } from '@mui/icons-material';
 import { useNavigate } from "react-router-dom";
 import axiosInstance from '../config/AxiosConfig';
+import { CommonCard, LoadingBox } from '../style/StyledComponents'; // 공통 스타일 컴포넌트 가져오기
+import CommonHeader from './CommonHeader'; // 공통 컴포넌트 가져오기
 
 interface Category {
     id: number;
@@ -40,16 +43,15 @@ const RecommendArticles: React.FC = () => {
         const fetchArticles = async () => {
             setLoading(true);
             try {
-                const token = localStorage.getItem('token');  // 인증 토큰을 로컬 스토리지에서 가져옴
+                const token = localStorage.getItem('token');
                 const response = await axiosInstance.get('/recommend-article/recent', {
                     headers: {
-                        Authorization: `Bearer ${token}`  // Authorization 헤더에 토큰 추가
+                        Authorization: `Bearer ${token}`
                     },
                     params: {
                         limit: 12
                     }
                 });
-                console.log("recommend fetch done");
                 const fetchedArticles = response.data;
                 setArticles(fetchedArticles.length > 5 ? getRandomArticles(fetchedArticles, 5) : fetchedArticles);
             } catch (error) {
@@ -75,17 +77,16 @@ const RecommendArticles: React.FC = () => {
     };
 
     return (
-        <Paper sx={{ padding: 2, backgroundColor: '#1f2a3c' }}>
-            <Typography variant="h5" gutterBottom color="white" align="center">Recommended Articles</Typography>
+        <Box sx={{ padding: 2, backgroundColor: '#1f2a3c' }}>
+            <CommonHeader title="Recommended Articles" />
             {loading ? (
-                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
+                <LoadingBox>
                     <CircularProgress color="inherit" />
-                </Box>
+                </LoadingBox>
             ) : (
                 articles.length > 0 ? (
                     <>
-                        <Box sx={{ marginBottom: 3 }} /> {/* Typography와 카드 사이에 간격 추가 */}
-                        <Card sx={{ backgroundColor: '#152238', color: 'white' }} onClick={() => handleOpenArticle(articles[currentArticle])}>
+                        <CommonCard onClick={() => handleOpenArticle(articles[currentArticle])}>
                             {articles[currentArticle] && articles[currentArticle].imgUrls && articles[currentArticle].imgUrls[0] && (
                                 <CardMedia
                                     component="img"
@@ -116,7 +117,7 @@ const RecommendArticles: React.FC = () => {
                                     </Box>
                                 </Box>
                             </CardContent>
-                        </Card>
+                        </CommonCard>
                         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 2 }}>
                             <IconButton onClick={handlePrevClick} sx={{ color: 'white' }}>
                                 <ArrowBackIos />
@@ -134,15 +135,12 @@ const RecommendArticles: React.FC = () => {
                                 <ArrowForwardIos />
                             </IconButton>
                         </Box>
-                        <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
-                            {/*<Button variant="contained" sx={{ backgroundColor: '#3b5998' }} onClick={() => navigate('/custom-all-articles')}>View favorite categories</Button>*/}
-                        </Box>
                     </>
                 ) : (
                     <Typography color="white" align="center">No articles found.</Typography>
                 )
             )}
-        </Paper>
+        </Box>
     );
 };
 

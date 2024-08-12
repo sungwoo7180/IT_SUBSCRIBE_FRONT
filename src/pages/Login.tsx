@@ -1,8 +1,10 @@
-import React, {ChangeEvent, useState} from 'react';
-import { Button, Grid, Typography, Link as MuiLink } from '@mui/material';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import CustomLoginTextField from "../components/CustomLoginTextField";
-import axios from "axios";
+import React, { ChangeEvent, useState } from 'react';
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
+import CustomLoginTextField from '../components/CustomLoginTextField';
+import axios from 'axios';
+import { AuthContainer, AuthLeftSection, AuthButton, AuthRightSection, AuthTitle } from '../style/StyledComponents';
+import { Link as MuiLink } from '@mui/material';  // MUI의 Link를 import
+
 const apiUrl = process.env.REACT_APP_API_URL;
 
 const Login: React.FC = () => {
@@ -14,15 +16,14 @@ const Login: React.FC = () => {
         try {
             const response = await axios.post(
                 `${apiUrl}/api/members/login`,
-                { id: username, password : password },
+                { id: username, password },
                 { withCredentials: true }
             );
             // const response = await axios.post('http://localhost:8080/api/members/login', { id: username, password : password }, { withCredentials: true });
 
             if (response.status === 200) {
-                localStorage.setItem('user', JSON.stringify(response.data));  // 로컬 스토리지에 사용자 정보 저장
-                navigate('/main');  // 로그인 성공 후 메인 페이지로 리다이렉트
-
+                localStorage.setItem('user', JSON.stringify(response.data)); // 로컬 스토리지에 사용자 정보 저장
+                navigate('/main'); // 로그인 성공 후 메인 페이지로 리다이렉트
             }
         } catch (error) {
             console.error('로그인 오류', error);
@@ -38,29 +39,29 @@ const Login: React.FC = () => {
     };
 
     return (
-        <Grid container sx={{ height: '100vh' }}>
-            {/*여기 코드로 인해 스타일이 고정됨. 또한 여기도 DeepTech 라 의도한 상황?*/}
-            <Grid item xs={12} sm={6} sx={{ backgroundColor: '#152238', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', color: 'white', padding: 3 }}>
-                <Typography variant="h4" component="h1" gutterBottom>
-                    Log in to <span style={{ color: '#0026ED' }}>DeepTech</span>
-                </Typography>
+        <AuthContainer container>
+            <AuthLeftSection item xs={12} sm={6}>
+                <AuthTitle variant="h4" as="h1" gutterBottom>
+                    Log in to <span>DeepTech</span>
+                </AuthTitle>
                 <CustomLoginTextField label="User ID" value={username} onChange={handleUsernameChange} />
                 <CustomLoginTextField label="Password" type="password" value={password} onChange={handlePasswordChange} />
-                <MuiLink component={RouterLink} to="/password-reset" underline="hover" sx={{ mt: 1 }}>
+
+                {/* MUI Link 컴포넌트를 사용하여 RouterLink로 연결 */}
+                <MuiLink component={RouterLink} to="/password-reset" underline="hover">
                     Forgot your password?
                 </MuiLink>
-                <Button variant="contained" color="primary" fullWidth onClick={handleLogin} sx={{ marginTop: 2, width : '500px',height: '50px' }}>
+
+                <AuthButton variant="contained" color="primary" fullWidth onClick={handleLogin}>
                     LOG IN
-                </Button>
-                <MuiLink component={RouterLink} to="/register" underline="hover" sx={{ mt: 2 }}>
+                </AuthButton>
+
+                <MuiLink component={RouterLink} to="/register" underline="hover">
                     Need an account? Register here
                 </MuiLink>
-            </Grid>
-            {/* 오른쪽 배경 이미지 부분 */}
-            <Grid item xs={12} sm={6} sx={{ background: 'url(login-background.png) no-repeat center center', backgroundSize: 'cover', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: 3 }}>
-                {/* 내용 없음 */}
-            </Grid>
-        </Grid>
+            </AuthLeftSection>
+            <AuthRightSection item xs={12} sm={6} />
+        </AuthContainer>
     );
 };
 

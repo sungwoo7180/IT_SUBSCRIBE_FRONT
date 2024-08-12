@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { Button, Typography, Grid, Box } from '@mui/material';
+import { Typography, Box } from '@mui/material';
 import CustomTextField from '../components/CustomTextField';
 import { isEmpty, isValidEmail, isPasswordMatch, validatePassword } from '../utils/validation';
 import { useNavigate } from "react-router-dom";
-import axios from 'axios'; // API 요청에 사용될 axios
+import axios from 'axios';
+import { AuthContainer, AuthLeftSection, AuthRightSection, AuthButton, AuthTitle } from '../style/StyledComponents';
+
 const apiUrl = process.env.REACT_APP_API_URL;
 
 const Register: React.FC = () => {
@@ -62,11 +64,9 @@ const Register: React.FC = () => {
                     setStep(2);
                     setErrors(prev => ({ ...prev, userId: false, email: false, emailFormat: false, nickname: false }));
                     axios.post(`${apiUrl}/api/members/send-code`, { email: userDetails.email }, {
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
+                        headers: { 'Content-Type': 'application/json' }
                     })
-                        .then(response => {
+                        .then(() => {
                             console.log("Email sent successfully.");
                         })
                         .catch(error => {
@@ -89,16 +89,14 @@ const Register: React.FC = () => {
 
     const handleVerifyCode = () => {
         const { email, code } = userDetails;
-        if (isEmpty(userDetails.code)) {
+        if (isEmpty(code)) {
             setErrors(prev => ({ ...prev, code: true }));
             return;
         }
 
         // (2) 인증 코드 확인 API 요청
-        axios.post(`${apiUrl}/api/members/verify-code-signup`, { email: email, code: code }, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
+        axios.post(`${apiUrl}/api/members/verify-code-signup`, { email, code }, {
+            headers: { 'Content-Type': 'application/json' }
         })
             .then(response => {
                 if (response.data === "인증이 완료되었습니다.") {
@@ -132,12 +130,12 @@ const Register: React.FC = () => {
         // (3) 회원 가입 API 요청
         axios.post(`${apiUrl}/api/members/register`, {
             username: userId,
-            nickname: nickname,
-            email: email,
-            password: password,
+            nickname,
+            email,
+            password,
             password2: confirmPassword
         })
-            .then(response => {
+            .then(() => {
                 navigate('/');
             })
             .catch(error => {
@@ -159,15 +157,11 @@ const Register: React.FC = () => {
     };
 
     return (
-        <Grid container sx={{ height: '100vh' }}>
-            <Grid item xs={12} sm={6} sx={{
-                backgroundColor: '#152238', overflow: 'auto',
-                display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', color: 'white', padding: 3
-            }}>
-                <Typography variant="h4" component="h1" gutterBottom>
-                    {/*우리 DeepTech 임? 의도한 상황인지 모르겠지만, 사이트가 DeepTech 인줄.*/}
+        <AuthContainer container>
+            <AuthLeftSection item xs={12} sm={6}>
+                <AuthTitle variant="h4" as="h1" gutterBottom>
                     Join the DeepTech!
-                </Typography>
+                </AuthTitle>
                 <CustomTextField label="User ID" onChange={handleChange} name="userId" value={userDetails.userId} error={errors.userId} disabled={step > 1} />
                 <CustomTextField label="Email" onChange={handleChange} name="email" value={userDetails.email} error={errors.email || errors.emailFormat} disabled={step > 1} />
                 <CustomTextField label="Nickname" onChange={handleChange} name="nickname" value={userDetails.nickname} error={errors.nickname} disabled={step > 1} />
@@ -175,15 +169,15 @@ const Register: React.FC = () => {
                 {errors.email && <Typography color="error">Email is required or already taken</Typography>}
                 {errors.emailFormat && <Typography color="error">Invalid email format</Typography>}
                 {errors.nickname && <Typography color="error">Nickname is required or already taken</Typography>}
-                <Button variant="contained" color="primary" fullWidth onClick={handleSendEmail} sx={{ marginTop: 2, width: '500px', height: '50px' }}>
+                <AuthButton variant="contained" color="primary" fullWidth onClick={handleSendEmail}>
                     SEND EMAIL
-                </Button>
+                </AuthButton>
                 {step >= 2 && (
                     <>
                         <CustomTextField label="Code" onChange={handleChange} name="code" value={userDetails.code} error={errors.code} />
-                        <Button variant="contained" color="primary" fullWidth onClick={handleVerifyCode} sx={{ marginTop: 2, width: '500px', height: '50px' }}>
+                        <AuthButton variant="contained" color="primary" fullWidth onClick={handleVerifyCode}>
                             VERIFY CODE
-                        </Button>
+                        </AuthButton>
                     </>
                 )}
                 {step === 3 && (
@@ -198,16 +192,14 @@ const Register: React.FC = () => {
                                 <Typography>{passwordErrors.passwordsMatch ? '✔ Passwords match' : '✖ Passwords do not match'}</Typography>
                             </Box>
                         )}
-                        <Button variant="contained" color="primary" fullWidth onClick={handleRegister} sx={{ marginTop: 2, width: '500px', height: '50px' }}>
+                        <AuthButton variant="contained" color="primary" fullWidth onClick={handleRegister}>
                             REGISTER
-                        </Button>
+                        </AuthButton>
                     </>
                 )}
-            </Grid>
-            <Grid item xs={12} sm={6} sx={{ background: 'url(login-background.png) no-repeat center center', backgroundSize: 'cover', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: 3 }}>
-                {/* 내용 없음 */}
-            </Grid>
-        </Grid>
+            </AuthLeftSection>
+            <AuthRightSection item xs={12} sm={6} />
+        </AuthContainer>
     );
 };
 
