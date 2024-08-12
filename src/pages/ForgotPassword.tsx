@@ -108,8 +108,8 @@
 //                 {step === 3 && (
 //                     <>
 //                         <CustomTextField label="User ID" onChange={handleChange} name="userId" value={userDetails.userId} error={errors.userId} disabled />
-//                         <CustomTextField label="New Password" type="password" onChange={handleChange} name="password" value={userDetails.password} error={errors.password} />
-//                         <CustomTextField label="Confirm Password" type="password" onChange={handleChange} name="confirmPassword" value={userDetails.confirmPassword} error={errors.confirmPassword} />
+//                         <CustomTextField label="New Password" types="password" onChange={handleChange} name="password" value={userDetails.password} error={errors.password} />
+//                         <CustomTextField label="Confirm Password" types="password" onChange={handleChange} name="confirmPassword" value={userDetails.confirmPassword} error={errors.confirmPassword} />
 //                         {(!passwordErrors.length || !passwordErrors.hasNumberAndLetter || !passwordErrors.passwordsMatch) && (
 //                             <Box sx={{ mt: 2, background: '#e0e0e0', borderRadius: '5px', p: 2, color: '#333' }}>
 //                                 <Typography>Password must be:</Typography>

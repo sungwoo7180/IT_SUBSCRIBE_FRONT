@@ -26,6 +26,9 @@ interface Preferences {
     emailUpdates: boolean;
 }
 
+// 이 코드 수정 필수!!!
+// data/Categories.ts 파일에서 가져온 카테고리 목록으로 하드 코딩
+// DB 에서 Category 를 받아오는 형식으로 바뀌어야함.
 const categoryMapping: { [key: string]: number } = {
     'FrontEnd': 1,
     'BackEnd': 2,
