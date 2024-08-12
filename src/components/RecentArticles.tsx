@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Card, CardMedia, CardContent, Grid, Button, Chip } from '@mui/material';
+import { Grid, Button, CardContent, Typography, Box } from '@mui/material';
 import { useNavigate } from "react-router-dom";
 import axiosInstance from '../config/AxiosConfig';
 import CategoryChip from '../components/Button/CategoryButton';
+import { BackgroundBox, CommonCard, SectionTitle, CommonChip } from '../style/StyledComponents';
 
 // 기사 데이터 인터페이스 정의
 interface Category {
@@ -74,19 +75,22 @@ const RecentArticles: React.FC = () => {
     const randomArticles = getRandomArticles(articles, 6);
 
     return (
-        <Box sx={{ padding: 2, backgroundColor: '#1f2a3c' }}>
-            <Typography variant="h5" color="white" align="center" marginBottom={1}>Recent Articles</Typography>
-            <Box sx={{ marginBottom: 3 }} /> {/* Typography와 카드 사이에 간격 추가 */}
+        <BackgroundBox>
+            <SectionTitle variant="h5">Recent Articles</SectionTitle>
             <Grid container spacing={2}>
                 {randomArticles.map(article => (
                     <Grid item xs={12} sm={6} md={4} key={article.id} onClick={() => handleOpen(article)}>
-                        <Card sx={{ height: '25rem', display: 'flex', flexDirection: 'column', backgroundColor: '#152238', color: 'white' }}>
-                            <CardMedia
+                        <CommonCard>
+                            <Box
                                 component="img"
-                                height="140"
-                                image={article.imgUrls[0] || 'https://via.placeholder.com/150'}
+                                src={article.imgUrls[0] || 'https://via.placeholder.com/150'}
                                 alt={article.title}
-                                sx={{ marginBottom: 2, paddingBottom: 0 }} // 사진과 글 사이에 여백
+                                sx={{
+                                    marginBottom: 2,
+                                    paddingBottom: 0,
+                                    objectFit: 'cover',
+                                    height: '140px',
+                                }}
                             />
                             <CardContent sx={{ paddingTop: 0, marginBottom: 0 }}>
                                 <Typography variant="h6" sx={{ fontSize: '1.2rem' }}>{article.title}</Typography>
@@ -94,19 +98,19 @@ const RecentArticles: React.FC = () => {
                                     <CategoryChip category={article.category}/>
                                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 1 }}>
                                         {article.tags.slice(0, 2).map(tag => (
-                                            <Chip key={tag.id} label={tag.name} sx={{ mr: 1, mb: 1, color: 'white', backgroundColor: '#3f51b5', fontSize: '0.875rem' }} />
+                                            <CommonChip key={tag.id} label={tag.name} />
                                         ))}
                                     </Box>
                                 </Box>
                             </CardContent>
-                        </Card>
+                        </CommonCard>
                     </Grid>
                 ))}
             </Grid>
             <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
                 <Button variant="contained" sx={{ backgroundColor: '#3b5998' }} onClick={() => navigate('/all-articles')}>View All Articles</Button>
             </Box>
-        </Box>
+        </BackgroundBox>
     );
 };
 

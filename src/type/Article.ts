@@ -1,11 +1,17 @@
+interface Category {
+    id: number;
+    name: string;
+}
+
 interface Article {
     id: number;
     title: string;
     content: string;
-    date: string;
-    category: string;
+    postDate: string;
+    category: Category;
+    source: string;
     tags: string[];
-    originalUrl: string;
+    imgUrls: string[];
 }
 
 export default Article;

@@ -1,9 +1,11 @@
+// src/components/ProfilePictureUploadModal.tsx
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { Box, Button, Modal, Typography, IconButton } from '@mui/material';
 import { PhotoCamera, Close, CloudUpload } from '@mui/icons-material';
 import { useDropzone } from 'react-dropzone';
 import ReactCrop, { Crop, PixelCrop } from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
+import { CommonCard, LoadingBox } from '../style/StyledComponents'; // 공통 스타일 컴포넌트 가져오기
 
 interface ProfilePictureUploadModalProps {
     open: boolean;
@@ -36,7 +38,7 @@ const ProfilePictureUploadModal: React.FC<ProfilePictureUploadModalProps> = ({ o
     const { getRootProps, getInputProps } = useDropzone({
         onDrop,
         accept: 'image/*',
-        noClick: selectedFile !== null
+        noClick: selectedFile !== null,
     });
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -78,7 +80,7 @@ const ProfilePictureUploadModal: React.FC<ProfilePictureUploadModalProps> = ({ o
                 0,
                 0,
                 crop.width,
-                crop.height
+                crop.height,
             );
         }
 
@@ -106,39 +108,76 @@ const ProfilePictureUploadModal: React.FC<ProfilePictureUploadModalProps> = ({ o
         }
     }, [selectedFile]);
 
+    // 스타일 정의
+    const modalStyle = {
+        position: 'absolute' as const,
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 400,
+        bgcolor: '#f0f0f0',
+        color: 'black',
+        p: 4,
+        borderRadius: 2,
+        boxShadow: 24,
+        textAlign: 'center' as const,
+    };
+
+    const headerStyle = {
+        bgcolor: '#32CD32',
+        color: 'white',
+        p: 2,
+        borderTopLeftRadius: 8,
+        borderTopRightRadius: 8,
+        position: 'relative' as const,
+    };
+
+    const dropzoneStyle = {
+        border: '2px dashed #cccccc',
+        padding: '20px',
+        borderRadius: '10px',
+        cursor: 'pointer',
+        bgcolor: '#ffffff',
+        mt: 2,
+        width: '100%',
+        height: '400px',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+    };
+
+    const cropContainerStyle = {
+        position: 'relative' as const,
+        display: 'inline-block',
+        width: '100%',
+        height: '100%',
+        overflow: 'hidden' as const,
+    };
+
+    const closeButtonStyle = {
+        position: 'absolute' as const,
+        top: 8,
+        right: 8,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        fontSize: 20,
+        color: 'white',
+    };
+
     return (
         <Modal open={open} onClose={onClose}>
-            <Box sx={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                width: 400,
-                bgcolor: '#f0f0f0',
-                color: 'black',
-                p: 4,
-                borderRadius: 2,
-                boxShadow: 24,
-                textAlign: 'center'
-            }}>
-                <Box sx={{
-                    bgcolor: '#32CD32',
-                    color: 'white',
-                    p: 2,
-                    borderTopLeftRadius: 8,
-                    borderTopRightRadius: 8
-                }}>
+            <Box sx={modalStyle}>
+                <Box sx={headerStyle}>
                     <Typography variant="h6">
                         Upload New Profile Picture
                     </Typography>
-                    <IconButton onClick={onClose} sx={{ position: 'absolute', top: 8, right: 8, fontSize: 20 }}>
-                        <Close sx={{ color: 'white', fontSize: 30 }} />
+                    <IconButton onClick={onClose} sx={closeButtonStyle}>
+                        <Close sx={{ fontSize: 30 }} />
                     </IconButton>
                 </Box>
-                <Box {...getRootProps()} sx={{ border: '2px dashed #cccccc', padding: '20px', borderRadius: '10px', cursor: 'pointer', bgcolor: '#ffffff', mt: 2, width: '100%', height: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <Box {...getRootProps()} sx={dropzoneStyle}>
                     <input {...getInputProps()} />
                     {preview ? (
-                        <Box sx={{ position: 'relative', display: 'inline-block', width: '100%', height: '100%', overflow: 'hidden' }}>
+                        <Box sx={cropContainerStyle}>
                             <ReactCrop
                                 crop={crop}
                                 onChange={(_, newCrop) => setCrop(newCrop)}
@@ -147,8 +186,8 @@ const ProfilePictureUploadModal: React.FC<ProfilePictureUploadModalProps> = ({ o
                             >
                                 <img ref={imgRef} src={preview} alt="Preview" style={{ width: '100%', height: 'auto', borderRadius: '10px', objectFit: 'contain' }} />
                             </ReactCrop>
-                            <IconButton onClick={handleClear} sx={{ position: 'absolute', top: 5, right: 5, backgroundColor: 'rgba(0, 0, 0, 0.5)', fontSize: 20 }}>
-                                <Close sx={{ color: 'white', fontSize: 30 }} />
+                            <IconButton onClick={handleClear} sx={{ ...closeButtonStyle, top: 5, right: 5 }}>
+                                <Close sx={{ fontSize: 30 }} />
                             </IconButton>
                         </Box>
                     ) : (
@@ -169,7 +208,7 @@ const ProfilePictureUploadModal: React.FC<ProfilePictureUploadModalProps> = ({ o
                         onChange={handleFileChange}
                     />
                     <label htmlFor="raised-button-file" style={{ width: '100%' }}>
-                        <Button variant="contained" component="span" startIcon={<PhotoCamera />} sx={{ mt: 1 , mb: 2, bgcolor: '#1976d2', width: '100%' }}>
+                        <Button variant="contained" component="span" startIcon={<PhotoCamera />} sx={{ mt: 1, mb: 2, bgcolor: '#1976d2', width: '100%' }}>
                             Choose Image
                         </Button>
                     </label>

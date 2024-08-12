@@ -1,5 +1,6 @@
+// src/components/CustomTextField.tsx
 import React from 'react';
-import { TextField, Box } from '@mui/material';
+import { StyledBox, CommonTextField } from '../style/StyledComponents'; // 공통 스타일 컴포넌트 가져오기
 
 interface CustomTextFieldProps {
     label: string;
@@ -29,8 +30,8 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
                                                              sx = {} // 기본값을 빈 객체로 설정
                                                          }) => {
     return (
-        <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', ...sx }}> {/* 추가적인 스타일을 병합 */}
-            <TextField
+        <StyledBox sx={sx}> {/* 추가적인 스타일을 병합 */}
+            <CommonTextField
                 label={label}
                 type={type}
                 variant="outlined"
@@ -42,43 +43,9 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
                 value={value}
                 error={error}
                 disabled={disabled}
-                sx={{
-                    "& .MuiOutlinedInput-root": {
-                        height: '55px',
-                        width: '500px',
-                        '& fieldset': {
-                            borderColor: 'white !important',
-                        },
-                        '&:hover fieldset': {
-                            borderColor: 'white !important',
-                        },
-                        '&.Mui-focused fieldset': {
-                            borderColor: 'white !important',
-                        },
-                        '&.Mui-disabled fieldset': {
-                            borderColor: fixed ? '#152238 !important' : 'white !important', // 고정된 필드면 테두리 색상을 변경
-                        },
-                        '& input': {
-                            color: fixed ? '#152238 !important' : 'white !important', // 고정된 필드면 텍스트 색상을 변경
-                            backgroundColor: fixed ? 'white !important' : 'transparent', // 고정된 필드면 배경 색상을 변경
-                        },
-                        '&.Mui-disabled input': {
-                            color: fixed ? '#152238 !important' : 'white !important', // 고정된 필드면 텍스트 색상을 변경
-                            backgroundColor: fixed ? 'white !important' : 'transparent', // 고정된 필드면 배경 색상을 변경
-                        },
-                        '& input:-webkit-autofill': {
-                            WebkitTextFillColor: 'white !important',
-                            WebkitBoxShadow: '0 0 0px 1000px #152238 inset'
-                        }
-                    },
-                    "& .MuiInputLabel-root": {
-                        lineHeight: 1.5,
-                        color: fixed ? '#152238' : 'white', // 고정된 필드면 Label 색상을 변경
-                    },
-                    ...sx // 추가적인 스타일을 병합
-                }}
+                sx={sx} // 추가적인 스타일을 병합
             />
-        </Box>
+        </StyledBox>
     );
 };
 
