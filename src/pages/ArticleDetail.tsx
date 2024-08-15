@@ -5,7 +5,7 @@ import axiosInstance from '../config/AxiosConfig';
 import MostHotArticles from '../components/MostHotArticles';
 import Comments from '../components/Comments';
 import CategoryChip from '../components/Button/CategoryButton'; // CategoryChip 임포트
-import Bookmark from '../components/Bookmark'; // Bookmark 컴포넌트 임포트
+import Bookmark from '../components/Bookmark';
 import { Article as ArticleType, CommentType } from '../types/Article';
 
 const ArticleDetail: React.FC = () => {
@@ -124,6 +124,7 @@ const ArticleDetail: React.FC = () => {
                                         }}>
                                 {article.source}
                             </Typography>
+                            {/* bookmark mui import 로 해결 */}
                             <Bookmark articleId={article.id} />
                         </Box>
                         <hr/>
