@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
 import { Box, Typography, Paper, Grid, Button, Chip } from '@mui/material';
+import { useParams, useLocation } from 'react-router-dom';
 import axiosInstance from '../config/AxiosConfig';
 import MostHotArticles from '../components/MostHotArticles';
 import Comments from '../components/Comments';
 import BookmarkButton from '@mui/icons-material/Bookmark';
 import CategoryChip from '../components/Button/CategoryButton'; // CategoryChip 임포트
-import {Article as ArticleType, CommentType} from '../types/Article';
+import { Article as ArticleType, CommentType } from '../types/Article';
 
 const ArticleDetail: React.FC = () => {
     const { articleId } = useParams<{ articleId: string }>();
@@ -16,6 +16,7 @@ const ArticleDetail: React.FC = () => {
     const [comments, setComments] = useState<CommentType[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const user = JSON.parse(localStorage.getItem('user') || '{}'); // 사용자 정보 가져오기
 
     useEffect(() => {
         const fetchArticle = async () => {
@@ -58,10 +59,10 @@ const ArticleDetail: React.FC = () => {
             const response = await axiosInstance.post('/comment', {
                 content: text,
                 articleId: article?.id,
-                memberId: 1, // 예시로 회원 ID를 하드코딩합니다. 실제 구현에서는 현재 로그인한 사용자의 ID를 사용해야 합니다.
-                memberNickname: 'User', // 예시로 사용자 이름을 하드코딩합니다. 실제 구현에서는 현재 로그인한 사용자의 이름을 사용해야 합니다.
-                profileImageURL: 'https://via.placeholder.com/50', // 예시로 사용자 이미지 URL을 하드코딩합니다. 실제 구현에서는 현재 로그인한 사용자의 이미지 URL을 사용해야 합니다.
-                timestamp: new Date().toISOString(), // 예시로 현재 시간을 사용합니다.
+                memberId: user.id, // 현재 로그인한 사용자의 ID를 사용
+                memberNickname: user.nickname, // 현재 로그인한 사용자의 닉네임을 사용
+                profileImageURL: user.avatarUrl, // 현재 로그인한 사용자의 프로필 이미지를 사용
+                timestamp: new Date().toISOString(),
             });
             setComments([...comments, response.data]);
         } catch (err) {
@@ -90,15 +91,15 @@ const ArticleDetail: React.FC = () => {
         }}>
             <Grid container spacing={2}>
                 <Grid item xs={12} md={9}>
-                    <Paper elevation={3} sx={{padding: '20px', color: 'white', bgcolor: '#1f2a3c'}}>
+                    <Paper elevation={3} sx={{ padding: '20px', color: 'white', bgcolor: '#1f2a3c' }}>
                         <Box sx={{
                             display: 'flex',
                             justifyContent: 'space-between',
                             alignItems: 'flex-start',
                             flexWrap: 'wrap'
                         }}>
-                            <Box sx={{flexGrow: 1}}>
-                                <Typography variant="h4" gutterBottom sx={{marginBottom: '2rem'}}>
+                            <Box sx={{ flexGrow: 1 }}>
+                                <Typography variant="h4" gutterBottom sx={{ marginBottom: '2rem' }}>
                                     {article.title}
                                 </Typography>
                                 <Box sx={{
@@ -111,7 +112,7 @@ const ArticleDetail: React.FC = () => {
                                     <CategoryChip category={article.category} />
                                     {article.tags.map(tag => (
                                         <Chip key={tag.id} label={tag.name}
-                                              sx={{marginRight: "0.5rem", marginBottom: "0.05rem"}}/>
+                                              sx={{ marginRight: "0.5rem", marginBottom: "0.05rem" }} />
                                     ))}
                                 </Box>
                             </Box>
@@ -125,9 +126,9 @@ const ArticleDetail: React.FC = () => {
                                 {article.source}
                             </Typography>
                         </Box>
-                        <hr/>
+                        <hr />
                         <img src={article.imgUrls[0] || 'https://via.placeholder.com/150'} alt={article.title}
-                             style={{width: '100%', height: 'auto', maxHeight: '200rem' , marginBottom: `1rem`}}/>
+                             style={{ width: '100%', height: 'auto', maxHeight: '200rem', marginBottom: `1rem` }} />
                         <Typography paragraph sx={{ whiteSpace: 'pre-line' }}>
                             <div style={{ color: '#91bad3', fontSize: '1.2rem' }}>
                                 {formatContent(article.content)}
@@ -141,7 +142,13 @@ const ArticleDetail: React.FC = () => {
                     </Button>
                 </Grid>
                 <Grid item xs={12} md={9}>
-                    {loading ? <p>Loading comments...</p> : <Comments comments={comments} onAddComment={handleAddComment} />}
+                    {loading ? (
+                        <Typography>Loading comments...</Typography>
+                    ) : (
+                        <Box sx={{ width: '100%', bgcolor: '#1f2a3c', p: 2, borderRadius: 2 }}>
+                            <Comments comments={comments} onAddComment={handleAddComment} user={user} />
+                        </Box>
+                    )}
                 </Grid>
                 <Grid item xs={12} md={3} sx={{ position: 'relative', top: '-100px' }}>
                     <MostHotArticles />
