@@ -18,12 +18,16 @@ const theme = createTheme({
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
-    <React.StrictMode>
-        <ThemeProvider theme={theme}>  {/* Apply the theme across all React components */}
-            <CssBaseline />  {/* Normalize the default CSS across browsers */}
-            <App />
-        </ThemeProvider>
-    </React.StrictMode>
+    // <React.StrictMode>
+    //     <ThemeProvider theme={theme}>  {/* Apply the theme across all React components */}
+    //         <CssBaseline />  {/* Normalize the default CSS across browsers */}
+    //         <App />
+    //     </ThemeProvider>
+    // </React.StrictMode>
+    <ThemeProvider theme={theme}>  {/* Apply the theme across all React components */}
+        <CssBaseline />  {/* Normalize the default CSS across browsers */}
+        <App />
+    </ThemeProvider>
 );
 
 reportWebVitals();
