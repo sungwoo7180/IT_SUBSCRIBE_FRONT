@@ -37,7 +37,7 @@ const ArticleDetail: React.FC = () => {
 
         const fetchComments = async () => {
             try {
-                const response = await axiosInstance.get(`/comment/article/${articleId}`);
+                const response = await axiosInstance.get(`/api/comment/article/${articleId}`);
                 setComments(response.data);
                 setLoading(false);
             } catch (err) {
@@ -55,7 +55,7 @@ const ArticleDetail: React.FC = () => {
 
     const handleAddComment = async (text: string) => {
         try {
-            const response = await axiosInstance.post('/comment', {
+            const response = await axiosInstance.post('/api/comment', {
                 content: text,
                 articleId: article?.id,
                 memberId: 1, // 예시로 회원 ID를 하드코딩합니다. 실제 구현에서는 현재 로그인한 사용자의 ID를 사용해야 합니다.
