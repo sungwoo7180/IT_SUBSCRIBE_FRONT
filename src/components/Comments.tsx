@@ -1,6 +1,5 @@
-// src/components/Comments.tsx
 import React, { useState } from 'react';
-import {List, IconButton, Typography} from '@mui/material';
+import { List, IconButton, Typography } from '@mui/material';
 import { ReportProblemOutlined as ReportIcon } from '@mui/icons-material';
 import {
     CommentsContainer,
@@ -46,7 +45,7 @@ const Comments: React.FC<CommentsProps> = ({ comments, onAddComment }) => {
 
     return (
         <CommentsContainer>
-            <Typography variant="h6">{`Comments: ${comments.length}`}</Typography>
+            <Typography variant="h6" component="div">{`Comments: ${comments.length}`}</Typography>
             <List>
                 {comments.map((comment) => (
                     <React.Fragment key={comment.id}>
@@ -54,17 +53,17 @@ const Comments: React.FC<CommentsProps> = ({ comments, onAddComment }) => {
                             <CommentAvatar src={comment.profileImageURL} />
                             <CommentContentBox>
                                 <CommentMetaBox>
-                                    <CommentNickname variant="subtitle1">
+                                    <Typography variant="subtitle1" component="span">
                                         {comment.memberNickname}
-                                    </CommentNickname>
-                                    <CommentTimestamp variant="caption">
+                                    </Typography>
+                                    <Typography variant="caption" component="span">
                                         {comment.timestamp}
-                                    </CommentTimestamp>
+                                    </Typography>
                                     <IconButton size="small" sx={{ ml: 2, color: 'white' }}>
                                         <ReportIcon />
                                     </IconButton>
                                 </CommentMetaBox>
-                                <Typography variant="body2">
+                                <Typography variant="body2" component="div">
                                     {comment.content}
                                 </Typography>
                             </CommentContentBox>

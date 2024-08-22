@@ -69,9 +69,12 @@ const ArticleDetail: React.FC = () => {
         }
     };
 
-    if (!article) return <p>기사를 찾을 수 없습니다.</p>;
+    if (!article || !article.content) return <p>기사를 찾을 수 없습니다.</p>;
 
     const formatContent = (content: string) => {
+        if (!content) {
+            return ''; // content가 undefined이거나 null일 때 빈 문자열 반환
+        }
         const segments = content.split('.');
         const lines = [];
         for (let i = 0; i < segments.length; i += 5) {
@@ -102,16 +105,11 @@ const ArticleDetail: React.FC = () => {
                                     {article.title}
                                 </Typography>
                                 <Box sx={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    flexWrap: 'wrap',
-                                    gap: "0.5rem",
-                                    marginTop: "1rem"
+                                    display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: "0.5rem", marginTop: "1rem"
                                 }}>
                                     <CategoryChip category={article.category} />
-                                    {article.tags.map(tag => (
-                                        <Chip key={tag.id} label={tag.name}
-                                              sx={{marginRight: "0.5rem", marginBottom: "0.05rem"}}/>
+                                    {article.tags && article.tags.length > 0 && article.tags.map(tag => (
+                                        <Chip key={tag.id} label={tag.name} sx={{ marginRight: "0.5rem", marginBottom: "0.05rem" }} />
                                     ))}
                                 </Box>
                             </Box>
@@ -126,17 +124,20 @@ const ArticleDetail: React.FC = () => {
                             </Typography>
                         </Box>
                         <hr/>
-                        <img src={article.imgUrls[0] || 'https://via.placeholder.com/150'} alt={article.title}
-                             style={{width: '100%', height: 'auto', maxHeight: '200rem' , marginBottom: `1rem`}}/>
-                        <Typography paragraph sx={{ whiteSpace: 'pre-line' }}>
-                            <div style={{ color: '#91bad3', fontSize: '1.2rem' }}>
+                        <img
+                            src={article.imgUrls && article.imgUrls[0] ? article.imgUrls[0] : 'https://via.placeholder.com/150'}
+                            alt={article.title}
+                            style={{width: '100%', height: 'auto', maxHeight: '200rem', marginBottom: '1rem'}}
+                        />
+                        <Typography paragraph sx={{whiteSpace: 'pre-line'}}>
+                            <div style={{color: '#91bad3', fontSize: '1.2rem'}}>
                                 {formatContent(article.content)}
                             </div>
                         </Typography>
-                    </Paper>
+                    </Paper>    
                 </Grid>
-                <Grid item xs={12} md={9} sx={{ display: 'flex', justifyContent: 'center' }}>
-                    <Button variant="contained" startIcon={<BookmarkButton />} sx={{ bgcolor: '#ff4081', my: 2 }}>
+                <Grid item xs={12} md={9} sx={{display: 'flex', justifyContent: 'center'}}>
+                    <Button variant="contained" startIcon={<BookmarkButton/>} sx={{bgcolor: '#ff4081', my: 2 }}>
                         Bookmark
                     </Button>
                 </Grid>
