@@ -21,8 +21,9 @@ const ArticleDetail: React.FC = () => {
     useEffect(() => {
         const fetchArticle = async () => {
             try {
-                const response = await axiosInstance.get(`/article/article/${articleId}`);
-                setArticle(response.data);
+                await axiosInstance.post(`/article/article/${articleId}`);
+                // const response = await axiosInstance.get(`/article/article/${articleId}`);
+                //setArticle(response.data);
             } catch (err) {
                 setError('Failed to fetch article');
             }
@@ -38,7 +39,7 @@ const ArticleDetail: React.FC = () => {
 
         const fetchComments = async () => {
             try {
-                const response = await axiosInstance.get(`/comment/article/${articleId}`);
+                const response = await axiosInstance.get(`/api/comment/article/${articleId}`);
                 setComments(response.data);
                 setLoading(false);
             } catch (err) {
@@ -47,22 +48,23 @@ const ArticleDetail: React.FC = () => {
             }
         };
 
-        if (!initialArticle) {
-            fetchArticle();
-        }
+        // if (!initialArticle) {
+        //     fetchArticle();
+        // }
+        fetchArticle();
         incrementCount();
         fetchComments();
     }, [articleId, initialArticle]);
 
     const handleAddComment = async (text: string) => {
         try {
-            const response = await axiosInstance.post('/comment', {
+            const response = await axiosInstance.post('/api/comment', {
                 content: text,
                 articleId: article?.id,
-                memberId: user.id, // 현재 로그인한 사용자의 ID를 사용
-                memberNickname: user.nickname, // 현재 로그인한 사용자의 닉네임을 사용
-                profileImageURL: user.avatarUrl, // 현재 로그인한 사용자의 프로필 이미지를 사용
-                timestamp: new Date().toISOString(),
+                // memberId: user.id, // 현재 로그인한 사용자의 ID를 사용
+                // memberNickname: user.nickname, // 현재 로그인한 사용자의 닉네임을 사용
+                // profileImageURL: user.avatarUrl, // 현재 로그인한 사용자의 프로필 이미지를 사용
+                // timestamp: new Date().toISOString(),
             });
             setComments([...comments, response.data]);
         } catch (err) {
@@ -129,10 +131,8 @@ const ArticleDetail: React.FC = () => {
                         <hr />
                         <img src={article.imgUrls[0] || 'https://via.placeholder.com/150'} alt={article.title}
                              style={{ width: '100%', height: 'auto', maxHeight: '200rem', marginBottom: `1rem` }} />
-                        <Typography paragraph sx={{ whiteSpace: 'pre-line' }}>
-                            <div style={{ color: '#91bad3', fontSize: '1.2rem' }}>
-                                {formatContent(article.content)}
-                            </div>
+                        <Typography sx={{ color: '#91bad3', fontSize: '1.2rem', whiteSpace: 'pre-line' }}>
+                            {formatContent(article.content)}
                         </Typography>
                     </Paper>
                 </Grid>
