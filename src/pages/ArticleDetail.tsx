@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
-import { Box, Typography, Paper, Grid, Button, Chip } from '@mui/material';
+import { Box, Typography, Paper, Grid, Chip } from '@mui/material';
 import axiosInstance from '../config/AxiosConfig';
 import MostHotArticles from '../components/MostHotArticles';
 import Comments from '../components/Comments';
-import BookmarkButton from '@mui/icons-material/Bookmark';
 import CategoryChip from '../components/Button/CategoryButton'; // CategoryChip 임포트
-import {Article as ArticleType, CommentType} from '../types/Article';
+import Bookmark from '../components/Bookmark';
+import { Article as ArticleType, CommentType } from '../types/Article';
 
 const ArticleDetail: React.FC = () => {
     const { articleId } = useParams<{ articleId: string }>();
@@ -126,21 +126,18 @@ const ArticleDetail: React.FC = () => {
                                         }}>
                                 {article.source}
                             </Typography>
+                            {/* bookmark mui import 로 해결 */}
+                            <Bookmark articleId={article.id} />
                         </Box>
                         <hr/>
                         <img src={article.imgUrls[0] || 'https://via.placeholder.com/150'} alt={article.title}
-                             style={{width: '100%', height: 'auto', maxHeight: '200rem' , marginBottom: `1rem`}}/>
+                             style={{width: '100%', height: 'auto', maxHeight: '200rem', marginBottom: `1rem`}}/>
                         <Typography paragraph sx={{ whiteSpace: 'pre-line' }}>
                             <div style={{ color: '#91bad3', fontSize: '1.2rem' }}>
                                 {formatContent(article.content)}
                             </div>
                         </Typography>
                     </Paper>
-                </Grid>
-                <Grid item xs={12} md={9} sx={{ display: 'flex', justifyContent: 'center' }}>
-                    <Button variant="contained" startIcon={<BookmarkButton />} sx={{ bgcolor: '#ff4081', my: 2 }}>
-                        Bookmark
-                    </Button>
                 </Grid>
                 <Grid item xs={12} md={9}>
                     {loading ? <p>Loading comments...</p> : <Comments comments={comments} onAddComment={handleAddComment} />}
