@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Grid, Card, CardMedia, CardContent, Pagination, Chip, CircularProgress } from '@mui/material';
+import { Box, Grid, Pagination, CardMedia } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import MostHotArticles from '../components/MostHotArticles';
 import axiosInstance from '../config/AxiosConfig';
 import { Article } from '../types/Article';
+import { CommonGridContainer, CommonCard, CommonTypography, CommonChip, CommonCircularProgress, LoadingBox } from '../style/StyledComponents';
 
 const AllArticlesPage: React.FC = () => {
     const [articles, setArticles] = useState<Article[]>([]);
@@ -46,43 +47,50 @@ const AllArticlesPage: React.FC = () => {
     };
 
     return (
-        <Box sx={{ flexGrow: 1, backgroundImage: 'url(/Background.png)', backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '100vh' }}>
+        <CommonGridContainer>
             <Navbar />
             {loading ? (
-                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
-                    <CircularProgress color="inherit" />
-                </Box>
+                <LoadingBox>
+                    <CommonCircularProgress />
+                </LoadingBox>
             ) : (
-                <Grid container spacing={2} sx={{ mt: 3 }}>
+                <Grid container spacing={2}>
                     <Grid item xs={12} md={8}>
                         <Grid container spacing={2}>
                             {articles.map((article) => (
                                 <Grid item xs={12} sm={6} md={4} key={article.id} onClick={() => handleOpenArticle(article)}>
-                                    <Card sx={{ display: 'flex', flexDirection: 'column', backgroundColor: '#152238', color: 'white' }}>
+                                    <CommonCard>
                                         <CardMedia
                                             component="img"
                                             height="140"
                                             image={article.imgUrls[0] || 'https://via.placeholder.com/150'}
                                             alt={article.title}
+                                            sx={{
+                                                marginBottom: '2rem',
+                                                paddingBottom: 0,
+                                                objectFit: 'cover',
+                                            }}
                                         />
-                                        <CardContent>
-                                            <Typography variant="h6" sx={{ color: 'white' }}>{article.title}</Typography>
-                                            <Typography variant="body2" sx={{ overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', color: 'white' }}>
+                                        <Box sx={{ padding: '1rem' }}>
+                                            <CommonTypography variant="h6" sx={{ marginBottom: '1rem' }}>
+                                                {article.title}
+                                            </CommonTypography>
+                                            <CommonTypography variant="body2" sx={{ overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical' }}>
                                                 {article.content}
-                                            </Typography>
-                                            <Typography variant="caption" sx={{ color: 'white' }}>
+                                            </CommonTypography>
+                                            <CommonTypography variant="caption">
                                                 {new Date(article.postDate).toLocaleDateString()}
-                                            </Typography>
-                                            <Typography variant="caption" sx={{ color: 'white' }}>
+                                            </CommonTypography>
+                                            <CommonTypography variant="caption" sx={{ marginLeft: '0.5rem' }}>
                                                 {article.category.name}
-                                            </Typography>
+                                            </CommonTypography>
                                             <Box sx={{ mt: 1 }}>
                                                 {article.tags.map(tag => (
-                                                    <Chip key={tag.id} label={tag.name} sx={{ mr: 1, mb: 1, color: 'white', backgroundColor: '#3f51b5' }} />
+                                                    <CommonChip key={tag.id} label={tag.name} sx={{ mr: 1, mb: 1 }} />
                                                 ))}
                                             </Box>
-                                        </CardContent>
-                                    </Card>
+                                        </Box>
+                                    </CommonCard>
                                 </Grid>
                             ))}
                         </Grid>
@@ -99,9 +107,8 @@ const AllArticlesPage: React.FC = () => {
                     </Grid>
                 </Grid>
             )}
-        </Box>
+        </CommonGridContainer>
     );
 };
 
 export default AllArticlesPage;
-//변경전
