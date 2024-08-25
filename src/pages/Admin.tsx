@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Typography, Paper, Button, Grid } from '@mui/material';
 import { styled } from '@mui/system';
+import Navbar from '../components/Navbar';
 
 const PageContainer = styled(Box)({
     padding: '20px',
@@ -29,14 +30,15 @@ const Admin: React.FC = () => {
 
     return (
         <PageContainer>
+            <Navbar />
             <Typography variant="h4" gutterBottom>
-                Welcome to ABCD Page
+                ADMIN PAGE
             </Typography>
             <Grid container spacing={2} justifyContent="center">
                 <Grid item xs={12} sm={6} md={4}>
                     <Card>
                         <Typography variant="h5" gutterBottom>
-                            Go to Admin Page
+                            View Reported Comments
                         </Typography>
                         <Button
                             variant="contained"
