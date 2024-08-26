@@ -23,7 +23,7 @@ const ArticleDetail: React.FC = () => {
     useEffect(() => {
         const fetchArticle = async () => {
             try {
-                await axiosInstance.get(`/article/article/${articleId}`);
+                await axiosInstance.post(`/article/views/${articleId}`);
                 // const response = await axiosInstance.get(`/article/article/${articleId}`);
                 //setArticle(response.data);
             } catch (err) {
