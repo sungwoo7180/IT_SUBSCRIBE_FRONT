@@ -88,27 +88,33 @@ const Navbar: React.FC = () => {
                 </Typography>
                 <Box>
                     {Object.keys(user).length > 0 ? (
-                        <IconButton color="inherit" onClick={() => navigate('/my-page')}>
-                            <img src={user.avatarUrl} alt="Profile" style={{ width: 30, height: 30, borderRadius: '50%' }} />
-                        </IconButton>
-                    ) : (
-                        <Link to="/" style={{ color: 'inherit' }}>
-                            <IconButton color="inherit">
-                                <PersonIcon />
+                        <>
+                            { (user.role == "ADMIN" || user.role =="SUPER_ADMIN") && (
+                                <Button color="inherit" onClick={() => navigate('/admin')}>
+                                    Admin Panel
+                                </Button>
+                            )}
+                            <IconButton color="inherit" onClick={() => navigate('/my-page')}>
+                                <img src={user.avatarUrl} alt="Profile" style={{ width: 30, height: 30, borderRadius: '50%' }} />
                             </IconButton>
-                        </Link>
-                    )}
-                    <IconButton color="inherit">
-                        <MailIcon />
-                    </IconButton>
-                    {Object.keys(user).length > 0 ? (
-                        <Button color="inherit" onClick={handleLogout}>
-                            <ExitToAppIcon /> Logout
-                        </Button>
+                            <IconButton color="inherit">
+                                <MailIcon />
+                            </IconButton>
+                            <Button color="inherit" onClick={handleLogout}>
+                                <ExitToAppIcon /> Logout
+                            </Button>
+                        </>
                     ) : (
-                        <Link to="/" style={{ color: 'inherit' }}>
-                            <Button color="inherit">Login</Button>
-                        </Link>
+                        <>
+                            <Link to="/" style={{ color: 'inherit' }}>
+                                <IconButton color="inherit">
+                                    <PersonIcon />
+                                </IconButton>
+                            </Link>
+                            <Link to="/" style={{ color: 'inherit' }}>
+                                <Button color="inherit">Login</Button>
+                            </Link>
+                        </>
                     )}
                 </Box>
             </Toolbar>

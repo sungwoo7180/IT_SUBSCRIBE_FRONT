@@ -1,11 +1,10 @@
-// src/components/RecommendArticles.tsx
 import React, { useState, useEffect } from 'react';
-import {Box, Card, CardMedia, CardContent, Chip, IconButton, CircularProgress, Typography} from '@mui/material';
+import { Box, CardMedia, CardContent, Chip, IconButton, CircularProgress, Typography } from '@mui/material';
 import { ArrowBackIos, ArrowForwardIos } from '@mui/icons-material';
 import { useNavigate } from "react-router-dom";
 import axiosInstance from '../config/AxiosConfig';
-import { CommonCard, LoadingBox } from '../style/StyledComponents'; // 공통 스타일 컴포넌트 가져오기
-import CommonHeader from './CommonHeader'; // 공통 컴포넌트 가져오기
+import { CommonCard, LoadingBox } from '../style/StyledComponents';
+import CommonHeader from './CommonHeader';
 
 interface Category {
     id: number;
@@ -46,16 +45,28 @@ const RecommendArticles: React.FC = () => {
                 const token = localStorage.getItem('token');
                 const response = await axiosInstance.get('/recommend-article/recent', {
                     headers: {
-                        Authorization: `Bearer ${token}`
+                        Authorization: token ? `Bearer ${token}` : undefined,
                     },
                     params: {
                         limit: 12
                     }
                 });
+
                 const fetchedArticles = response.data;
-                setArticles(fetchedArticles.length > 5 ? getRandomArticles(fetchedArticles, 5) : fetchedArticles);
+
+                // 선호 카테고리가 없는 경우 전체 기사에서 랜덤으로 추천
+                if (!fetchedArticles || fetchedArticles.length === 0) {
+                    // 여기에 기본적으로 랜덤 기사 12개를 불러오는 로직을 추가
+                    const randomArticlesResponse = await axiosInstance.get('/articles/random', {
+                        params: { limit: 12 },
+                    });
+                    setArticles(getRandomArticles(randomArticlesResponse.data, 5));
+                } else {
+                    setArticles(fetchedArticles.length > 5 ? getRandomArticles(fetchedArticles, 5) : fetchedArticles);
+                }
             } catch (error) {
                 console.error('Failed to fetch articles', error);
+                setArticles([]); // 오류 발생 시 빈 배열로 설정
             } finally {
                 setLoading(false);
             }
@@ -87,7 +98,7 @@ const RecommendArticles: React.FC = () => {
                 articles.length > 0 ? (
                     <>
                         <CommonCard onClick={() => handleOpenArticle(articles[currentArticle])}>
-                            {articles[currentArticle] && articles[currentArticle].imgUrls && articles[currentArticle].imgUrls[0] && (
+                            {articles[currentArticle]?.imgUrls?.length > 0 && (
                                 <CardMedia
                                     component="img"
                                     height="140"
@@ -101,17 +112,17 @@ const RecommendArticles: React.FC = () => {
                                     overflow: 'hidden',
                                     textOverflow: 'ellipsis',
                                     display: '-webkit-box',
-                                    WebkitLineClamp: 8,
-                                    WebkitBoxOrient: 'vertical'
-                                }}>
-                                    {articles[currentArticle]?.content}
+                                        WebkitLineClamp: 8,
+                                        WebkitBoxOrient: 'vertical'
+                                    }}>
+                                        {articles[currentArticle]?.content}
                                 </Typography>
                                 <Box sx={{ marginTop: 1 }}>
-                                    {articles[currentArticle] && articles[currentArticle].category && (
+                                    {articles[currentArticle]?.category && (
                                         <Chip label={articles[currentArticle].category.name} color="primary" />
                                     )}
                                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 1, mb: 1 }}>
-                                        {articles[currentArticle]?.tags.map((tag, index) => (
+                                        {articles[currentArticle]?.tags?.map((tag, index) => (
                                             <Chip key={index} label={tag.name} sx={{ backgroundColor: '#2e3b4e', color: 'white' }} />
                                         ))}
                                     </Box>

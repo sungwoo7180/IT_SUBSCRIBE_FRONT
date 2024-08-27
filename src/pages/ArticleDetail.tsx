@@ -5,8 +5,9 @@ import axiosInstance from '../config/AxiosConfig';
 import MostHotArticles from '../components/MostHotArticles';
 import Comments from '../components/Comments';
 import BookmarkButton from '@mui/icons-material/Bookmark';
-import CategoryChip from '../components/Button/CategoryButton';
+import CategoryChip from '../components/Button/CategoryButton'; // CategoryChip 임포트
 import {Article as ArticleType, CommentType, ReplyType} from '../types/Article';
+import Bookmark from '../components/Bookmark';
 
 const ArticleDetail: React.FC = () => {
     const { articleId } = useParams<{ articleId: string }>();
@@ -18,13 +19,15 @@ const ArticleDetail: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [snackbarMessage, setSnackbarMessage] = useState<string>("");
     const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
-
+    const user = JSON.parse(localStorage.getItem('user') || '{}'); // 사용자 정보 가져오기
 
     useEffect(() => {
         const fetchArticle = async () => {
             try {
-                const response = await axiosInstance.get(`/article/article/${articleId}`);
-                setArticle(response.data);
+                const response = await axiosInstance.post(`/article/view/${articleId}`);
+                console.log(user);
+                // const response = await axiosInstance.get(`/article/article/${articleId}`);
+                //setArticle(response.data);
             } catch (err) {
                 setError('Failed to fetch article');
             }
@@ -52,6 +55,7 @@ const ArticleDetail: React.FC = () => {
         if (!initialArticle) {
             fetchArticle();
         }
+        //fetchArticle();
         incrementCount();
         fetchComments();
     }, [articleId, initialArticle]);
@@ -65,6 +69,10 @@ const ArticleDetail: React.FC = () => {
                 memberNickname: comment.memberNickname,
                 profileImageURL: comment.profileImageURL,
                 timestamp: new Date().toISOString(),
+                // memberId: user.id, // 현재 로그인한 사용자의 ID를 사용
+                // memberNickname: user.nickname, // 현재 로그인한 사용자의 닉네임을 사용
+                // profileImageURL: user.avatarUrl, // 현재 로그인한 사용자의 프로필 이미지를 사용
+                // timestamp: new Date().toISOString(),
             });
             setComments([...comments, response.data]);
         } catch (err) {
@@ -183,7 +191,11 @@ const ArticleDetail: React.FC = () => {
                                     <CategoryChip category={article.category} />
                                     {article.tags && article.tags.length > 0 && article.tags.map(tag => (
                                         <Chip key={tag.id} label={tag.name} sx={{ marginRight: "0.5rem", marginBottom: "0.05rem" }} />
-                                    ))}
+                                    /*
+                                    {article.tags.map(tag => (
+                                        <Chip key={tag.id} label={tag.name}
+                                              sx={{ marginRight: "0.5rem", marginBottom: "0.05rem" }} />
+                                    ))}*/
                                 </Box>
                             </Box>
                             <Typography component="a" href={article.source} target="_blank" rel="noopener noreferrer"
@@ -195,6 +207,8 @@ const ArticleDetail: React.FC = () => {
                                         }}>
                                 {article.source}
                             </Typography>
+                            {/* bookmark mui import 로 해결 */}
+                            <Bookmark articleId={article.id} />
                         </Box>
                         <hr />
                         <img
@@ -209,6 +223,7 @@ const ArticleDetail: React.FC = () => {
                         </Typography>
                     </Paper>
                 </Grid>
+                // 버튼 왜 지운지 모르겠음
                 <Grid item xs={12} md={9} sx={{ display: 'flex', justifyContent: 'center' }}>
                     <Button variant="contained" startIcon={<BookmarkButton />} sx={{ bgcolor: '#ff4081', my: 2 }}>
                         Bookmark
@@ -229,6 +244,14 @@ const ArticleDetail: React.FC = () => {
                         setSnackbarMessage={setSnackbarMessage} // 스낵바 메세지 설정 함수 전달
                         setOpenSnackbar={setOpenSnackbar} // 스낵바 열기 설정 함수 전달
                     />}
+                    /*
+                    {loading ? (
+                        <Typography>Loading comments...</Typography>
+                    ) : (
+                        <Box sx={{ width: '100%', bgcolor: '#1f2a3c', p: 2, borderRadius: 2 }}>
+                            <Comments comments={comments} onAddComment={handleAddComment} user={user} />
+                        </Box>
+                    )}*/
                 </Grid>
                 <Grid item xs={12} md={3} sx={{ position: 'relative', top: '-100px' }}>
                     <MostHotArticles />

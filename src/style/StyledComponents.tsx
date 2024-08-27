@@ -13,7 +13,7 @@ import {
     Chip,
     CircularProgress,
     Link as MuiLink,
-    CardMedia
+    CardMedia, IconButton, CardMediaProps, Paper
 } from '@mui/material';
 
 // 공통 Box 스타일
@@ -139,6 +139,21 @@ export const LoadingBox = styled(Box)({
     height: '100%',
 });
 
+// 공통 Grid 스타일
+export const CommonGridContainer = styled(Grid)({
+    flexGrow: 1,
+    padding: '3rem',
+    backgroundImage: 'url(/Background.png)',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    minHeight: '100vh',
+});
+
+// 공통 Divider 스타일
+export const CommonDivider = styled(Divider)({
+    borderColor: 'white',
+});
+
 // 공통 Chip 스타일
 export const CommonChip = styled(Chip)({
     backgroundColor: '#3f51b5',
@@ -177,9 +192,31 @@ export const CommonCardMedia = styled(CardMedia)({
     height: '140px',
 });
 
+// CommonTypography 에 스타일 적용 및 Typography 확장
+export const CommonLinkTypography = styled(Typography)({
+    color: 'white',
+    marginLeft: 'auto',
+    textDecoration: 'none',
+    '&:hover': {
+        textDecoration: 'underline',
+    }
+});
+
+// 공통 버튼 스타일
+export const CommonButton = styled(Button)({
+    marginTop: '16px',
+    width: '500px',
+    height: '50px',
+});
+
 // 공통 컨테이너 스타일
 export const AuthContainer = styled(Grid)({
     height: '100vh',
+});
+
+// 공통 IconButton 스타일
+export const CommonIconButton = styled(IconButton)({
+    color: 'white',
 });
 
 // 공통 좌측 섹션 스타일
@@ -209,6 +246,11 @@ export const AuthLink = styled(MuiLink)({
     },
 });
 
+// 공통 Typography 스타일
+export const CommonTypography = styled(Typography)({
+    color: 'white',
+});
+
 // 공통 우측 섹션 스타일
 export const AuthRightSection = styled(Grid)({
     background: 'url(login-background.png) no-repeat center center',
@@ -227,4 +269,42 @@ export const AuthTitle = styled(Typography)({
     '& span': {
         color: '#0026ED',
     },
+});
+
+// ArticleDetail 관련 스타일
+export const DetailPaper = styled(Paper)({
+    padding: '20px',
+    color: 'white',
+    backgroundColor: '#1f2a3c',
+});
+
+export const DetailImage = styled('img')({
+    width: '100%',
+    height: 'auto',
+    maxHeight: '200rem',
+    marginBottom: '1rem',
+});
+
+// ArticlesView 관련 스타일
+export const CategoryTagBox = styled(Box)({
+    display: 'flex',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: "0.5rem",
+});
+
+export const TagsContainer = styled(Box)({
+    display: 'flex',
+    flexWrap: 'wrap',
+    maxHeight: '4.5rem',
+    overflow: 'hidden',
+    alignItems: 'center',
+    marginTop: '0.5rem',
+});
+
+export const ArticleCard = styled(Card)({
+    display: 'flex',
+    flexDirection: 'column',
+    backgroundColor: '#152238',
+    color: 'white',
 });

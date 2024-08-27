@@ -10,5 +10,3 @@ const categories = [
     { id: 9, name: '모바일' },
 ]
 export default categories
-
-// 코드 제거 필수 (DB가 아닌 React 에서 id, name 테이블 생성상태

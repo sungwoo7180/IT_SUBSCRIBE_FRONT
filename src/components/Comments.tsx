@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
-import { List, IconButton, Typography, Button, MenuItem, Menu, TextField, Box, Snackbar } from '@mui/material';
-import { ReportProblemOutlined as ReportIcon, Edit as EditIcon, Delete as DeleteIcon, Share as ShareIcon, ThumbUp as ThumbUpIcon, MoreVert as MoreVertIcon } from '@mui/icons-material';
+import React, { useState, useEffect } from 'react';
+import { List, IconButton, Typography, Box, Avatar, Snackbar, TextField, Button, Divider, ListItem, Dialog, DialogTitle, DialogContent, DialogActions, Radio, RadioGroup, MenuItem, Menu, FormControlLabel, FormControl, FormLabel } from '@mui/material';
+import { ReportProblemOutlined as ReportIcon, ThumbUpAltOutlined as LikeIcon, ThumbUpAlt as LikedIcon } from '@mui/icons-material';
+import { styled } from '@mui/system';
+import { Edit as EditIcon, Delete as DeleteIcon, Share as ShareIcon, ThumbUp as ThumbUpIcon, MoreVert as MoreVertIcon } from '@mui/icons-material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import {
@@ -15,6 +17,78 @@ import {
 import { CommentType, ReplyType } from "../types/Article";
 import ReplyInput from './ReplyInput';
 import axiosInstance from "../config/AxiosConfig";
+
+const CommentFormContainer = styled(Box)({
+    display: 'flex',
+    alignItems: 'center',
+    marginTop: '1rem',
+    gap: '1rem',
+});
+
+const CommentFormAvatar = styled(Avatar)({
+    width: 40,
+    height: 40,
+});
+
+// const CommentsContainer = styled(Box)({
+//     marginTop: 16,
+//     padding: 16,
+//     borderRadius: 8,
+//     backgroundColor: '#1f2a3c',
+//     color: 'white',
+//     border: '1px solid white',
+// });
+
+// const CommentListItem = styled(ListItem)({
+//     marginBottom: 16,
+//     alignItems: 'flex-start',
+// });
+
+// const CommentContentBox = styled(Box)({
+//     flex: 1,
+//     marginTop: '0.5rem',
+// });
+
+// const CommentMetaBox = styled(Box)({
+//     display: 'flex',
+//     justifyContent: 'space-between',
+//     alignItems: 'center',
+// });
+
+const CommentNickname = styled(Typography)({
+    fontWeight: 'bold',
+    color: 'white',
+});
+
+const CommentTimestamp = styled(Typography)({
+    marginLeft: 16,
+    color: 'gray',
+});
+
+// const CommentDivider = styled(Divider)({
+//     borderColor: 'white',
+// });
+
+const CommentTextField = styled(TextField)({
+    marginTop: 16,
+    input: {
+        color: 'white',
+    },
+    "& .MuiOutlinedInput-root": {
+        "& fieldset": {
+            borderColor: "white"
+        },
+        "&:hover fieldset": {
+            borderColor: "white"
+        },
+        "&.Mui-focused fieldset": {
+            borderColor: "white"
+        }
+    },
+    "& .MuiInputLabel-root": {
+        color: "white"
+    }
+});
 
 interface CommentsProps {
     articleId: number;
@@ -31,6 +105,16 @@ interface CommentsProps {
     setOpenSnackbar: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
+// const SubmitButton = styled(Button)({
+//     marginTop: 8,
+// });
+
+interface ReportReason {
+    name: string;
+    description: string;
+}
+
+
 const Comments: React.FC<CommentsProps> = ({
                                                articleId,
                                                comments,
@@ -46,10 +130,30 @@ const Comments: React.FC<CommentsProps> = ({
                                                setOpenSnackbar
                                            }) => {
     const [newComment, setNewComment] = useState<string>('');
+    const [liked, setLiked] = useState<{ [key: number]: boolean }>({});
+    const [openReportModal, setOpenReportModal] = useState<boolean>(false);
+    const [reportReasons, setReportReasons] = useState<ReportReason[]>([]);
+    const [selectedComment, setSelectedComment] = useState<number | null>(null);
+    const [selectedReason, setSelectedReason] = useState<string>('');
+    const [openConfirmationModal, setOpenConfirmationModal] = useState<boolean>(false);
     const [openReplies, setOpenReplies] = useState<{ [key: number]: boolean }>({});
     const [replyingTo, setReplyingTo] = useState<{ id: number | null, isReply: boolean | null }>({ id: null, isReply: null });
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     const [anchorEl, setAnchorEl] = useState<{ [key: number]: HTMLElement | null }>({});
+
+
+    useEffect(() => {
+        if (openReportModal) {
+            axiosInstance.get('/enum-list/comment-report-reasons')
+                .then(response => {
+                    setReportReasons(response.data);
+                })
+                .catch(error => {
+                    console.error('Failed to fetch report reasons:', error);
+                });
+        }
+    }, [openReportModal]);
+
 
     // 삭제 flag 렌더링 함수
     const renderComment = (comment: CommentType) => {
@@ -64,6 +168,13 @@ const Comments: React.FC<CommentsProps> = ({
     const handleCommentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setNewComment(event.target.value);
     };
+
+    // const handleCommentSubmit = () => {
+    //     if (newComment.trim()) {
+    //         onAddComment(newComment.trim());
+    //         setNewComment('');
+    //     }
+    // };
 
     // 댓글 제출 핸들러
     const handleCommentSubmit = async () => {
@@ -179,6 +290,48 @@ const Comments: React.FC<CommentsProps> = ({
         }
     };
 
+    const handleLikeToggle = (commentId: number) => {
+        setLiked((prevLiked) => ({
+            ...prevLiked,
+            [commentId]: !prevLiked[commentId],
+        }));
+    };
+
+    const handleReportClick = (commentId: number) => {
+        setSelectedComment(commentId);
+        setOpenReportModal(true);
+    };
+
+    const handleReportModalClose = () => {
+        setOpenReportModal(false);
+        setSelectedReason('');
+    };
+
+    const handleReportReasonChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSelectedReason(event.target.value);
+    };
+
+    const handleReportSubmit = () => {
+        if (selectedComment !== null && selectedReason) {
+            const reportData = {
+                commentId: selectedComment,
+                reason: selectedReason,
+            };
+            axiosInstance.post(`/api/comment/${selectedComment}/report`, reportData)
+                .then(response => {
+                    setOpenReportModal(false);
+                    setOpenConfirmationModal(true);
+                })
+                .catch(error => {
+                    console.error('Failed to submit report:', error);
+                });
+        }
+    };
+
+    const handleConfirmationModalClose = () => {
+        setOpenConfirmationModal(false);
+    };
+
     return (
         <CommentsContainer>
             <Typography variant="h6" component="div">{`Comments: ${comments.length}`}</Typography>
@@ -226,7 +379,7 @@ const Comments: React.FC<CommentsProps> = ({
                                                 </MenuItem>
                                             </>
                                         ) : (
-                                            <MenuItem onClick={() => onReportComment(comment.id)} style={{ color: 'black' }}>
+                                            <MenuItem onClick={() => handleReportClick(comment.id)} style={{ color: 'black' }}>
                                                 <ReportIcon sx={{ marginRight: '8px' }} />
                                                 신고
                                             </MenuItem>
@@ -374,7 +527,100 @@ const Comments: React.FC<CommentsProps> = ({
                     Submit
                 </SubmitButton>
             </Box>
+            {/* 신고 모달 */}
+            <Dialog
+                open={openReportModal}
+                onClose={handleReportModalClose}
+                maxWidth="xs"
+                fullWidth
+                PaperProps={{
+                    sx: {
+                        bgcolor: '#1f2a3c',
+                        color: 'white',
+                        borderRadius: '12px'
+                    },
+                }}
+            >
+                <DialogTitle sx={{ bgcolor: '#1f2a3c', color: 'white', borderRadius: '12px 12px 0 0' }}>
+                    Select a report reason
+                </DialogTitle>
+                <DialogContent sx={{ bgcolor: '#1f2a3c', color: 'white' }}>
+                    <FormControl component="fieldset">
+                        <FormLabel component="legend" sx={{ color: 'white' }}>What's going on?</FormLabel>
+                        <RadioGroup
+                            aria-label="report-reason"
+                            name="report-reason"
+                            value={selectedReason}
+                            onChange={handleReportReasonChange}
+                        >
+                            {reportReasons.map((reason) => (
+                                <FormControlLabel
+                                    key={reason.name}
+                                    value={reason.name}
+                                    control={<Radio sx={{ color: 'white' }} />}
+                                    label={reason.description}
+                                    sx={{ color: 'white' }}
+                                />
+                            ))}
+                        </RadioGroup>
+                    </FormControl>
+                </DialogContent>
+                <DialogActions sx={{ bgcolor: '#1f2a3c', color: 'white', borderRadius: '0 0 12px 12px' }}>
+                    <Button onClick={handleReportModalClose} color="primary">
+                        Cancel
+                    </Button>
+                    <Button onClick={handleReportSubmit} color="primary" disabled={!selectedReason}>
+                        Submit
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            {/* Confirmation Modal */}
+            <Dialog
+                open={openConfirmationModal}
+                onClose={handleConfirmationModalClose}
+                maxWidth="sm"
+                fullWidth
+                PaperProps={{
+                    sx: {
+                        bgcolor: '#1f2a3c',
+                        color: 'white',
+                        borderRadius: '12px'
+                    },
+                }}
+            >
+                <DialogTitle sx={{ bgcolor: '#1f2a3c', color: 'white', borderRadius: '12px 12px 0 0' }}>
+                    신고
+                </DialogTitle>
+                <DialogContent sx={{ bgcolor: '#1f2a3c', color: 'white' }}>
+                    <Typography variant="body1">
+                        커뮤니티에 도움을 주셔서 감사합니다
+                    </Typography>
+                    <div style={{ margin: '16px 0' }} />
+                    <Typography variant="body1">
+                        신고해 주신 내용은 유해한 콘텐츠로부터 커뮤니티를 보호하는 데 도움이 됩니다.
+                    </Typography>
+                    <div style={{ margin: '16px 0' }} />
+                    <Typography variant="body1">
+                        누군가 위급한 상황에 처했다고 생각한다면 현지 법 집행 기관에 연락하세요.
+                    </Typography>
+                    <div style={{ margin: '16px 0' }} />
+                    <Typography variant="body1">
+                        다음 단계
+                    </Typography>
+                    <div style={{ margin: '16px 0' }} />
+                    <Typography variant="body1">
+                        심각하거나 반복적인 위반에 해당할 경우 ITScribe 에서 이 댓글 작성자가 댓글을 올리지 못하도록 일시적으로 제한할 수 있습니다.
+                    </Typography>
+                </DialogContent>
+                <DialogActions sx={{ bgcolor: '#1f2a3c', color: 'white', borderRadius: '0 0 12px 12px' }}>
+                    <Button onClick={handleConfirmationModalClose} color="primary">
+                        확인
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </CommentsContainer>
+
     );
 };
 
