@@ -20,9 +20,10 @@ const ArticleDetail: React.FC = () => {
     useEffect(() => {
         const fetchArticle = async () => {
             try {
-                await axiosInstance.post(`/article/article/${articleId}`);
-                // const response = await axiosInstance.get(`/article/article/${articleId}`);
-                //setArticle(response.data);
+                if (!initialArticle) {
+                    const response = await axiosInstance.get(`/article/article/${articleId}`);
+                    setArticle(response.data);
+                }
             } catch (err) {
                 setError('Failed to fetch article');
             }
@@ -47,10 +48,9 @@ const ArticleDetail: React.FC = () => {
             }
         };
 
-        // if (!initialArticle) {
-        //     fetchArticle();
-        // }
-        fetchArticle();
+        if (!initialArticle) {
+            fetchArticle();
+        }
         incrementCount();
         fetchComments();
     }, [articleId, initialArticle]);
@@ -111,7 +111,7 @@ const ArticleDetail: React.FC = () => {
                                     marginTop: "1rem"
                                 }}>
                                     <CategoryChip category={article.category} />
-                                    {article.tags.map(tag => (
+                                    {article.tags?.map(tag => (
                                         <Chip key={tag.id} label={tag.name}
                                               sx={{marginRight: "0.5rem", marginBottom: "0.05rem"}}/>
                                     ))}
@@ -128,7 +128,7 @@ const ArticleDetail: React.FC = () => {
                             </Typography>
                         </Box>
                         <hr/>
-                        <img src={article.imgUrls[0] || 'https://via.placeholder.com/150'} alt={article.title}
+                        <img src={article.imgUrls?.[0] || 'https://via.placeholder.com/150'} alt={article.title}
                              style={{width: '100%', height: 'auto', maxHeight: '200rem' , marginBottom: `1rem`}}/>
                         <Typography paragraph sx={{ whiteSpace: 'pre-line' }}>
                             <div style={{ color: '#91bad3', fontSize: '1.2rem' }}>

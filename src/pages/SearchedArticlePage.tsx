@@ -7,7 +7,7 @@ import axiosInstance from '../config/AxiosConfig';
 import { Article } from '../types/Article';
 
 const SearchedArticlePage: React.FC = () => {
-    const [articles, setArticles] = useState<Article[]>([]);
+    const [articles, setArticles] = useState<Article[]>([]); // 초기 상태를 빈 배열로 설정
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [totalPages, setTotalPages] = useState<number>(1);
     const [loading, setLoading] = useState<boolean>(true);
@@ -29,7 +29,7 @@ const SearchedArticlePage: React.FC = () => {
                 });
 
                 const { content, totalPages } = response.data;
-                setArticles(content || []);
+                setArticles(content || []); // content가 undefined일 경우 빈 배열로 설정
                 setTotalPages(totalPages);
             } catch (error) {
                 console.error('Failed to fetch articles', error);
@@ -85,7 +85,7 @@ const SearchedArticlePage: React.FC = () => {
                                                     {article.category.name}
                                                 </Typography>
                                                 <Box sx={{ mt: 1 }}>
-                                                    {article.tags.map(tag => (
+                                                    {article.tags && article.tags.map(tag => (
                                                         <Chip key={tag.id} label={tag.name} sx={{ mr: 1, mb: 1, color: 'white', backgroundColor: '#3f51b5' }} />
                                                     ))}
                                                 </Box>

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { AppBar, Toolbar, Typography, IconButton, InputBase, Box, Button } from '@mui/material';
+import { AppBar, Toolbar, Typography, IconButton, Box, Button } from '@mui/material';
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import SearchIcon from '@mui/icons-material/Search';
 import PersonIcon from '@mui/icons-material/Person';
 import MailIcon from '@mui/icons-material/Mail';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import categories from '../data/Categories';
+import SearchBar from './SearchBar'; // 분리된 SearchBar 컴포넌트 import
 
 const Navbar: React.FC = () => {
     const navigate = useNavigate();
@@ -60,24 +60,15 @@ const Navbar: React.FC = () => {
             .catch(error => console.error('로그아웃 에러:', error));
     };
 
+    const handleSearch = (query: string) => {
+        console.log(`Search query: ${query}`);
+        // 검색 동작 처리 (예: API 호출)
+    };
+
     return (
         <AppBar position="static" style={{ backgroundColor: '#152238' }}>
             <Toolbar style={{ justifyContent: 'space-between' }}>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <SearchIcon />
-                    <InputBase
-                        placeholder="Search…"
-                        inputProps={{ 'aria-label': 'search' }}
-                        style={{
-                            color: 'inherit',
-                            backgroundColor: '#ffffff33',
-                            padding: '0 10px',
-                            borderRadius: '4px',
-                            width: '300px',
-                            marginLeft: '10px'
-                        }}
-                    />
-                </Box>
+                <SearchBar /> {/* SearchBar 컴포넌트 사용 */}
                 <Typography
                     variant="h4"
                     component="div"
