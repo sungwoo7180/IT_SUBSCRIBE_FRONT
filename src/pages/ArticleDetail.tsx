@@ -196,6 +196,7 @@ const ArticleDetail: React.FC = () => {
                                         <Chip key={tag.id} label={tag.name}
                                               sx={{ marginRight: "0.5rem", marginBottom: "0.05rem" }} />
                                     ))}*/
+                                    ))}
                                 </Box>
                             </Box>
                             <Typography component="a" href={article.source} target="_blank" rel="noopener noreferrer"
@@ -223,7 +224,7 @@ const ArticleDetail: React.FC = () => {
                         </Typography>
                     </Paper>
                 </Grid>
-                // 버튼 왜 지운지 모르겠음
+                {/*버튼 왜 지운지 모르겠음*/}
                 <Grid item xs={12} md={9} sx={{ display: 'flex', justifyContent: 'center' }}>
                     <Button variant="contained" startIcon={<BookmarkButton />} sx={{ bgcolor: '#ff4081', my: 2 }}>
                         Bookmark
@@ -244,14 +245,13 @@ const ArticleDetail: React.FC = () => {
                         setSnackbarMessage={setSnackbarMessage} // 스낵바 메세지 설정 함수 전달
                         setOpenSnackbar={setOpenSnackbar} // 스낵바 열기 설정 함수 전달
                     />}
-                    /*
-                    {loading ? (
-                        <Typography>Loading comments...</Typography>
-                    ) : (
-                        <Box sx={{ width: '100%', bgcolor: '#1f2a3c', p: 2, borderRadius: 2 }}>
-                            <Comments comments={comments} onAddComment={handleAddComment} user={user} />
-                        </Box>
-                    )}*/
+                    {/*{loading ? (*/}
+                    {/*    <Typography>Loading comments...</Typography>*/}
+                    {/*) : (*/}
+                    {/*    <Box sx={{ width: '100%', bgcolor: '#1f2a3c', p: 2, borderRadius: 2 }}>*/}
+                    {/*        <Comments comments={comments} onAddComment={handleAddComment} user={user} />*/}
+                    {/*    </Box>*/}
+                    {/*)}*/}
                 </Grid>
                 <Grid item xs={12} md={3} sx={{ position: 'relative', top: '-100px' }}>
                     <MostHotArticles />
