@@ -26,5 +26,24 @@ export interface CommentType {
     memberId: number;
     memberNickname: string;
     profileImageURL: string;
+    likeCount: number;
+    timestamp: string;
+    relativeTime: string;
+    liked: boolean; // liked 속성 추가
+    replies?: ReplyType[];
+    replyCount: number;
+    isDeleted: boolean;
+}
+
+export interface ReplyType {
+    id: number;
+    content: string;
+    memberId: number;
+    memberNickname: string;
+    profileImageURL: string;
+    likeCount: number;
+    parentCommentId: number;
+    relativeTime: string;
+    liked: boolean;
     timestamp: string;
 }

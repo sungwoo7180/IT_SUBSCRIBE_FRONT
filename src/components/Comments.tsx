@@ -1,121 +1,272 @@
 import React, { useState } from 'react';
-import {List, IconButton, Typography, Button} from '@mui/material';
-import { ReportProblemOutlined as ReportIcon, Share as ShareIcon, ThumbUp as ThumbUpIcon } from '@mui/icons-material';
+import { List, IconButton, Typography, Button, MenuItem, Menu, TextField, Box, Snackbar } from '@mui/material';
+import { ReportProblemOutlined as ReportIcon, Edit as EditIcon, Delete as DeleteIcon, Share as ShareIcon, ThumbUp as ThumbUpIcon, MoreVert as MoreVertIcon } from '@mui/icons-material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import {
     CommentsContainer,
     CommentListItem,
     CommentAvatar,
     CommentContentBox,
     CommentMetaBox,
-    CommentNickname,
-    CommentTimestamp,
     CommentDivider,
-    CommentTextField,
     SubmitButton
 } from '../style/StyledComponents';
-
-interface CommentType {
-    id: number;
-    content: string;
-    articleId: number;
-    memberId: number;
-    memberNickname: string;
-    profileImageURL: string;
-    timestamp: string;
-    replies?: ReplyType[];
-}
-
-interface ReplyType {
-    id: number;
-    content: string;
-    memberId: number;
-    memberNickname: string;
-    profileImageURL: string;
-    timestamp: string;
-}
-
+import { CommentType, ReplyType } from "../types/Article";
+import ReplyInput from './ReplyInput';
+import axiosInstance from "../config/AxiosConfig";
 
 interface CommentsProps {
+    articleId: number;
     comments: CommentType[];
-    onAddComment: (text: string) => void; // 댓글 추가 함수
+    onAddComment: (comment: CommentType) => void;
+    onToggleLike: (commentId: number) => void;
+    onDeleteComment: (commentId: number) => void;
+    onEditComment: (comment: CommentType) => void;
+    onReportComment: (commentId: number) => void;
+    onAddReply: (reply: ReplyType) => void;
+    onEditReply: (reply: ReplyType) => void;
+    setComments: React.Dispatch<React.SetStateAction<CommentType[]>>;
+    setSnackbarMessage: React.Dispatch<React.SetStateAction<string>>;
+    setOpenSnackbar: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Comments: React.FC<CommentsProps> = ({ comments, onAddComment }) => {
+const Comments: React.FC<CommentsProps> = ({
+                                               articleId,
+                                               comments,
+                                               onAddComment,
+                                               onToggleLike,
+                                               onEditComment,
+                                               onDeleteComment,
+                                               onReportComment,
+                                               onAddReply,
+                                               onEditReply,
+                                               setComments,
+                                               setSnackbarMessage,
+                                               setOpenSnackbar
+                                           }) => {
     const [newComment, setNewComment] = useState<string>('');
-    const [openReplies, setOpenReplies] = useState<{ [key: number]: boolean }>({}); // 대댓글 토글 상태 관리
+    const [openReplies, setOpenReplies] = useState<{ [key: number]: boolean }>({});
+    const [replyingTo, setReplyingTo] = useState<{ id: number | null, isReply: boolean | null }>({ id: null, isReply: null });
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const [anchorEl, setAnchorEl] = useState<{ [key: number]: HTMLElement | null }>({});
 
+    // 삭제 flag 렌더링 함수
+    const renderComment = (comment: CommentType) => {
+        return (
+            <Typography variant="subtitle1" component="span">
+                {comment.isDeleted ? "익명" : comment.memberNickname}
+            </Typography>
+        );
+    };
+
+    // 댓글 내용 변경 핸들러
     const handleCommentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setNewComment(event.target.value);
     };
 
-    const handleCommentSubmit = () => {
+    // 댓글 제출 핸들러
+    const handleCommentSubmit = async () => {
         if (newComment.trim()) {
-            onAddComment(newComment.trim()); // 댓글 추가
-            setNewComment(''); // 입력 필드 초기화
+            const newCommentData: CommentType = {
+                id: 0, // 임시 ID, 서버에서 반환된 후 수정
+                content: newComment.trim(),
+                articleId: articleId,
+                memberId: user.id,
+                memberNickname: user.nickname,
+                profileImageURL: user.profileImageURL,
+                likeCount: 0,
+                timestamp: new Date().toISOString(),
+                relativeTime: '방금 전',
+                liked: false,
+                replies: [],
+                replyCount: 0, // 처음에는 0으로 설정
+                isDeleted: false
+            };
+            onAddComment(newCommentData);
+            setNewComment('');
         }
     };
 
-    // 공유 버튼 클릭 시 동작
-    const handleShare = () => {
-        alert('댓글을 공유합니다!');
-    };
-
-    // 좋아요 버튼 클릭 시 동작
+    // 댓글 좋아요 토글 핸들러
     const handleLike = (commentId: number) => {
-        alert(`댓글 ${commentId}에 좋아요를 눌렀습니다.`);
+        onToggleLike(commentId);
     };
 
-    // 답글 토글 버튼 클릭 시 동작
-    const handleToggleReplies = (commentId: number) => {
-        setOpenReplies((prev) => ({ ...prev, [commentId]: !prev[commentId] }));
+    // 대댓글 토글 핸들러
+    const handleToggleReplies = async (commentId: number) => {
+        if (openReplies[commentId]) {
+            setOpenReplies(prev => ({ ...prev, [commentId]: false }));
+            return;
+        }
+        try {
+            const response = await axiosInstance.get(`/api/comment/${commentId}/replies`);
+            const replies = response.data;
+
+            setComments(comments.map((comment: CommentType) =>
+                comment.id === commentId
+                    ? { ...comment, replies }
+                    : comment
+            ));
+            setOpenReplies(prev => ({ ...prev, [commentId]: true }));
+        } catch (err) {
+            console.error('Failed to fetch replies', err);
+        }
     };
 
-    function handleReply(id: number): void {
-        throw new Error('Function not implemented.');
-    }
+    // 메뉴 열기 핸들러
+    const handleMenuOpen = (commentId: number, event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl({ ...anchorEl, [commentId]: event.currentTarget });
+    };
+
+    // 메뉴 닫기 핸들러
+    const handleMenuClose = (commentId: number) => {
+        setAnchorEl({ ...anchorEl, [commentId]: null });
+    };
+
+    // 댓글 삭제 핸들러
+    const handleDeleteComment = async (commentId: number) => {
+        try {
+            await onDeleteComment(commentId);
+            setSnackbarMessage("댓글이 성공적으로 삭제되었습니다.");
+            setOpenSnackbar(true);
+        } catch (err) {
+            console.error('Failed to delete comment', err);
+        }
+    };
+
+    // 대댓글 삭제 핸들러 (ArticleDetail 에서 이곳으로 이동)
+    const handleDeleteReply = async (replyId: number, parentCommentId: number) => {
+        try {
+            await axiosInstance.delete(`/api/comment/reply/${replyId}`);
+            setComments(comments.map(comment => ({
+                ...comment,
+                replies: comment.id === parentCommentId
+                    ? comment.replies?.filter(reply => reply.id !== replyId)
+                    : comment.replies
+            })));
+            setSnackbarMessage("대댓글이 성공적으로 삭제되었습니다.");
+            setOpenSnackbar(true);
+        } catch (err) {
+            console.error('Failed to delete reply', err);
+        }
+    };
+
+    // 답글 클릭 핸들러
+    const handleReplyClick = (commentId: number, isReply: boolean = false) => {
+        setReplyingTo(prev =>
+            prev.id === commentId && prev.isReply === isReply ? { id: null, isReply: null } : { id: commentId, isReply }
+        );
+    };
+
+    // 답글 추가 핸들러
+    const handleAddReply = (commentId: number, text: string) => {
+        if (text.trim()) {
+            const newReply: ReplyType = {
+                id: 0,
+                content: text.trim(),
+                parentCommentId: commentId,
+                memberId: user.id,
+                memberNickname: user.nickname,
+                profileImageURL: user.profileImageURL,
+                likeCount: 0,
+                relativeTime: '방금 전',
+                liked: false,
+                timestamp: new Date().toISOString()
+            };
+            onAddReply(newReply);
+            setReplyingTo({ id: null, isReply: null });
+        }
+    };
 
     return (
         <CommentsContainer>
             <Typography variant="h6" component="div">{`Comments: ${comments.length}`}</Typography>
             <List>
-                {comments.map((comment) => (
+                {comments.map((comment: CommentType) => (
                     <React.Fragment key={comment.id}>
                         <CommentListItem>
                             <CommentAvatar src={comment.profileImageURL} />
                             <CommentContentBox>
                                 <CommentMetaBox>
-                                    <Typography variant="subtitle1" component="span">
-                                        {comment.memberNickname}
+                                    {renderComment(comment)}
+                                    <Typography variant="caption" component="span" sx={{ marginLeft: '8px' }}>
+                                        {comment.relativeTime}
                                     </Typography>
-                                    <Typography variant="caption" component="span">
-                                        {comment.timestamp}
-                                    </Typography>
-                                    <IconButton size="small" sx={{ ml: 2, color: 'white' }} onClick={() => handleLike(comment.id)}>
-                                        <ThumbUpIcon />
-                                    </IconButton>
-                                    <IconButton size="small" sx={{ ml: 1, color: 'white' }} onClick={handleShare}>
-                                        <ShareIcon />
-                                    </IconButton>
-                                    <IconButton size="small" sx={{ ml: 1, color: 'white' }}>
-                                        <ReportIcon />
-                                    </IconButton>
+                                    <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center' }}>
+                                        <IconButton size="small" sx={{ ml: 2, color: 'red' }} onClick={() => handleLike(comment.id)}>
+                                            <ThumbUpIcon color={comment.liked ? 'primary' : 'inherit'} />
+                                        </IconButton>
+                                        {comment.likeCount > 0 && (
+                                            <Typography variant="caption" component="span" sx={{ marginLeft: '4px', marginRight: '12px' }}>
+                                                {comment.likeCount}
+                                            </Typography>
+                                        )}
+                                        <IconButton size="small" sx={{ ml: 1 }} onClick={() => { }}>
+                                            <ShareIcon />
+                                        </IconButton>
+                                        <IconButton size="small" sx={{ ml: 1 }} onClick={event => handleMenuOpen(comment.id, event)}>
+                                            <MoreVertIcon />
+                                        </IconButton>
+                                    </div>
+                                    <Menu
+                                        anchorEl={anchorEl[comment.id]}
+                                        open={Boolean(anchorEl[comment.id])}
+                                        onClose={() => handleMenuClose(comment.id)}
+                                    >
+                                        {comment.memberNickname === user.nickname ? (
+                                            <>
+                                                <MenuItem onClick={() => onEditComment(comment)} style={{ color: 'black' }}>
+                                                    <EditIcon sx={{ color: 'black', marginRight: '8px' }} />
+                                                    수정
+                                                </MenuItem>
+                                                <MenuItem onClick={() => handleDeleteComment(comment.id)} style={{ color: 'black' }}>
+                                                    <DeleteIcon sx={{ color: 'black', marginRight: '8px' }} />
+                                                    삭제
+                                                </MenuItem>
+                                            </>
+                                        ) : (
+                                            <MenuItem onClick={() => onReportComment(comment.id)} style={{ color: 'black' }}>
+                                                <ReportIcon sx={{ marginRight: '8px' }} />
+                                                신고
+                                            </MenuItem>
+                                        )}
+                                    </Menu>
                                 </CommentMetaBox>
                                 <Typography variant="body2" component="div">
-                                    {comment.content}
+                                    {comment.isDeleted ? "삭제된 댓글입니다." : comment.content}
                                 </Typography>
                                 <div>
-                                    <Button variant="text" color="primary" onClick={() => handleReply(comment.id)}>
-                                        답글 달기
+                                    <Button variant="text" color="primary" onClick={() => handleReplyClick(comment.id, false)}>
+                                        {replyingTo.id === comment.id && replyingTo.isReply === false ? '답글 취소' : '답글 달기'}
                                     </Button>
                                 </div>
-                                <div>
-                                    <Button variant="text" color="primary" onClick={() => handleToggleReplies(comment.id)}>
-                                        {openReplies[comment.id] ? '댓글 숨기기' : `댓글 더보기 (${comment.replies?.length || 0})`}
-                                    </Button>
-                                </div>
+                                {replyingTo.id === comment.id && replyingTo.isReply === false && (
+                                    <ReplyInput
+                                        onAddReply={text => handleAddReply(comment.id, `@${comment.memberNickname} ${text}`)}
+                                        onCancel={() => setReplyingTo({ id: null, isReply: null })}
+                                    />
+                                )}
+                                {comment.replyCount > 0 && (
+                                    <div>
+                                        <Button variant="text" color="primary" onClick={() => handleToggleReplies(comment.id)}>
+                                            {openReplies[comment.id] ? (
+                                                <>
+                                                    <ExpandLessIcon sx={{ verticalAlign: 'middle' }} />
+                                                    {` 대댓글 ${comment.replyCount}개`}
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <ExpandMoreIcon sx={{ verticalAlign: 'middle' }} />
+                                                    {` 대댓글 ${comment.replyCount}개`}
+                                                </>
+                                            )}
+                                        </Button>
+                                    </div>
+                                )}
                                 {openReplies[comment.id] && comment.replies && (
                                     <List sx={{ marginLeft: '2rem', marginTop: '0.5rem' }}>
-                                        {comment.replies.map((reply) => (
+                                        {comment.replies.map((reply: ReplyType) => (
                                             <React.Fragment key={reply.id}>
                                                 <CommentListItem>
                                                     <CommentAvatar src={reply.profileImageURL} />
@@ -124,13 +275,61 @@ const Comments: React.FC<CommentsProps> = ({ comments, onAddComment }) => {
                                                             <Typography variant="subtitle1" component="span">
                                                                 {reply.memberNickname}
                                                             </Typography>
-                                                            <Typography variant="caption" component="span">
-                                                                {reply.timestamp}
+                                                            <Typography variant="caption" component="span" sx={{ marginLeft: '8px' }}>
+                                                                {reply.relativeTime}
                                                             </Typography>
+                                                            <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center' }}>
+                                                                <IconButton size="small" sx={{ ml: 2, color: 'red' }} onClick={() => handleLike(reply.id)}>
+                                                                    <ThumbUpIcon color={reply.liked ? 'primary' : 'inherit'} />
+                                                                </IconButton>
+                                                                {reply.likeCount > 0 && (
+                                                                    <Typography variant="caption" component="span" sx={{ marginLeft: '4px', marginRight: '12px' }}>
+                                                                        {reply.likeCount}
+                                                                    </Typography>
+                                                                )}
+                                                                <IconButton size="small" sx={{ ml: 1 }} onClick={() => { }}>
+                                                                    <ShareIcon />
+                                                                </IconButton>
+                                                                <IconButton size="small" sx={{ ml: 1 }} onClick={event => handleMenuOpen(reply.id, event)}>
+                                                                    <MoreVertIcon />
+                                                                </IconButton>
+                                                                <Menu
+                                                                    anchorEl={anchorEl[reply.id]}
+                                                                    open={Boolean(anchorEl[reply.id])}
+                                                                    onClose={() => handleMenuClose(reply.id)}
+                                                                >
+                                                                    {reply.memberNickname === user.nickname ? (
+                                                                        <>
+                                                                            <MenuItem onClick={() => onEditReply(reply)} style={{ color: 'black' }}>
+                                                                                <EditIcon sx={{ color: 'black', marginRight: '8px' }} />
+                                                                                수정
+                                                                            </MenuItem>
+                                                                            <MenuItem onClick={() => handleDeleteReply(reply.id, reply.parentCommentId)} style={{ color: 'black' }}>
+                                                                                <DeleteIcon sx={{ color: 'black', marginRight: '8px' }} />
+                                                                                삭제
+                                                                            </MenuItem>
+                                                                        </>
+                                                                    ) : (
+                                                                        <MenuItem onClick={() => onReportComment(reply.id)} style={{ color: 'black' }}>
+                                                                            <ReportIcon sx={{ marginRight: '8px' }} />
+                                                                            신고
+                                                                        </MenuItem>
+                                                                    )}
+                                                                </Menu>
+                                                            </div>
                                                         </CommentMetaBox>
                                                         <Typography variant="body2" component="div">
                                                             {reply.content}
                                                         </Typography>
+                                                        <Button variant="text" color="primary" onClick={() => handleReplyClick(reply.id, true)}>
+                                                            {replyingTo.id === reply.id && replyingTo.isReply === true ? '답글 취소' : '답글 달기'}
+                                                        </Button>
+                                                        {replyingTo.id === reply.id && replyingTo.isReply === true && (
+                                                            <ReplyInput
+                                                                onAddReply={text => handleAddReply(reply.parentCommentId, `@${reply.memberNickname} ${text}`)}
+                                                                onCancel={() => setReplyingTo({ id: null, isReply: null })}
+                                                            />
+                                                        )}
                                                     </CommentContentBox>
                                                 </CommentListItem>
                                                 <CommentDivider />
@@ -140,24 +339,41 @@ const Comments: React.FC<CommentsProps> = ({ comments, onAddComment }) => {
                                 )}
                             </CommentContentBox>
                         </CommentListItem>
-                        <CommentDivider/>
+                        <CommentDivider />
                     </React.Fragment>
                 ))}
             </List>
-            <CommentTextField
-                label="Add a comment"
-                variant="outlined"
-                fullWidth
-                value={newComment}
-                onChange={handleCommentChange}
-            />
-            <SubmitButton
-                variant="contained"
-                color="primary"
-                onClick={handleCommentSubmit}
-            >
-                Submit
-            </SubmitButton>
+            <Box sx={{ display: 'flex', alignItems: 'center', marginTop: '20px' }}>
+                <CommentAvatar src={user.profileImageURL} />
+                <TextField
+                    label="Add a comment"
+                    variant="outlined"
+                    fullWidth
+                    multiline
+                    maxRows={4}
+                    value={newComment}
+                    onChange={handleCommentChange}
+                    sx={{
+                        marginLeft: '10px',
+                        backgroundColor: '#2b2b2b',
+                        color: '#FFF',
+                        '& .MuiOutlinedInput-root': {
+                            '& fieldset': {
+                                borderColor: '#FFF',
+                            },
+                        },
+                        '& .MuiInputLabel-root': {
+                            color: '#FFF',
+                        },
+                        '& .MuiOutlinedInput-input': {
+                            color: '#FFF',
+                        },
+                    }}
+                />
+                <SubmitButton variant="contained" color="primary" onClick={handleCommentSubmit} sx={{ marginLeft: '10px' }}>
+                    Submit
+                </SubmitButton>
+            </Box>
         </CommentsContainer>
     );
 };
