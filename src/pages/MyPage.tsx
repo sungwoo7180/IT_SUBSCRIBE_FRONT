@@ -258,7 +258,11 @@
             } catch (error) {
                 console.error('Error saving preferences:', error);
             }
-        };
+
+        } catch (error) {
+            console.error('Error saving preferences:', error);
+        }
+    };
     
         // 사용자 정보 변경 핸들러
         const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -287,6 +291,7 @@
                         <Link to="categoryPreferences" smooth={true}>Favorite Categories</Link>
                         <Link to="alarmSettings" smooth={true}>Alarm</Link>
                         <Link to="resetPassword" smooth={true}>Reset Password</Link>
+
                     </Box>
                     <Box sx={{ flex: 1, p: 3 }}>
                         <Box sx={{ my: 3 }}>

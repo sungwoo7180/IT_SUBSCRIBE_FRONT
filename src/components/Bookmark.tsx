@@ -14,11 +14,13 @@ const Bookmark: React.FC<BookmarkProps> = ({ articleId }) => {
     useEffect(() => {
         const fetchBookmarkedArticles = async () => {
             try {
-                const response = await axiosInstance.get('/api/bookmark/articles');
-                const bookmarkedArticles = response.data.map((article: any) => article.id);
+                const response = await axiosInstance.post(`/api/bookmark/articles/${articleId}`);
 
-                if (bookmarkedArticles.includes(articleId)) {
+                if(response.status==200){
                     setIsBookmarked(true);
+                }
+                else if(response.status==204){
+                    setIsBookmarked(false);
                 }
             } catch (err) {
                 console.error('Failed to fetch bookmarked articles', err);
