@@ -287,6 +287,7 @@ const MyPage: React.FC = () => {
                     <Link to="categoryPreferences" smooth={true}>Favorite Categories</Link>
                     <Link to="alarmSettings" smooth={true}>Alarm</Link>
                     <Link to="resetPassword" smooth={true}>Reset Password</Link>
+                    <Button className="bookmarkListButton" onClick={openModal} >Bookmark List</Button>
                 </Box>
                 <Box sx={{ flex: 1, p: 3 }}>
                     <Box sx={{ my: 3 }}>
