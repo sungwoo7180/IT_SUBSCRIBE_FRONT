@@ -16,7 +16,7 @@ const CategoryChip: React.FC<CategoryChipProps> = ({ category }) => {
     const handleCategoryClick = () => {
         const selectedCategory = categories.find(cat => cat.name === category.name);
         if (selectedCategory) {
-            window.location.href = `/all-articles?categories=${encodeURIComponent(selectedCategory.name)}`;
+            navigate(`/all-articles?categories=${encodeURIComponent(selectedCategory.name)}`);
         }
     };
 

@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, Typography, Paper, Button, Grid } from '@mui/material';
 import { styled } from '@mui/system';
 import Navbar from '../components/Navbar';
+import {useNavigate} from "react-router-dom";
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -25,9 +26,10 @@ const Card = styled(Paper)({
 });
 
 const Admin: React.FC = () => {
+    const navigate = useNavigate();
 
     const handleNavigation = (url: string) => {
-        window.location.href = url;
+        navigate(url);  // 페이지 리로드 없이 지정된 URL로 이동
     };
 
     return (
