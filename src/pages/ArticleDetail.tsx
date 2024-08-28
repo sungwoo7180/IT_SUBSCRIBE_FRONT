@@ -25,8 +25,7 @@ const ArticleDetail: React.FC = () => {
         const fetchArticle = async () => {
             try {
                 if (!initialArticle) {
-                    const response = await axiosInstance.get(`/article/article/${articleId}`);
-                    console.log(user);
+                    const response = await axiosInstance.post(`/article/view/${articleId}`);
                     setArticle(response.data);
                 }
             } catch (err) {
