@@ -24,9 +24,10 @@ const ArticleDetail: React.FC = () => {
     useEffect(() => {
         const fetchArticle = async () => {
             try {
-                const response = await axiosInstance.post(`/article/view/${articleId}`);
-                // const response = await axiosInstance.get(`/article/article/${articleId}`);
-                //setArticle(response.data);
+                if (!initialArticle) {
+                    const response = await axiosInstance.post(`/article/view/${articleId}`);
+                    setArticle(response.data);
+                }
             } catch (err) {
                 setError('Failed to fetch article');
             }
@@ -54,7 +55,6 @@ const ArticleDetail: React.FC = () => {
         if (!initialArticle) {
             fetchArticle();
         }
-        //fetchArticle();
         incrementCount();
         fetchComments();
     }, [articleId, initialArticle]);
@@ -68,17 +68,13 @@ const ArticleDetail: React.FC = () => {
                 memberNickname: comment.memberNickname,
                 profileImageURL: comment.profileImageURL,
                 timestamp: new Date().toISOString(),
-                // memberId: user.id, // 현재 로그인한 사용자의 ID를 사용
-                // memberNickname: user.nickname, // 현재 로그인한 사용자의 닉네임을 사용
-                // profileImageURL: user.avatarUrl, // 현재 로그인한 사용자의 프로필 이미지를 사용
-                // timestamp: new Date().toISOString(),
             });
             setComments([...comments, response.data]);
         } catch (err) {
             setError('Failed to add comment');
         }
     };
-
+    if (!article) return <p>기사를 찾을 수 없습니다.</p>;
     const handleEditComment = async (comment: CommentType) => {
         try {
             const response = await axiosInstance.put(`/api/comment/${comment.id}`, {
@@ -188,7 +184,7 @@ const ArticleDetail: React.FC = () => {
                                     display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: "0.5rem", marginTop: "1rem"
                                 }}>
                                     <CategoryChip category={article.category} />
-                                    {article.tags && article.tags.length > 0 && article.tags.map(tag => (
+                                    {article.tags && article.tags.length > 0 && article.tags?.map(tag => (
                                         <Chip key={tag.id} label={tag.name} sx={{ marginRight: "0.5rem", marginBottom: "0.05rem" }} />
                                     /*
                                     {article.tags.map(tag => (

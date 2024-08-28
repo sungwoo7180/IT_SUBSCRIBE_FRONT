@@ -16,6 +16,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Admin from "./pages/Admin";
 import AdminReportedComments from "./pages/AdminReportedComments"
 import AdminBannedUsers from "./pages/AdminBannedUsers"
+import SearchedArticlePage from "./pages/SearchedArticlePage";
 import BookmarkListPage from "./pages/BookmarkListPage";
 
 function App() {
@@ -48,6 +49,7 @@ function App() {
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/admin/reported-comments" element={<AdminReportedComments />} />
                 <Route path="/admin/banned-users" element={<AdminBannedUsers />} />
+                <Route path="/searched-articles" element={<SearchedArticlePage />} />
             </Routes>
         </Router>
     );
