@@ -144,7 +144,7 @@ const Comments: React.FC<CommentsProps> = ({
 
     useEffect(() => {
         if (openReportModal) {
-            axiosInstance.get('/enum-list/comment-report-reasons')
+            axiosInstance.get('/api/enum-list/comment-report-reasons')
                 .then(response => {
                     setReportReasons(response.data);
                 })

@@ -44,7 +44,7 @@ const AdminBannedUsers: React.FC = () => {
     const fetchBanList = async () => {
         setLoading(true);
         try {
-            const response = await axiosInstance.get('/admin/user/ban-list');
+            const response = await axiosInstance.get('/api/admin/user/ban-list');
             setBanList(response.data);
         } catch (error) {
             console.error('Failed to fetch banned users:', error);

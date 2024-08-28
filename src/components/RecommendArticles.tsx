@@ -43,7 +43,7 @@ const RecommendArticles: React.FC = () => {
             setLoading(true);
             try {
                 const token = localStorage.getItem('token');
-                const response = await axiosInstance.get('/recommend-article/recent', {
+                const response = await axiosInstance.get('/api/recommend-article/recent', {
                     headers: {
                         Authorization: token ? `Bearer ${token}` : undefined,
                     },
@@ -57,7 +57,7 @@ const RecommendArticles: React.FC = () => {
                 // 선호 카테고리가 없는 경우 전체 기사에서 랜덤으로 추천
                 if (!fetchedArticles || fetchedArticles.length === 0) {
                     // 여기에 기본적으로 랜덤 기사 12개를 불러오는 로직을 추가
-                    const randomArticlesResponse = await axiosInstance.get('/articles/random', {
+                    const randomArticlesResponse = await axiosInstance.get('/api/articles/random', {
                         params: { limit: 12 },
                     });
                     setArticles(getRandomArticles(randomArticlesResponse.data, 5));

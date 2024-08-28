@@ -46,7 +46,7 @@ const MostHotArticles: React.FC = () => {
             }
 
             try {
-                const response = await axiosInstance.get('/rank/top-articles');
+                const response = await axiosInstance.get('/api/rank/top-articles');
                 setArticles(response.data);
                 localStorage.setItem(CACHE_KEY, JSON.stringify(response.data));
                 localStorage.setItem(`${CACHE_KEY}_expiry`, (new Date().getTime() + CACHE_TIME).toString());

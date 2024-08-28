@@ -59,7 +59,7 @@ const AdminReportedComments: React.FC = () => {
     const fetchReportedComments = async () => {
         setLoading(true);
         try {
-            const response = await axiosInstance.get(`/admin/reports`, {
+            const response = await axiosInstance.get(`/api/admin/reports`, {
                 params: {
                     page: page - 1,
                     status: filterStatus === 'ALL' ? null : filterStatus
@@ -78,7 +78,7 @@ const AdminReportedComments: React.FC = () => {
         fetchReportedComments();
         const fetchStatuses = async () => {
             try {
-                const response = await axiosInstance.get('/enum-list/comment-statuses');
+                const response = await axiosInstance.get('/api/enum-list/comment-statuses');
                 setStatuses(response.data);
             } catch (error) {
                 console.error('Failed to fetch statuses:', error);
@@ -93,7 +93,7 @@ const AdminReportedComments: React.FC = () => {
 
     const handleRowClick = async (commentId: number) => {
         try {
-            const response = await axiosInstance.get(`/admin/report/${commentId}`);
+            const response = await axiosInstance.get(`/api/admin/report/${commentId}`);
             setSelectedCommentDetails(response.data);
             setOpenDetailsDialog(true);
         } catch (error) {
@@ -109,7 +109,7 @@ const AdminReportedComments: React.FC = () => {
     const handleDeleteConfirm = async () => {
         if (selectedCommentId !== null) {
             try {
-                await axiosInstance.delete(`/admin/report/${selectedCommentId}`);
+                await axiosInstance.delete(`/api/admin/report/${selectedCommentId}`);
                 setReportedComments((prevComments) =>
                     prevComments.filter((comment) => comment.reportId !== selectedCommentId)
                 );
@@ -133,7 +133,7 @@ const AdminReportedComments: React.FC = () => {
     const handleStatusChange = async (statusName: StatusOption['name']) => {
         if (statusTargetId !== null) {
             try {
-                await axiosInstance.put(`/admin/report/${statusTargetId}`, { status: statusName });
+                await axiosInstance.put(`/api/admin/report/${statusTargetId}`, { status: statusName });
                 setReportedComments((prevComments) =>
                     prevComments.map((comment) =>
                         comment.reportId === statusTargetId
@@ -175,7 +175,7 @@ const AdminReportedComments: React.FC = () => {
     const handleBanUser = async (reportId: number, userId: number) => {
         setIsBanning(true);
         try {
-            await axiosInstance.post(`/admin/user/ban`, {
+            await axiosInstance.post(`/api/admin/user/ban`, {
                 reportId: reportId,
                 userId: userId,
                 days: banDays,

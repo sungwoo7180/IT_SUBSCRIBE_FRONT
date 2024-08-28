@@ -38,7 +38,7 @@ const RecentArticles: React.FC = () => {
     useEffect(() => {
         const fetchRecentArticles = async () => {
             try {
-                const response = await axiosInstance.get('/article/recent');
+                const response = await axiosInstance.get('/api/article/recent');
                 const data = response.data;
                 const now = new Date().getTime();
                 // 캐시에 저장
