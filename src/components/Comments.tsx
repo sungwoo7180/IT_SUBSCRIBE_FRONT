@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { List, IconButton, Typography, Box, Avatar, Snackbar, TextField, Button, Divider, ListItem, Dialog, DialogTitle, DialogContent, DialogActions, Radio, RadioGroup, MenuItem, Menu, FormControlLabel, FormControl, FormLabel } from '@mui/material';
-import { ReportProblemOutlined as ReportIcon, ThumbUpAltOutlined as LikeIcon, ThumbUpAlt as LikedIcon } from '@mui/icons-material';
+import { List, IconButton, Typography, Box, Avatar, Snackbar, TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions, Radio, RadioGroup, MenuItem, Menu, FormControlLabel, FormControl, FormLabel } from '@mui/material';
+import { ReportProblemOutlined as ReportIcon} from '@mui/icons-material';
 import { styled } from '@mui/system';
 import { Edit as EditIcon, Delete as DeleteIcon, Share as ShareIcon, ThumbUp as ThumbUpIcon, MoreVert as MoreVertIcon } from '@mui/icons-material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -17,6 +17,8 @@ import {
 import { CommentType, ReplyType } from "../types/Article";
 import ReplyInput from './ReplyInput';
 import axiosInstance from "../config/AxiosConfig";
+
+const apiUrl = process.env.REACT_APP_API_URL;
 
 const CommentFormContainer = styled(Box)({
     display: 'flex',
@@ -144,7 +146,7 @@ const Comments: React.FC<CommentsProps> = ({
 
     useEffect(() => {
         if (openReportModal) {
-            axiosInstance.get('/api/enum-list/comment-report-reasons')
+            axiosInstance.get('${apiUrl}/api/enum-list/comment-report-reasons')
                 .then(response => {
                     setReportReasons(response.data);
                 })
@@ -211,7 +213,7 @@ const Comments: React.FC<CommentsProps> = ({
             return;
         }
         try {
-            const response = await axiosInstance.get(`/api/comment/${commentId}/replies`);
+            const response = await axiosInstance.get(`${apiUrl}/api/comment/${commentId}/replies`);
             const replies = response.data;
 
             setComments(comments.map((comment: CommentType) =>
@@ -249,7 +251,7 @@ const Comments: React.FC<CommentsProps> = ({
     // 대댓글 삭제 핸들러 (ArticleDetail 에서 이곳으로 이동)
     const handleDeleteReply = async (replyId: number, parentCommentId: number) => {
         try {
-            await axiosInstance.delete(`/api/comment/reply/${replyId}`);
+            await axiosInstance.delete(`${apiUrl}/api/comment/reply/${replyId}`);
             setComments(comments.map(comment => ({
                 ...comment,
                 replies: comment.id === parentCommentId
@@ -317,7 +319,7 @@ const Comments: React.FC<CommentsProps> = ({
                 commentId: selectedComment,
                 reason: selectedReason,
             };
-            axiosInstance.post(`/api/comment/${selectedComment}/report`, reportData)
+            axiosInstance.post(`${apiUrl}/api/comment/${selectedComment}/report`, reportData)
                 .then(response => {
                     setOpenReportModal(false);
                     setOpenConfirmationModal(true);

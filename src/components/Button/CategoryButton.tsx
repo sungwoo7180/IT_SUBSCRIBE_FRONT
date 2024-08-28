@@ -1,4 +1,3 @@
-// src/components/CategoryChip.tsx
 import React from 'react';
 import { Chip } from '@mui/material';
 import { useNavigate } from 'react-router-dom';

@@ -3,6 +3,8 @@ import { Box, Typography, Paper, Button, Grid } from '@mui/material';
 import { styled } from '@mui/system';
 import Navbar from '../components/Navbar';
 
+const apiUrl = process.env.REACT_APP_API_URL;
+
 const PageContainer = styled(Box)({
     padding: '20px',
     backgroundColor: '#1f2a3c',
@@ -43,7 +45,7 @@ const Admin: React.FC = () => {
                         <Button
                             variant="contained"
                             color="primary"
-                            onClick={() => handleNavigation('/admin/reported-comments')}
+                            onClick={() => handleNavigation(`${apiUrl}/api/admin/reported-comments`)}
                         >
                             Go to Admin
                         </Button>
@@ -57,7 +59,7 @@ const Admin: React.FC = () => {
                         <Button
                             variant="contained"
                             color="secondary"
-                            onClick={() => handleNavigation('/admin/banned-users')}
+                            onClick={() => handleNavigation(`${apiUrl}/api/admin/banned-users`)}
                         >
                             View Banned Users
                         </Button>

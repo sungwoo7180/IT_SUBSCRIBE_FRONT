@@ -8,6 +8,8 @@ import CategoryChip from '../components/Button/CategoryButton';
 import { Article } from '../types/Article';
 import { CommonGridContainer, CommonCardMedia, CommonTypography, CommonChip, CommonCircularProgress, LoadingBox, CategoryTagBox, TagsContainer, ArticleCard } from '../style/StyledComponents';
 
+const apiUrl = process.env.REACT_APP_API_URL;
+
 const ArticlesView: React.FC = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
@@ -28,7 +30,7 @@ const ArticlesView: React.FC = () => {
                     .filter(category => selectedCategories.includes(category.name))
                     .map(category => category.id);
                 console.log("불러오기 진입")
-                const response = await axiosInstance.get(`/article/category/${categoryIds.join(',')}`, {
+                const response = await axiosInstance.get(`${apiUrl}/api/article/category/${categoryIds.join(',')}`, {
                     params: {
                         page: currentPage - 1,
                         size: 12

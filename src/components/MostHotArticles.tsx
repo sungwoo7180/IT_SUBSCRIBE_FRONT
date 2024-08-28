@@ -5,6 +5,8 @@ import axiosInstance from '../config/AxiosConfig';
 import { CommonCard, LoadingBox } from '../style/StyledComponents';
 import CommonHeader from "./CommonHeader"; // 공통 스타일 컴포넌트 가져오기
 
+const apiUrl = process.env.REACT_APP_API_URL;
+
 interface Category {
     id: number;
     name: string;
@@ -46,7 +48,7 @@ const MostHotArticles: React.FC = () => {
             }
 
             try {
-                const response = await axiosInstance.get('/api/rank/top-articles');
+                const response = await axiosInstance.get(`${apiUrl}/api/rank/top-articles`);
                 setArticles(response.data);
                 localStorage.setItem(CACHE_KEY, JSON.stringify(response.data));
                 localStorage.setItem(`${CACHE_KEY}_expiry`, (new Date().getTime() + CACHE_TIME).toString());

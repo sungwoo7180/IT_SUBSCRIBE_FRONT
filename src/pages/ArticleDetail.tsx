@@ -9,6 +9,8 @@ import CategoryChip from '../components/Button/CategoryButton'; // CategoryChip 
 import {Article as ArticleType, CommentType, ReplyType} from '../types/Article';
 import Bookmark from '../components/Bookmark';
 
+const apiUrl = process.env.REACT_APP_API_URL;
+
 const ArticleDetail: React.FC = () => {
     const { articleId } = useParams<{ articleId: string }>();
     const location = useLocation();
@@ -24,7 +26,7 @@ const ArticleDetail: React.FC = () => {
     useEffect(() => {
         const fetchArticle = async () => {
             try {
-                const response = await axiosInstance.post(`/article/view/${articleId}`);
+                const response = await axiosInstance.post(`${apiUrl}/article/view/${articleId}`);
                 // const response = await axiosInstance.get(`/article/article/${articleId}`);
                 //setArticle(response.data);
             } catch (err) {
@@ -34,7 +36,7 @@ const ArticleDetail: React.FC = () => {
 
         const incrementCount = async () => {
             try {
-                await axiosInstance.post(`/rank/increment-article-count/${articleId}`);
+                await axiosInstance.post(`${apiUrl}/api/rank/increment-article-count/${articleId}`);
             } catch (err) {
                 console.error('Failed to increment article count', err);
             }
@@ -42,7 +44,7 @@ const ArticleDetail: React.FC = () => {
 
         const fetchComments = async () => {
             try {
-                const response = await axiosInstance.get(`/api/comment/articles/${articleId}/comments`);
+                const response = await axiosInstance.get(`${apiUrl}/api/comment/articles/${articleId}/comments`);
                 setComments(response.data);
                 setLoading(false);
             } catch (err) {
@@ -61,7 +63,7 @@ const ArticleDetail: React.FC = () => {
 
     const handleAddComment = async (comment: CommentType) => {
         try {
-            const response = await axiosInstance.post('/api/comment', {
+            const response = await axiosInstance.post(`${apiUrl}/api/comment`, {
                 content: comment.content,
                 articleId: article?.id,
                 memberId: comment.memberId,
@@ -81,7 +83,7 @@ const ArticleDetail: React.FC = () => {
 
     const handleEditComment = async (comment: CommentType) => {
         try {
-            const response = await axiosInstance.put(`/api/comment/${comment.id}`, {
+            const response = await axiosInstance.put(`${apiUrl}/api/comment/${comment.id}`, {
                 content: comment.content,
             });
             setComments(comments.map(c =>
@@ -94,7 +96,7 @@ const ArticleDetail: React.FC = () => {
 
     const handleEditReply = async (reply: ReplyType) => {
         try {
-            const response = await axiosInstance.put(`/api/comment/reply/${reply.id}`, {
+            const response = await axiosInstance.put(`${apiUrl}/api/comment/reply/${reply.id}`, {
                 content: reply.content,
             });
             setComments(comments.map(comment =>
@@ -111,7 +113,7 @@ const ArticleDetail: React.FC = () => {
 // 댓글 삭제 함수
     const handleDeleteComment = async (commentId: number) => {
         try {
-            await axiosInstance.delete(`/api/comment/${commentId}`);
+            await axiosInstance.delete(`${apiUrl}/api/comment/${commentId}`);
             setComments(comments.map(comment =>
                 comment.id === commentId ? { ...comment, isDeleted: true, content: "삭제된 댓글입니다.", memberNickname: "익명" } : comment
             ));
@@ -134,7 +136,7 @@ const ArticleDetail: React.FC = () => {
 
     const handleAddReply = async (reply: ReplyType) => {
         try {
-            const response = await axiosInstance.post(`/api/comment/${reply.parentCommentId}/reply`, {
+            const response = await axiosInstance.post(`${apiUrl}/api/comment/${reply.parentCommentId}/reply`, {
                 content: reply.content,
                 parentCommentId: reply.parentCommentId,
                 memberId: reply.memberId,

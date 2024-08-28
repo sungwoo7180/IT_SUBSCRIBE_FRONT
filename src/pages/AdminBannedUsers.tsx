@@ -7,6 +7,8 @@ import axiosInstance from '../config/AxiosConfig';
 import Navbar from '../components/Navbar';
 import { styled } from "@mui/system";
 
+const apiUrl = process.env.REACT_APP_API_URL;
+
 interface BanDTO {
     banId: number;
     username: string;
@@ -44,7 +46,7 @@ const AdminBannedUsers: React.FC = () => {
     const fetchBanList = async () => {
         setLoading(true);
         try {
-            const response = await axiosInstance.get('/api/admin/user/ban-list');
+            const response = await axiosInstance.get(`${apiUrl}/api/admin/user/ban-list`);
             setBanList(response.data);
         } catch (error) {
             console.error('Failed to fetch banned users:', error);
