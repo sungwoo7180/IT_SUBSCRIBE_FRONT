@@ -1,4 +1,3 @@
-// src/components/CustomTextField.tsx
 import React from 'react';
 import { StyledBox, CommonTextField } from '../style/StyledComponents'; // 공통 스타일 컴포넌트 가져오기
 

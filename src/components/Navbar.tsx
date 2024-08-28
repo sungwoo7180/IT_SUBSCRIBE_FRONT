@@ -30,9 +30,9 @@ const Navbar: React.FC = () => {
     const handleCategoryClick = (category: string) => {
         setSelectedCategory(category);
         if (category === 'ALL') {
-            window.location.href = '/all-articles';
+            navigate('/all-articles');
         } else {
-            window.location.href = `/articles?categories=${encodeURIComponent(category)}`;
+            navigate(`/articles?categories=${encodeURIComponent(category)}`);
         }
     };
 

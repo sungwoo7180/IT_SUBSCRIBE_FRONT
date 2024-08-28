@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import { Checkbox, FormControlLabel, FormGroup, Typography } from '@mui/material';
+import React from 'react';
+import { Checkbox, FormControlLabel, FormGroup } from '@mui/material';
 
 interface CategoryFilterProps {
     selectedCategories: string[];

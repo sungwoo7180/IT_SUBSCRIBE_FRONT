@@ -7,6 +7,8 @@ import axiosInstance from '../config/AxiosConfig';
 import { Article } from '../types/Article';
 import { CommonGridContainer, CommonCard, CommonTypography, CommonChip, CommonCircularProgress, LoadingBox } from '../style/StyledComponents';
 
+const apiUrl = process.env.REACT_APP_API_URL;
+
 const BookmarkListPage: React.FC = () => {
     const [articles, setArticles] = useState<Article[]>([]);
     const [currentPage, setCurrentPage] = useState<number>(1);
@@ -18,7 +20,7 @@ const BookmarkListPage: React.FC = () => {
         const fetchArticles = async () => {
             setLoading(true);
             try {
-                const response = await axiosInstance.get('/api/bookmark/articles', {
+                const response = await axiosInstance.get(`${apiUrl}/api/bookmark/articles`, {
                     params: {
                         page: currentPage - 1,
                         size: 12

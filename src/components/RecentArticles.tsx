@@ -5,6 +5,8 @@ import axiosInstance from '../config/AxiosConfig';
 import CategoryChip from '../components/Button/CategoryButton';
 import { BackgroundBox, CommonCard, SectionTitle, CommonChip } from '../style/StyledComponents';
 
+const apiUrl = process.env.REACT_APP_API_URL;
+
 // 기사 데이터 인터페이스 정의
 interface Category {
     id: number;
@@ -38,7 +40,7 @@ const RecentArticles: React.FC = () => {
     useEffect(() => {
         const fetchRecentArticles = async () => {
             try {
-                const response = await axiosInstance.get('/article/recent');
+                const response = await axiosInstance.get(`${apiUrl}/api/article/recent`);
                 const data = response.data;
                 const now = new Date().getTime();
                 // 캐시에 저장
