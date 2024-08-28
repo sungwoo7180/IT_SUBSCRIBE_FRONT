@@ -13,6 +13,9 @@ import RecentArticles from "./components/RecentArticles";
 import AllArticlesPage from "./pages/AllArticlePage"; // 새로운 페이지 임포트
 import axios from "axios";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Admin from "./pages/Admin";
+import AdminReportedComments from "./pages/AdminReportedComments"
+import AdminBannedUsers from "./pages/AdminBannedUsers"
 import SearchedArticlePage from "./pages/SearchedArticlePage";
 
 function App() {
@@ -40,7 +43,10 @@ function App() {
                     <ProtectedRoute element={<><Navbar /><MyPage /></>} />
                 } />
                 <Route path="/recent-articles" element={<><Navbar /><RecentArticles /></>} />
-                <Route path="/all-articles" element={<AllArticlesPage />} />
+                <Route path="/all-articles" element={<AllArticlesPage />} /> {/* 새로운 라우트 추가 */}
+                <Route path="/admin" element={<Admin />} />
+                <Route path="/admin/reported-comments" element={<AdminReportedComments />} />
+                <Route path="/admin/banned-users" element={<AdminBannedUsers />} />
                 <Route path="/searched-articles" element={<SearchedArticlePage />} />
             </Routes>
         </Router>

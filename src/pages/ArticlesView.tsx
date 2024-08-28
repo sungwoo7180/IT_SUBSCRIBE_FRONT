@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Grid, Card, CardMedia, CardContent, Chip, Pagination, CircularProgress } from '@mui/material';
+import {Box, CardMedia, Grid, Pagination} from '@mui/material';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import axiosInstance from '../config/AxiosConfig';
 import MostHotArticles from "../components/MostHotArticles";
 import categories from '../data/Categories';
 import CategoryChip from '../components/Button/CategoryButton';
 import { Article } from '../types/Article';
+import { CommonGridContainer, CommonCardMedia, CommonTypography, CommonChip, CommonCircularProgress, LoadingBox, CategoryTagBox, TagsContainer, ArticleCard } from '../style/StyledComponents';
 
 const ArticlesView: React.FC = () => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -26,7 +27,7 @@ const ArticlesView: React.FC = () => {
                 const categoryIds = categories
                     .filter(category => selectedCategories.includes(category.name))
                     .map(category => category.id);
-
+                console.log("불러오기 진입")
                 const response = await axiosInstance.get(`/article/category/${categoryIds.join(',')}`, {
                     params: {
                         page: currentPage - 1,
@@ -50,7 +51,6 @@ const ArticlesView: React.FC = () => {
     const handleCategoryChange = (newCategories: string[]) => {
         setSelectedCategories(newCategories);
         setCurrentPage(1);
-        const queryParams = newCategories.length > 0 ? `categories=${encodeURIComponent(newCategories.join(','))}` : '';
         setSearchParams({ categories: newCategories.join(','), page: '1' });
     };
 
@@ -64,56 +64,51 @@ const ArticlesView: React.FC = () => {
     };
 
     return (
-        <Box sx={{ flexGrow: 1, padding: 3, backgroundImage: 'url(/Background.png)', backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '100vh' }}>
+        <CommonGridContainer>
             {loading ? (
-                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
-                    <CircularProgress color="inherit" />
-                </Box>
+                <LoadingBox>
+                    <CommonCircularProgress />
+                </LoadingBox>
             ) : (
                 <Grid container spacing={2}>
                     <Grid item xs={12} md={8}>
                         <Grid container spacing={2}>
                             {filteredArticles.map((article) => (
                                 <Grid item xs={12} sm={6} md={4} key={article.id} onClick={() => handleOpenArticle(article)}>
-                                    <Card sx={{ display: 'flex', flexDirection: 'column', backgroundColor: '#152238', color: 'white' }}>
+                                    <ArticleCard>
                                         <CardMedia
                                             component="img"
                                             height="140"
                                             image={article.imgUrls[0] || 'https://via.placeholder.com/150'}
                                             alt={article.title}
+                                            sx={{
+                                                marginBottom: '2rem',
+                                                paddingBottom: 0,
+                                                objectFit: 'cover',
+                                            }}
                                         />
-                                        <CardContent>
-                                            <Typography variant="h6" sx={{ color: 'white' }}>{article.title}</Typography>
-                                            <Typography variant="body2" sx={{ overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', color: 'white' }}>
+                                        <Box sx={{ padding: '1rem' }}>
+                                            <CommonTypography variant="h6" sx={{ marginBottom: '1rem' }}>
+                                                {article.title}
+                                            </CommonTypography>
+                                            <CommonTypography variant="body2" sx={{ overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical' }}>
                                                 {article.content}
-                                            </Typography>
-                                            <Typography variant="caption" sx={{ color: 'white' }}>
+                                            </CommonTypography>
+                                            <CommonTypography variant="caption">
                                                 {new Date(article.postDate).toLocaleDateString()}
-                                            </Typography>
+                                            </CommonTypography>
                                             <Box sx={{ mt: 1 }}>
-                                                <Box sx={{
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    flexWrap: 'wrap',
-                                                    gap: "0.5rem"
-                                                }}>
+                                                <CategoryTagBox>
                                                     <CategoryChip category={article.category} />
-                                                    <Box sx={{
-                                                        display: 'flex',
-                                                        flexWrap: 'wrap',
-                                                        maxHeight: '4.5rem', // 두 줄의 높이를 제한
-                                                        overflow: 'hidden',
-                                                        alignItems: 'center',
-                                                        mt: 0.5 // 카테고리 칩과 태그 칩의 정렬을 위해 여백 추가
-                                                    }}>
+                                                    <TagsContainer>
                                                         {article.tags.map(tag => (
-                                                            <Chip key={tag.id} label={tag.name} sx={{ mr: 1, mb: 1, color: 'white', backgroundColor: '#3f51b5', height: '32px' }} />
+                                                            <CommonChip key={tag.id} label={tag.name} />
                                                         ))}
-                                                    </Box>
-                                                </Box>
+                                                    </TagsContainer>
+                                                </CategoryTagBox>
                                             </Box>
-                                        </CardContent>
-                                    </Card>
+                                        </Box>
+                                    </ArticleCard>
                                 </Grid>
                             ))}
                         </Grid>
@@ -130,7 +125,7 @@ const ArticlesView: React.FC = () => {
                     </Grid>
                 </Grid>
             )}
-        </Box>
+        </CommonGridContainer>
     );
 };
 

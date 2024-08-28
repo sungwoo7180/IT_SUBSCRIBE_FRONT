@@ -3,13 +3,15 @@ import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import CustomLoginTextField from '../components/CustomLoginTextField';
 import axios from 'axios';
 import { AuthContainer, AuthLeftSection, AuthButton, AuthRightSection, AuthTitle } from '../style/StyledComponents';
-import { Link as MuiLink } from '@mui/material';  // MUI의 Link를 import
+import { Link as MuiLink, Dialog, DialogActions, DialogContent, DialogTitle, Button } from '@mui/material';  // MUI의 import
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
 const Login: React.FC = () => {
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
+    const [openDialog, setOpenDialog] = useState<boolean>(false);  // 팝업 상태 관리
+    const [dialogMessage, setDialogMessage] = useState<string>('');  // 팝업 메시지
     const navigate = useNavigate();
 
     const handleLogin = async () => {
@@ -26,7 +28,20 @@ const Login: React.FC = () => {
                 navigate('/main'); // 로그인 성공 후 메인 페이지로 리다이렉트
             }
         } catch (error) {
-            console.error('로그인 오류', error);
+            if (axios.isAxiosError(error) && error.response) {
+                const { status, data } = error.response;
+                if (status === 403) {
+                    // 계정 정지 상태인 경우
+                    const endDate = new Date(data.banEndDate);
+                    const localEndDate = endDate.toLocaleString(); // UTC를 로컬 시간으로 변환
+                    setDialogMessage(data.message + ` (정지 종료일: ${localEndDate})`);
+                    setOpenDialog(true);
+                } else {
+                    console.error('로그인 오류', error);
+                }
+            } else {
+                console.error('로그인 오류', error);
+            }
         }
     };
 
@@ -38,6 +53,10 @@ const Login: React.FC = () => {
         setPassword(e.target.value);
     };
 
+    const handleDialogClose = () => {
+        setOpenDialog(false);
+    };
+
     return (
         <AuthContainer container>
             <AuthLeftSection item xs={12} sm={6}>
@@ -47,7 +66,6 @@ const Login: React.FC = () => {
                 <CustomLoginTextField label="User ID" value={username} onChange={handleUsernameChange} />
                 <CustomLoginTextField label="Password" type="password" value={password} onChange={handlePasswordChange} />
 
-                {/* MUI Link 컴포넌트를 사용하여 RouterLink로 연결 */}
                 <MuiLink component={RouterLink} to="/password-reset" underline="hover">
                     Forgot your password?
                 </MuiLink>
@@ -61,6 +79,20 @@ const Login: React.FC = () => {
                 </MuiLink>
             </AuthLeftSection>
             <AuthRightSection item xs={12} sm={6} />
+
+            {/* Dialog 컴포넌트 */}
+            <Dialog open={openDialog} onClose={handleDialogClose}>
+                <DialogTitle sx={{ color: 'black' }}>계정 정지</DialogTitle>
+                <DialogContent sx={{ color: 'black' }}>
+                    {dialogMessage}
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleDialogClose} color="primary">
+                        확인
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
         </AuthContainer>
     );
 };
