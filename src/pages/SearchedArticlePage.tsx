@@ -6,6 +6,8 @@ import MostHotArticles from '../components/MostHotArticles';
 import axiosInstance from '../config/AxiosConfig';
 import { Article } from '../types/Article';
 
+const apiUrl = process.env.REACT_APP_API_URL;
+
 const SearchedArticlePage: React.FC = () => {
     const [articles, setArticles] = useState<Article[]>([]);
     const [currentPage, setCurrentPage] = useState<number>(1);
@@ -21,7 +23,7 @@ const SearchedArticlePage: React.FC = () => {
         const fetchArticles = async () => {
             setLoading(true);
             try {
-                const response = await axiosInstance.get(`/article/search/${encodeURIComponent(searchQuery)}`, {
+                const response = await axiosInstance.get(`${apiUrl}/api/article/search/${encodeURIComponent(searchQuery)}`, {
                     params: {
                         page: currentPage - 1,
                         size: 12
