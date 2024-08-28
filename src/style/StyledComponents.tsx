@@ -86,9 +86,15 @@ export const CommentAvatar = styled(Avatar)({
     marginRight: 16,
 });
 
-export const CommentContentBox = styled(Box)({
-    flex: 1,
-});
+export const CommentContentBox = styled('div')`
+    flex-grow: 1;
+    padding: 8px;
+    background-color: #1f2a3c;
+    border-radius: 4px;
+    max-width: 100%;
+    overflow-wrap: break-word;  /* 긴 단어 줄바꿈 */
+    word-break: break-word; /* 긴 단어 줄바꿈 */
+`;
 
 export const CommentMetaBox = styled(Box)({
     display: 'flex',
