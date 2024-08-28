@@ -23,6 +23,14 @@
     color: #ffffff;
 }
 
+Button.bookmarkListButton{
+    color : #a1a1b3
+}
+
+Button.bookmarkListButton:hover{
+    color: white;
+}
+
 * {
     color : white;
 }

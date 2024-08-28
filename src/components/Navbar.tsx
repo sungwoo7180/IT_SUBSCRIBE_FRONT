@@ -5,6 +5,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import MailIcon from '@mui/icons-material/Mail';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import categories from '../data/Categories';
+import BookmarkIcon from '@mui/icons-material/Bookmark';
 import SearchBar from './SearchBar'; // 분리된 SearchBar 컴포넌트 import
 
 const Navbar: React.FC = () => {
@@ -38,6 +39,11 @@ const Navbar: React.FC = () => {
     const handleLogoClick = () => {
         setSelectedCategory(''); // 로고를 클릭하면 선택된 카테고리를 초기화
         navigate('/main');
+    };
+
+    const handleBookmarkClick = () => {
+        setSelectedCategory(''); // 로고를 클릭하면 선택된 카테고리를 초기화
+        navigate('/bookmark/articles');
     };
 
     const handleLogout = () => {
@@ -87,6 +93,9 @@ const Navbar: React.FC = () => {
                             )}
                             <IconButton color="inherit" onClick={() => navigate('/my-page')}>
                                 <img src={user.avatarUrl} alt="Profile" style={{ width: 30, height: 30, borderRadius: '50%' }} />
+                            </IconButton>
+                            <IconButton color="inherit" onClick={handleBookmarkClick}>
+                                <BookmarkIcon />
                             </IconButton>
                             <IconButton color="inherit">
                                 <MailIcon />

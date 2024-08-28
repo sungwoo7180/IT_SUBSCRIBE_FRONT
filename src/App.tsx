@@ -17,6 +17,7 @@ import Admin from "./pages/Admin";
 import AdminReportedComments from "./pages/AdminReportedComments"
 import AdminBannedUsers from "./pages/AdminBannedUsers"
 import SearchedArticlePage from "./pages/SearchedArticlePage";
+import BookmarkListPage from "./pages/BookmarkListPage";
 
 function App() {
     useEffect(() => {
@@ -32,6 +33,7 @@ function App() {
                 <Route path="/" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/main" element={<><Navbar /><Main /></>} />
+                <Route path="/bookmark/articles" element={<><Navbar /><BookmarkListPage /></>} />
                 <Route path="/password-reset" element={<><ForgotPassword /></>} />
                 <Route path="/my-page" element={
                     <ProtectedRoute element={<><Navbar /><MyPage /></>} />
