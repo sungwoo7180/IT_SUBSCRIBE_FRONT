@@ -16,10 +16,10 @@ const Bookmark: React.FC<BookmarkProps> = ({ articleId }) => {
             try {
                 const response = await axiosInstance.post(`/api/bookmark/articles/${articleId}`);
 
-                if(response.status==200){
+                if(response.status===200){
                     setIsBookmarked(true);
                 }
-                else if(response.status==204){
+                else if(response.status===204){
                     setIsBookmarked(false);
                 }
             } catch (err) {
