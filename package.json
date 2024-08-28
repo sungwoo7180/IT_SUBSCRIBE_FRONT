@@ -54,6 +54,7 @@
   },
   "devDependencies": {
     "@types/react-dropzone": "^5.1.0",
-    "@types/react-scroll": "^1.8.10"
+    "@types/react-scroll": "^1.8.10",
+    "@babel/plugin-proposal-private-property-in-object" : "^7.16.7"
   }
 }
