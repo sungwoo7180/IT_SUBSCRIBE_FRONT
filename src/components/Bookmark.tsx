@@ -14,7 +14,7 @@ const Bookmark: React.FC<BookmarkProps> = ({ articleId }) => {
     useEffect(() => {
         const fetchBookmarkedArticles = async () => {
             try {
-                const response = await axiosInstance.post(`/api/bookmark/articles/${articleId}`);
+                const response = await axiosInstance.get(`/api/bookmark/articles/${articleId}`);
 
                 if(response.status===200){
                     setIsBookmarked(true);

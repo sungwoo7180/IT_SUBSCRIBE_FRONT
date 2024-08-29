@@ -43,7 +43,7 @@ const RecommendArticles: React.FC = () => {
             setLoading(true);
             try {
                 const token = localStorage.getItem('token');
-                const response = await axiosInstance.get('/recommend-article/recent', {
+                const response = await axiosInstance.get('/api/recommend-article/recent', {
                     headers: {
                         Authorization: token ? `Bearer ${token}` : undefined,
                     },

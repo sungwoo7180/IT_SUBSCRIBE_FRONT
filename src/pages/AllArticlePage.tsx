@@ -18,7 +18,7 @@ const AllArticlesPage: React.FC = () => {
         const fetchArticles = async () => {
             setLoading(true);
             try {
-                const response = await axiosInstance.get('/article/all', {
+                const response = await axiosInstance.get('/api/article/all', {
                     params: {
                         page: currentPage - 1,
                         size: 12

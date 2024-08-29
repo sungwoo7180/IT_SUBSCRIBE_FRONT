@@ -21,7 +21,7 @@ const SearchedArticlePage: React.FC = () => {
         const fetchArticles = async () => {
             setLoading(true);
             try {
-                const response = await axiosInstance.get(`/article/search/${encodeURIComponent(searchQuery)}`, {
+                const response = await axiosInstance.get(`/api/article/search/${encodeURIComponent(searchQuery)}`, {
                     params: {
                         page: currentPage - 1,
                         size: 12

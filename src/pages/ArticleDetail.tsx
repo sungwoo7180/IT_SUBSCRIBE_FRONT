@@ -24,10 +24,11 @@ const ArticleDetail: React.FC = () => {
     useEffect(() => {
         const fetchArticle = async () => {
             try {
-                if (!initialArticle) {
-                    const response = await axiosInstance.post(`/article/view/${articleId}`);
-                    setArticle(response.data);
-                }
+                // if (!initialArticle) {
+                //     const response = await axiosInstance.get(`/api/article/view/${articleId}`);
+                //     setArticle(response.data);
+                // }
+                const response = await axiosInstance.get(`/api/article/view/${articleId}`);
             } catch (err) {
                 setError('Failed to fetch article');
             }
@@ -35,7 +36,7 @@ const ArticleDetail: React.FC = () => {
 
         const incrementCount = async () => {
             try {
-                await axiosInstance.post(`/rank/increment-article-count/${articleId}`);
+                await axiosInstance.post(`/api/rank/increment-article-count/${articleId}`);
             } catch (err) {
                 console.error('Failed to increment article count', err);
             }
@@ -52,9 +53,10 @@ const ArticleDetail: React.FC = () => {
             }
         };
 
-        if (!initialArticle) {
-            fetchArticle();
-        }
+        // if (!initialArticle) {
+        //     fetchArticle();
+        // }
+        fetchArticle();
         incrementCount();
         fetchComments();
     }, [articleId, initialArticle]);

@@ -28,7 +28,7 @@ const ArticlesView: React.FC = () => {
                     .filter(category => selectedCategories.includes(category.name))
                     .map(category => category.id);
                 console.log("불러오기 진입")
-                const response = await axiosInstance.get(`/article/category/${categoryIds.join(',')}`, {
+                const response = await axiosInstance.get(`/api/article/category/${categoryIds.join(',')}`, {
                     params: {
                         page: currentPage - 1,
                         size: 12
