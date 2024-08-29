@@ -6,7 +6,7 @@ import MostHotArticles from "../components/MostHotArticles";
 import categories from '../data/Categories';
 import CategoryChip from '../components/Button/CategoryButton';
 import { Article } from '../types/Article';
-import { CommonGridContainer, CommonCardMedia, CommonTypography, CommonChip, CommonCircularProgress, LoadingBox, CategoryTagBox, TagsContainer, ArticleCard } from '../style/StyledComponents';
+import { CommonGridContainer, CommonTypography, CommonChip, CommonCircularProgress, LoadingBox, CategoryTagBox, TagsContainer, ArticleCard } from '../style/StyledComponents';
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -17,7 +17,7 @@ const ArticlesView: React.FC = () => {
     const initialCategories = categoriesQueryParam ? decodeURIComponent(categoriesQueryParam).split(',') : [];
 
     const [currentPage, setCurrentPage] = useState<number>(parseInt(searchParams.get('page') || '1'));
-    const [selectedCategories, setSelectedCategories] = useState<string[]>(initialCategories);
+    const [selectedCategories, ] = useState<string[]>(initialCategories);
     const [filteredArticles, setFilteredArticles] = useState<Article[]>([]);
     const [totalPages, setTotalPages] = useState<number>(1);
     const [loading, setLoading] = useState<boolean>(true);
@@ -50,11 +50,11 @@ const ArticlesView: React.FC = () => {
         fetchArticles();
     }, [selectedCategories, currentPage]);
 
-    const handleCategoryChange = (newCategories: string[]) => {
-        setSelectedCategories(newCategories);
-        setCurrentPage(1);
-        setSearchParams({ categories: newCategories.join(','), page: '1' });
-    };
+    // const handleCategoryChange = (newCategories: string[]) => {
+    //     setSelectedCategories(newCategories);
+    //     setCurrentPage(1);
+    //     setSearchParams({ categories: newCategories.join(','), page: '1' });
+    // };
 
     const handlePageChange = (event: React.ChangeEvent<unknown>, page: number) => {
         setCurrentPage(page);

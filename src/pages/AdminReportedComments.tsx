@@ -1,4 +1,4 @@
-import React, { useState, useEffect, MouseEvent } from 'react';
+import React, { useState, useEffect, MouseEvent, useCallback } from 'react';
 import {
     Box, Typography, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip,
     IconButton, CircularProgress, MenuItem, Menu, Button, Dialog, DialogTitle, DialogContent, DialogActions,
@@ -47,7 +47,7 @@ const AdminReportedComments: React.FC = () => {
     const [statuses, setStatuses] = useState<StatusOption[]>([]);
     const [statusAnchorEl, setStatusAnchorEl] = useState<null | HTMLElement>(null);
     const [filterAnchorEl, setFilterAnchorEl] = useState<null | HTMLElement>(null);
-    const [selectedStatus, setSelectedStatus] = useState<StatusOption['name'] | null>(null);
+    const [, ] = useState<StatusOption['name'] | null>(null);
     const [statusTargetId, setStatusTargetId] = useState<number | null>(null);
     const [page, setPage] = useState<number>(1);
     const [totalPages, setTotalPages] = useState<number>(1);
@@ -58,7 +58,7 @@ const AdminReportedComments: React.FC = () => {
     const [isBanning, setIsBanning] = useState<boolean>(false);
     const [banReason, setBanReason] = useState<string>('');
 
-    const fetchReportedComments = async () => {
+    const fetchReportedComments = useCallback(async () => {
         setLoading(true);
         try {
             const response = await axiosInstance.get(`${apiUrl}/api/admin/reports`, {
@@ -74,7 +74,7 @@ const AdminReportedComments: React.FC = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [page, filterStatus]); // page와 filterStatus를 의존성으로 추가
 
     useEffect(() => {
         fetchReportedComments();
@@ -87,7 +87,7 @@ const AdminReportedComments: React.FC = () => {
             }
         };
         fetchStatuses();
-    }, [page, filterStatus]); // 페이지와 필터 상태에 따라 데이터 새로고침
+    }, [page, filterStatus, fetchReportedComments]);
 
     const handlePageChange = (event: React.ChangeEvent<unknown>, newPage: number) => {
         setPage(newPage);

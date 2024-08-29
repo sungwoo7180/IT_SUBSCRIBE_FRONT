@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Grid, Pagination, CardMedia } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../components/Navbar';
+// import Navbar from '../components/Navbar';
 import MostHotArticles from '../components/MostHotArticles';
 import axiosInstance from '../config/AxiosConfig';
 import { Article } from '../types/Article';

@@ -5,7 +5,7 @@ export const isEmpty = (value: string): boolean => !value.trim();
 
 // 이메일 주소가 유효한 형식인지 확인합니다.
 export const isValidEmail = (email: string): boolean =>
-    /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email);
+    /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email);
 
 // 두 비밀번호가 일치하는지 확인합니다.
 export const isPasswordMatch = (password: string, confirmPassword: string): boolean =>

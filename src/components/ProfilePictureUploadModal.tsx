@@ -5,7 +5,7 @@ import { PhotoCamera, Close, CloudUpload } from '@mui/icons-material';
 import { useDropzone } from 'react-dropzone';
 import ReactCrop, { Crop, PixelCrop } from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
-import { CommonCard, LoadingBox } from '../style/StyledComponents'; // 공통 스타일 컴포넌트 가져오기
+// import { CommonCard, LoadingBox } from '../style/StyledComponents'; // 공통 스타일 컴포넌트 가져오기
 
 interface ProfilePictureUploadModalProps {
     open: boolean;
@@ -22,7 +22,7 @@ const ProfilePictureUploadModal: React.FC<ProfilePictureUploadModalProps> = ({ o
     const [preview, setPreview] = useState<string | null>(null);
     const [crop, setCrop] = useState<CustomCrop>({ unit: '%', width: 50, aspect: 1 / 1, x: 0, y: 0, height: 50 });
     const [completedCrop, setCompletedCrop] = useState<PixelCrop | null>(null);
-    const [croppedImage, setCroppedImage] = useState<string | null>(null);
+    const [, setCroppedImage] = useState<string | null>(null);
     const imgRef = useRef<HTMLImageElement>(null);
 
     const onDrop = useCallback((acceptedFiles: File[]) => {

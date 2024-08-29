@@ -66,10 +66,10 @@ const Navbar: React.FC = () => {
             .catch(error => console.error('로그아웃 에러:', error));
     };
 
-    const handleSearch = (query: string) => {
-        console.log(`Search query: ${query}`);
-        // 검색 동작 처리 (예: API 호출)
-    };
+    // const handleSearch = (query: string) => {
+    //     console.log(`Search query: ${query}`);
+    //     // 검색 동작 처리 (예: API 호출)
+    // };
 
     return (
         <AppBar position="static" style={{ backgroundColor: '#152238' }}>
@@ -86,7 +86,7 @@ const Navbar: React.FC = () => {
                 <Box>
                     {Object.keys(user).length > 0 ? (
                         <>
-                            { (user.role == "ADMIN" || user.role =="SUPER_ADMIN") && (
+                            { (user.role === "ADMIN" || user.role ==="SUPER_ADMIN") && (
                                 <Button color="inherit" onClick={() => navigate('/admin')}>
                                     Admin Panel
                                 </Button>

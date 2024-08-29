@@ -18,10 +18,10 @@ const ArticleDetail: React.FC = () => {
     const [article, setArticle] = useState<ArticleType | null>(initialArticle);
     const [comments, setComments] = useState<CommentType[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
+    const [, setError] = useState<string | null>(null);
     const [snackbarMessage, setSnackbarMessage] = useState<string>("");
     const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
-    const user = JSON.parse(localStorage.getItem('user') || '{}'); // 사용자 정보 가져오기
+    // const user = JSON.parse(localStorage.getItem('user') || '{}'); // 사용자 정보 가져오기
 
     useEffect(() => {
         const fetchArticle = async () => {

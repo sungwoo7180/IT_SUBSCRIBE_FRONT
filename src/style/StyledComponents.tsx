@@ -13,7 +13,7 @@ import {
     Chip,
     CircularProgress,
     Link as MuiLink,
-    CardMedia, IconButton, CardMediaProps, Paper
+    CardMedia, IconButton, Paper
 } from '@mui/material';
 
 // 공통 Box 스타일

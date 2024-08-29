@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { List, IconButton, Typography, Box, Avatar, Snackbar, TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions, Radio, RadioGroup, MenuItem, Menu, FormControlLabel, FormControl, FormLabel } from '@mui/material';
+import { List, IconButton, Typography, Box, TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions, Radio, RadioGroup, MenuItem, Menu, FormControlLabel, FormControl, FormLabel } from '@mui/material';
 import { ReportProblemOutlined as ReportIcon} from '@mui/icons-material';
-import { styled } from '@mui/system';
+// import { styled } from '@mui/system';
 import { Edit as EditIcon, Delete as DeleteIcon, Share as ShareIcon, ThumbUp as ThumbUpIcon, MoreVert as MoreVertIcon } from '@mui/icons-material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
@@ -20,17 +20,17 @@ import axiosInstance from "../config/AxiosConfig";
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
-const CommentFormContainer = styled(Box)({
-    display: 'flex',
-    alignItems: 'center',
-    marginTop: '1rem',
-    gap: '1rem',
-});
-
-const CommentFormAvatar = styled(Avatar)({
-    width: 40,
-    height: 40,
-});
+// const CommentFormContainer = styled(Box)({
+//     display: 'flex',
+//     alignItems: 'center',
+//     marginTop: '1rem',
+//     gap: '1rem',
+// });
+//
+// const CommentFormAvatar = styled(Avatar)({
+//     width: 40,
+//     height: 40,
+// });
 
 // const CommentsContainer = styled(Box)({
 //     marginTop: 16,
@@ -57,40 +57,40 @@ const CommentFormAvatar = styled(Avatar)({
 //     alignItems: 'center',
 // });
 
-const CommentNickname = styled(Typography)({
-    fontWeight: 'bold',
-    color: 'white',
-});
-
-const CommentTimestamp = styled(Typography)({
-    marginLeft: 16,
-    color: 'gray',
-});
+// const CommentNickname = styled(Typography)({
+//     fontWeight: 'bold',
+//     color: 'white',
+// });
+//
+// const CommentTimestamp = styled(Typography)({
+//     marginLeft: 16,
+//     color: 'gray',
+// });
 
 // const CommentDivider = styled(Divider)({
 //     borderColor: 'white',
 // });
 
-const CommentTextField = styled(TextField)({
-    marginTop: 16,
-    input: {
-        color: 'white',
-    },
-    "& .MuiOutlinedInput-root": {
-        "& fieldset": {
-            borderColor: "white"
-        },
-        "&:hover fieldset": {
-            borderColor: "white"
-        },
-        "&.Mui-focused fieldset": {
-            borderColor: "white"
-        }
-    },
-    "& .MuiInputLabel-root": {
-        color: "white"
-    }
-});
+// const CommentTextField = styled(TextField)({
+//     marginTop: 16,
+//     input: {
+//         color: 'white',
+//     },
+//     "& .MuiOutlinedInput-root": {
+//         "& fieldset": {
+//             borderColor: "white"
+//         },
+//         "&:hover fieldset": {
+//             borderColor: "white"
+//         },
+//         "&.Mui-focused fieldset": {
+//             borderColor: "white"
+//         }
+//     },
+//     "& .MuiInputLabel-root": {
+//         color: "white"
+//     }
+// });
 
 interface CommentsProps {
     articleId: number;
@@ -132,7 +132,7 @@ const Comments: React.FC<CommentsProps> = ({
                                                setOpenSnackbar
                                            }) => {
     const [newComment, setNewComment] = useState<string>('');
-    const [liked, setLiked] = useState<{ [key: number]: boolean }>({});
+    const [,] = useState<{ [key: number]: boolean }>({});
     const [openReportModal, setOpenReportModal] = useState<boolean>(false);
     const [reportReasons, setReportReasons] = useState<ReportReason[]>([]);
     const [selectedComment, setSelectedComment] = useState<number | null>(null);
@@ -146,7 +146,7 @@ const Comments: React.FC<CommentsProps> = ({
 
     useEffect(() => {
         if (openReportModal) {
-            axiosInstance.get('${apiUrl}/api/enum-list/comment-report-reasons')
+            axiosInstance.get(`${apiUrl}/api/enum-list/comment-report-reasons`)
                 .then(response => {
                     setReportReasons(response.data);
                 })
@@ -292,12 +292,12 @@ const Comments: React.FC<CommentsProps> = ({
         }
     };
 
-    const handleLikeToggle = (commentId: number) => {
-        setLiked((prevLiked) => ({
-            ...prevLiked,
-            [commentId]: !prevLiked[commentId],
-        }));
-    };
+    // const handleLikeToggle = (commentId: number) => {
+    //     setLiked((prevLiked) => ({
+    //         ...prevLiked,
+    //         [commentId]: !prevLiked[commentId],
+    //     }));
+    // };
 
     const handleReportClick = (commentId: number) => {
         setSelectedComment(commentId);

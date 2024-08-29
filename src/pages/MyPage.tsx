@@ -1,5 +1,5 @@
 import React, { useEffect, useState, ChangeEvent } from 'react';
-import {Box, Typography, Button, Modal, Snackbar, Alert} from '@mui/material';
+import {Box, Typography, Button, Snackbar, Alert} from '@mui/material';
 import CategoryFilter from '../components/CategoryFilter';
 import AlarmSettings from '../components/AlarmSettings';
 import UserInfo from '../components/UserInfo';
@@ -59,7 +59,7 @@ const MyPage: React.FC = () => {
         avatarUrl: ''
     });
 
-    const [modalOpen, setModalOpen] = useState<boolean>(false);
+    const [, ] = useState<boolean>(false);
 
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);  // 항상 배열로 초기화
     const [preferences, setPreferences] = useState<Preferences>({
