@@ -221,12 +221,12 @@ const ArticleDetail: React.FC = () => {
                         </Typography>
                     </Paper>
                 </Grid>
-                {/*버튼 왜 지운지 모르겠음*/}
-                <Grid item xs={12} md={9} sx={{ display: 'flex', justifyContent: 'center' }}>
-                    <Button variant="contained" startIcon={<BookmarkButton />} sx={{ bgcolor: '#ff4081', my: 2 }}>
-                        Bookmark
-                    </Button>
-                </Grid>
+                {/*현재는 사용되지 않는 북마크 버튼*/}
+                {/*<Grid item xs={12} md={9} sx={{ display: 'flex', justifyContent: 'center' }}>*/}
+                {/*    <Button variant="contained" startIcon={<BookmarkButton />} sx={{ bgcolor: '#ff4081', my: 2 }}>*/}
+                {/*        Bookmark*/}
+                {/*    </Button>*/}
+                {/*</Grid>*/}
                 <Grid item xs={12} md={9}>
                     {loading ? <p>Loading comments...</p> : <Comments
                         articleId={article?.id || 0}
